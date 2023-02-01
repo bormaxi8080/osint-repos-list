@@ -1,2 +1,73 @@
 # github-starred-repos-builder
-Shell script for build all your starred GitHub repositories information in markdown document
+
+Shell script for build all your starred GitHub repositories information in Markdown document
+
+
+## Purposes:
+
+This Python script helps for generate Markdown description document contains all your GitHub starred repositories.
+
+This is typically needed in a situation when you have many stared repositories to view, such as collection of various utilities.
+
+
+This script does simple things:
+
+> Gets list of your starred GitHub repositories.
+>
+> Generate JSON and Markdown document with your GitHub starred repos statistics
+
+## That's all!
+
+*It works on GitHub only! (not in GitLab or BitBucket)
+
+## Important!
+
+If you have a lot of starred GitHub repositories, and they are big, clone operations may take a long time to complete.
+
+## Usage:
+
+- Clone this repository
+- Run pip3 install -r requirements.txt
+- Create environment variable GITHUB_API_TOKEN with your GitHub API token
+- Run 'python3 builder.py' and wait
+
+![alt text](./shell.png "Terminal")
+
+Results:
+
+![alt text](./starred_repos.json.png "JSON")
+
+![alt text](./starred_repos.md.png "Markdown")
+
+- Bingo!
+
+## Notes:
+
+### How to get your GitHub personal API access token for API:
+
+[https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+
+### More about GitHub stars:
+
+[https://stars.github.com/](https://stars.github.com/)
+
+### More about GitHub API:
+
+[https://docs.github.com/en/rest](https://docs.github.com/en/rest)
+
+## More about GitHub Starred API:
+
+[https://docs.github.com/en/rest/activity/starring](https://docs.github.com/en/rest/activity/starring)
+
+### More About GitHub API Pagination Requests:
+
+[https://docs.github.com/en/rest/guides/traversing-with-pagination](https://docs.github.com/en/rest/guides/traversing-with-pagination)
+
+Example screen:
+
+![alt text](./pagination_headers.png "Pagination Headers")
+
+## TODO:
+
+- Add excluded repos list
+- More than 1000 starred repos?
