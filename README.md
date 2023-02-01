@@ -7,7 +7,7 @@ Shell script for build all your starred GitHub repositories information in Markd
 
 This Python script helps for generate Markdown description document contains all your GitHub starred repositories.
 
-This is typically needed in a situation when you have many stared repositories to view, such as collection of various utilities.
+This is typically needed in a situation when you have many starred repositories to view, such as collection of various utilities.
 
 
 This script does simple things:
@@ -33,7 +33,7 @@ If you have a lot of starred GitHub repositories, and they are big, clone operat
 
 ![alt text](./shell.png "Terminal")
 
-- Bing!!!
+- Bingo!!!
 
 Results:
 
