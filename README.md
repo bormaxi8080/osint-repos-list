@@ -33,13 +33,15 @@ If you have a lot of starred GitHub repositories, and they are big, clone operat
 
 ![alt text](./shell.png "Terminal")
 
+- Bing!!!
+
 Results:
 
 ![alt text](./starred_repos.json.png "JSON")
 
 ![alt text](./starred_repos.md.png "Markdown")
 
-- Bingo!
+You can see full results example in [Markdown](starred_repos.md) and [JSON](starred_repos.json) documents
 
 ## Notes:
 
@@ -62,12 +64,3 @@ Results:
 ### More About GitHub API Pagination Requests:
 
 [https://docs.github.com/en/rest/guides/traversing-with-pagination](https://docs.github.com/en/rest/guides/traversing-with-pagination)
-
-Example screen:
-
-![alt text](./pagination_headers.png "Pagination Headers")
-
-## TODO:
-
-- Add excluded repos list
-- More than 1000 starred repos?
