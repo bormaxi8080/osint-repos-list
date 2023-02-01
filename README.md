@@ -41,7 +41,7 @@ Results:
 
 ![alt text](./starred_repos.md.png "Markdown")
 
-You can see full results example in [Markdown](starred_repos.md) and [JSON](starred_repos.json) documents
+You can see full results example in [Markdown](./starred_repos.md) and [JSON](./starred_repos.json) documents
 
 ## Notes:
 
