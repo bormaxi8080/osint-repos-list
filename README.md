@@ -43,6 +43,10 @@ Results:
 
 You can see full results example in [Markdown](./starred_repos.md) and [JSON](./starred_repos.json) documents
 
+## Related projects:
+
+Also I use [github-starred-repos-loader](https://github.com/bormaxi8080/github-starred-repos-loader) and [git-repos-updater](https://github.com/bormaxi8080/git-repos-updater) shell scripts to pull and update my starred GitHub collected repos locally.
+
 ## Notes:
 
 ### How to get your GitHub personal API access token for API:
