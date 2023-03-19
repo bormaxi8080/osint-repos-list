@@ -59,7 +59,7 @@ Also I use [github-starred-repos-loader](https://github.com/bormaxi8080/github-s
 
 [https://docs.github.com/en/rest](https://docs.github.com/en/rest)
 
-## More about GitHub Starred API:
+### More about GitHub Starred API:
 
 [https://docs.github.com/en/rest/activity/starring](https://docs.github.com/en/rest/activity/starring)
 
