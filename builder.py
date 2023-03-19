@@ -103,25 +103,50 @@ if __name__ == '__main__':
     # Save repos to document structure
     print("Generating Markdown document...")
     for repo in SORTED_REPOS:
-        MD_DOCUMENT = MD_DOCUMENT + "### [{0}]({1})".format(str(repo["full_name"]), str(repo["html_url"]))
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
-        MD_DOCUMENT = MD_DOCUMENT + str(repo["description"])
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
-        MD_DOCUMENT = MD_DOCUMENT + "Url: [{0}]({1})".format(str(repo["html_url"]), str(repo["html_url"]))
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
-        MD_DOCUMENT = MD_DOCUMENT + "Clone: [{0}]({1})".format(str(repo["clone_url"]), str(repo["clone_url"]))
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
-        MD_DOCUMENT = MD_DOCUMENT + "Created: {0}".format(
-            datetime.strptime(str(repo["created_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%d %B %Y"))
+        # MD_DOCUMENT = MD_DOCUMENT + "### [{0}]({1})".format(str(repo["full_name"]), str(repo["html_url"]))
+        # MD_DOCUMENT = MD_DOCUMENT + "[{0}]({1}) from [{2}]({3})".format(str(repo["name"]), str(repo["html_url"]),
+        #                                                                str(repo["owner"]["login"]), str(repo["owner"]["html_url"]))
         # MD_DOCUMENT = _separate(MD_DOCUMENT)
-        MD_DOCUMENT = MD_DOCUMENT + " / Updated: {0}".format(
-            datetime.strptime(str(repo["updated_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%d %B %Y"))
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
-        # MD_DOCUMENT = MD_DOCUMENT + "Stars on GitHub: {0}".format(str(repo["stargazers_count"]))
-        MD_DOCUMENT = MD_DOCUMENT + '<img src="star.png" height="16" alt="Stars on GitHub"/>: {0}'.format(str(repo["stargazers_count"]))
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
-        MD_DOCUMENT = MD_DOCUMENT + MD_DOCUMENT_GROUP_SEPARATOR
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
+
+        MD_DOCUMENT = MD_DOCUMENT + '<img height="16" src="github.jpg"/>  <a href="{0}">{1}</a> from <a href="{2}">{3}</a>'.format(
+            str(repo["html_url"]), str(repo["name"]),
+            str(repo["owner"]["html_url"]), str(repo["owner"]["login"])
+        )
+        MD_DOCUMENT = MD_DOCUMENT + '<br/><br/>'
+
+        if not repo["description"] is None:
+            MD_DOCUMENT = MD_DOCUMENT + str(repo["description"])
+            # MD_DOCUMENT = _separate(MD_DOCUMENT)
+            MD_DOCUMENT = MD_DOCUMENT + '<br/><br/>'
+
+        # MD_DOCUMENT = MD_DOCUMENT + "Url: [{0}]({1})".format(str(repo["html_url"]), str(repo["html_url"]))
+        # MD_DOCUMENT = _separate(MD_DOCUMENT)
+        # MD_DOCUMENT = MD_DOCUMENT + "Clone: [{0}]({1})".format(str(repo["clone_url"]), str(repo["clone_url"]))
+        # MD_DOCUMENT = _separate(MD_DOCUMENT)
+
+        # MD_DOCUMENT = MD_DOCUMENT + "Created: {0}".format(
+        #    datetime.strptime(str(repo["created_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%d %B %Y"))
+        # # MD_DOCUMENT = _separate(MD_DOCUMENT)
+        # MD_DOCUMENT = MD_DOCUMENT + " / Updated: {0}".format(
+        #    datetime.strptime(str(repo["updated_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%d %B %Y"))
+        # MD_DOCUMENT = _separate(MD_DOCUMENT)
+        # # MD_DOCUMENT = MD_DOCUMENT + "Stars on GitHub: {0}".format(str(repo["stargazers_count"]))
+
+        MD_DOCUMENT = MD_DOCUMENT + '<img src="created_at.jpg" height="16" alt="Created at"/> {0}'.format(
+            datetime.strptime(str(repo["created_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%d.%m.%Y"))
+        MD_DOCUMENT = MD_DOCUMENT + '  <img src="created_at.jpg" height="16" alt="Updated at"/> {0}'.format(
+            datetime.strptime(str(repo["updated_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%d.%m.%Y"))
+
+        MD_DOCUMENT = MD_DOCUMENT + '  <img src="star.png" height="16" alt="Stars on GitHub"/> {0}'.format(str(repo["stargazers_count"]))
+
+        MD_DOCUMENT = MD_DOCUMENT + '<br/><br/><br/>'
+
+        # MD_DOCUMENT = _separate(MD_DOCUMENT)
+        # MD_DOCUMENT = _separate(MD_DOCUMENT)
+        # MD_DOCUMENT = _separate(MD_DOCUMENT)
+
+        # MD_DOCUMENT = MD_DOCUMENT + MD_DOCUMENT_GROUP_SEPARATOR
+        # MD_DOCUMENT = _separate(MD_DOCUMENT)
 
     print("Saving document data...")
     # Save Markdown document to file
