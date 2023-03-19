@@ -12,15 +12,15 @@ This script does simple things:
 
 > Gets list of your starred GitHub repositories.
 >
-> Generate JSON and Markdown document with your GitHub starred repos statistics
+> Generate JSON and Markdown documents with your GitHub starred repos statistics
 
-That's all!
+That's all.
 
 *It works on GitHub only! (not in GitLab or BitBucket)
 
-## Important!
+### Important!
 
-If you have a lot of starred GitHub repositories, and they are big, clone operations may take a long time to complete.
+If you have a lot of starred GitHub repositories, operations may take a long time to complete.
 
 ## Usage:
 
