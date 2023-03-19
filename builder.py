@@ -118,7 +118,7 @@ if __name__ == '__main__':
             datetime.strptime(str(repo["updated_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%d %B %Y"))
         MD_DOCUMENT = _separate(MD_DOCUMENT)
         # MD_DOCUMENT = MD_DOCUMENT + "Stars on GitHub: {0}".format(str(repo["stargazers_count"]))
-        MD_DOCUMENT = MD_DOCUMENT + '<img src="star.png" height="32" alt="Stars on GitHub"/>'.format(str(repo["stargazers_count"]))
+        MD_DOCUMENT = MD_DOCUMENT + '<img src="star.png" height="32" alt="Stars on GitHub"/> {0}'.format(str(repo["stargazers_count"]))
         MD_DOCUMENT = _separate(MD_DOCUMENT)
         MD_DOCUMENT = MD_DOCUMENT + MD_DOCUMENT_GROUP_SEPARATOR
         MD_DOCUMENT = _separate(MD_DOCUMENT)
