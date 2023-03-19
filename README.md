@@ -1,7 +1,6 @@
 # github-starred-repos-builder
 
-Shell script for build all your starred GitHub repositories information in Markdown document
-
+Shell script for build all your starred GitHub repositories information in Markdown document.
 
 ## Purposes:
 
@@ -9,14 +8,13 @@ This Python script helps for generate Markdown description document contains all
 
 This is typically needed in a situation when you have many starred repositories to view, such as collection of various utilities.
 
-
 This script does simple things:
 
 > Gets list of your starred GitHub repositories.
 >
 > Generate JSON and Markdown document with your GitHub starred repos statistics
 
-## That's all!
+That's all!
 
 *It works on GitHub only! (not in GitLab or BitBucket)
 
