@@ -31,15 +31,15 @@ If you have a lot of starred GitHub repositories, and they are big, clone operat
 - Create environment variable GITHUB_API_TOKEN with your GitHub API token
 - Run 'python3 builder.py' and wait
 
-![alt text](./shell.png "Terminal")
+![alt text](./img/shell.png "Terminal")
 
 - Bingo!!!
 
 Results:
 
-![alt text](./starred_repos.json.png "JSON")
+![alt text](./img/starred_repos.json.png "JSON")
 
-![alt text](./starred_repos.md.png "Markdown")
+![alt text](./img/starred_repos.md.png "Markdown")
 
 You can see full results example in [Markdown](./starred_repos.md) and [JSON](./starred_repos.json) documents
 
