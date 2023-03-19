@@ -1,6 +1,6 @@
 # github-starred-repos-builder
 
-Shell script for build all your starred GitHub repositories information in Markdown document.
+Python script for build all your starred GitHub repositories information in JSON and Markdown documents.
 
 ## Purposes:
 
