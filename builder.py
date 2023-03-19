@@ -108,7 +108,7 @@ if __name__ == '__main__':
         #                                                                str(repo["owner"]["login"]), str(repo["owner"]["html_url"]))
         # MD_DOCUMENT = _separate(MD_DOCUMENT)
 
-        MD_DOCUMENT = MD_DOCUMENT + '<img height="16" src="github.png" alt="GitHub Repository"/><a href="{0}">{1}</a> from <a href="{2}">{3}</a>'.format(
+        MD_DOCUMENT = MD_DOCUMENT + '<nobr><img height="16" src="github.png" alt="GitHub Repository"/><a href="{0}">{1}</a> from <a href="{2}">{3}</a></nobr>'.format(
             str(repo["html_url"]), str(repo["name"]),
             str(repo["owner"]["html_url"]), str(repo["owner"]["login"])
         )
@@ -134,9 +134,8 @@ if __name__ == '__main__':
 
         MD_DOCUMENT = MD_DOCUMENT + '<img src="created_at.png" height="16" alt="Created at"/> {0}'.format(
             datetime.strptime(str(repo["created_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%d.%m.%Y"))
-        MD_DOCUMENT = MD_DOCUMENT + '<img src="created_at.png" height="16" alt="Updated at"/>{0}'.format(
+        MD_DOCUMENT = MD_DOCUMENT + '<img src="created_at.png" height="16" alt="Updated at"/> {0}'.format(
             datetime.strptime(str(repo["updated_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%d.%m.%Y"))
-
         MD_DOCUMENT = MD_DOCUMENT + '<img src="star.png" height="16" alt="Stars on GitHub"/> {0}'.format(str(repo["stargazers_count"]))
 
         MD_DOCUMENT = MD_DOCUMENT + '<hr/>'
