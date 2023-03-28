@@ -63,7 +63,7 @@ def _save_json(path, json_data):
 
 
 if __name__ == '__main__':
-    print("Welcome to GitHub starred repos loader!")
+    print("Welcome to GitHub starred repos builder!")
     print("See {0} for details".format(GITHUB_REPO_URL))
 
     STARRED_REPOS = []
