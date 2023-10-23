@@ -37,6 +37,14 @@ Results:
 
 ![alt text](./img/starred_repos.json.png "JSON")
 
+NOTE: Simplification of the output: image badges have been removed, since with a large number of repositories, a document is generated that is too large and the page freezes.
+
+New version:
+
+![alt text](./img/starred_repos.md.2.png "Markdown")
+
+Old version:
+
 ![alt text](./img/starred_repos.md.png "Markdown")
 
 You can see full results example in [Markdown](./starred_repos.md) and [JSON](./starred_repos.json) documents

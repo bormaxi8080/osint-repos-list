@@ -103,6 +103,9 @@ if __name__ == '__main__':
     # Save repos to document structure
     print("Generating Markdown document...")
     for repo in SORTED_REPOS:
+        # NOTE: Simplification of the output: image badges have been removed, since with a large number of repositories,
+        # a document is generated that is too large and the page freezes.
+
         # Repository link
         MD_DOCUMENT += "### [{0}]({1}) from [{2}]({3})".format(
             str(repo["name"]), str(repo["html_url"]),
@@ -110,12 +113,11 @@ if __name__ == '__main__':
         )
         MD_DOCUMENT = _separate(MD_DOCUMENT)
         # Author
-        MD_DOCUMENT += "[![GitHub](https://img.shields.io/badge/GitHub-Profile-brightgreen?logo=github)](https://github.com/{0})".format(
-            str(repo["owner"]["login"]))
-        # Stars
-        MD_DOCUMENT += " [![GitHub stars](https://img.shields.io/github/stars/{0}/{1}.svg?style=social&label=Stars)]({2})".format(
-            str(repo["owner"]["login"]), str(repo["name"]), str(repo["html_url"])
-        )
+        # MD_DOCUMENT += "[![GitHub](https://img.shields.io/badge/GitHub-Profile-brightgreen?logo=github)](https://github.com/{0})".format(
+        #    str(repo["owner"]["login"]))
+
+        # Repository Url
+        MD_DOCUMENT += "Repository Url: {0}".format(str(repo["html_url"]))
         MD_DOCUMENT = _separate(MD_DOCUMENT)
 
         # Description
@@ -125,32 +127,49 @@ if __name__ == '__main__':
             MD_DOCUMENT += str(repo["description"])
         MD_DOCUMENT = _separate(MD_DOCUMENT)
 
+        # Stars
+        MD_DOCUMENT += "Stars: {0}".format(str(repo["stargazers_count"]))
+        # MD_DOCUMENT += " [![GitHub stars](https://img.shields.io/github/stars/{0}/{1}.svg?style=social&label=Stars)]({2})".format(
+        #    str(repo["owner"]["login"]), str(repo["name"]), str(repo["html_url"])
+        # )
+        MD_DOCUMENT = _separate(MD_DOCUMENT)
+
         # Topics
         if not repo["topics"] is None:
             topics = repo["topics"]
             if len(topics) > 0:
-                str_topics = "%2C%20".join(topics).replace("-", "\u2013")
-                MD_DOCUMENT += "[![GitHub topics](https://img.shields.io/badge/Topics-{0}-brightgreen.svg)]({1})".format(
-                    str_topics,
-                    str(repo["html_url"])
-                )
+                topics_ = ["#" + item for item in topics]
+                str_topics = " ".join(topics_)
+                # str_topics = "%2C%20".join(topics_).replace("-", "\u2013")
+                # MD_DOCUMENT += "[![GitHub topics](https://img.shields.io/badge/Topics-{0}-brightgreen.svg)]({1})".format(
+                #    str_topics,
+                #    str(repo["html_url"])
+                # )
+                MD_DOCUMENT += "Topics: {0}".format(str_topics)
                 MD_DOCUMENT = _separate(MD_DOCUMENT)
 
         # Clone
-        MD_DOCUMENT += "[![GitHub clone](https://img.shields.io/badge/GitHub-Clone-green?logo=github)]({0})".format(str(repo["clone_url"]))
+        # MD_DOCUMENT += "[![GitHub clone](https://img.shields.io/badge/GitHub-Clone-green?logo=github)]({0})".format(str(repo["clone_url"]))
+        MD_DOCUMENT += "Clone Url: {0}".format(str(repo["clone_url"]))
+        MD_DOCUMENT = _separate(MD_DOCUMENT)
+
         # First commit (created_at)
-        MD_DOCUMENT += " [![GitHub creation date](https://img.shields.io/badge/Created%20on-{0}-brightgreen.svg)]({1})".format(
-            datetime.strptime(str(repo["created_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%Y--%m--%d"),
-            str(repo["html_url"])
-        )
+        # MD_DOCUMENT += " [![GitHub creation date](https://img.shields.io/badge/Created%20on-{0}-brightgreen.svg)]({1})".format(
+        #    datetime.strptime(str(repo["created_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%Y--%m--%d"),
+        #    str(repo["html_url"])
+        # )
+        MD_DOCUMENT += "Created on: {0}".format(datetime.strptime(str(repo["created_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%Y-%m-%d"))
+
         # Last commit
-        MD_DOCUMENT += " [![GitHub last commit](https://img.shields.io/github/last-commit/{0}/{1}.svg?color=blue)]({2})".format(
-            str(repo["owner"]["login"]), str(repo["name"]), str(repo["html_url"])
-        )
-        # Tags
-        MD_DOCUMENT += " [![GitHub tags](https://img.shields.io/github/v/tag/{0}/{1}.svg)]({2})".format(
-            str(repo["owner"]["login"]), str(repo["name"]), str(repo["html_url"])
-        )
+        # MD_DOCUMENT += " [![GitHub last commit](https://img.shields.io/github/last-commit/{0}/{1}.svg?color=blue)]({2})".format(
+        #    str(repo["owner"]["login"]), str(repo["name"]), str(repo["html_url"])
+        # )
+        MD_DOCUMENT += " / Last commit: {0}".format(datetime.strptime(str(repo["updated_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%Y-%m-%d"))
+
+        # Tag
+        # MD_DOCUMENT += " [![GitHub tags](https://img.shields.io/github/v/tag/{0}/{1}.svg)]({2})".format(
+        #    str(repo["owner"]["login"]), str(repo["name"]), str(repo["html_url"])
+        # )
 
         MD_DOCUMENT = _separate(MD_DOCUMENT)
         MD_DOCUMENT += MD_DOCUMENT_GROUP_SEPARATOR
