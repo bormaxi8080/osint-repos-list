@@ -116,10 +116,6 @@ if __name__ == '__main__':
         # MD_DOCUMENT += "[![GitHub](https://img.shields.io/badge/GitHub-Profile-brightgreen?logo=github)](https://github.com/{0})".format(
         #    str(repo["owner"]["login"]))
 
-        # Repository Url
-        MD_DOCUMENT += "Repository Url: {0}".format(str(repo["html_url"]))
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
-
         # Description
         if repo["description"] is None:
             MD_DOCUMENT += "No project description"
@@ -128,10 +124,31 @@ if __name__ == '__main__':
         MD_DOCUMENT = _separate(MD_DOCUMENT)
 
         # Stars
-        MD_DOCUMENT += "Stars: {0}".format(str(repo["stargazers_count"]))
+        MD_DOCUMENT += "**Stars:** {0}".format(str(repo["stargazers_count"]))
         # MD_DOCUMENT += " [![GitHub stars](https://img.shields.io/github/stars/{0}/{1}.svg?style=social&label=Stars)]({2})".format(
         #    str(repo["owner"]["login"]), str(repo["name"]), str(repo["html_url"])
         # )
+
+        # First commit (created_at)
+        # MD_DOCUMENT += " [![GitHub creation date](https://img.shields.io/badge/Created%20on-{0}-brightgreen.svg)]({1})".format(
+        #    datetime.strptime(str(repo["created_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%Y--%m--%d"),
+        #    str(repo["html_url"])
+        # )
+        MD_DOCUMENT += " / **Created on:** {0}".format(
+            datetime.strptime(str(repo["created_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%Y-%m-%d"))
+
+        # Last commit
+        # MD_DOCUMENT += " [![GitHub last commit](https://img.shields.io/github/last-commit/{0}/{1}.svg?color=blue)]({2})".format(
+        #    str(repo["owner"]["login"]), str(repo["name"]), str(repo["html_url"])
+        # )
+        MD_DOCUMENT += " / **Last commit:** {0}".format(
+            datetime.strptime(str(repo["updated_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%Y-%m-%d"))
+
+        # Tag
+        # MD_DOCUMENT += " [![GitHub tags](https://img.shields.io/github/v/tag/{0}/{1}.svg)]({2})".format(
+        #    str(repo["owner"]["login"]), str(repo["name"]), str(repo["html_url"])
+        # )
+
         MD_DOCUMENT = _separate(MD_DOCUMENT)
 
         # Topics
@@ -145,33 +162,18 @@ if __name__ == '__main__':
                 #    str_topics,
                 #    str(repo["html_url"])
                 # )
-                MD_DOCUMENT += "Topics: {0}".format(str_topics)
+                MD_DOCUMENT += "**Topics:** {0}".format(str_topics)
                 MD_DOCUMENT = _separate(MD_DOCUMENT)
+
+        # Repository Url
+        MD_DOCUMENT += "**Repository Url:** {0}".format(str(repo["html_url"]))
+        MD_DOCUMENT = _separate(MD_DOCUMENT)
 
         # Clone
         # MD_DOCUMENT += "[![GitHub clone](https://img.shields.io/badge/GitHub-Clone-green?logo=github)]({0})".format(str(repo["clone_url"]))
-        MD_DOCUMENT += "Clone Url: {0}".format(str(repo["clone_url"]))
+        MD_DOCUMENT += "**Clone Url:** {0}".format(str(repo["clone_url"]))
         MD_DOCUMENT = _separate(MD_DOCUMENT)
 
-        # First commit (created_at)
-        # MD_DOCUMENT += " [![GitHub creation date](https://img.shields.io/badge/Created%20on-{0}-brightgreen.svg)]({1})".format(
-        #    datetime.strptime(str(repo["created_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%Y--%m--%d"),
-        #    str(repo["html_url"])
-        # )
-        MD_DOCUMENT += "Created on: {0}".format(datetime.strptime(str(repo["created_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%Y-%m-%d"))
-
-        # Last commit
-        # MD_DOCUMENT += " [![GitHub last commit](https://img.shields.io/github/last-commit/{0}/{1}.svg?color=blue)]({2})".format(
-        #    str(repo["owner"]["login"]), str(repo["name"]), str(repo["html_url"])
-        # )
-        MD_DOCUMENT += " / Last commit: {0}".format(datetime.strptime(str(repo["updated_at"]), '%Y-%m-%dT%H:%M:%SZ').strftime("%Y-%m-%d"))
-
-        # Tag
-        # MD_DOCUMENT += " [![GitHub tags](https://img.shields.io/github/v/tag/{0}/{1}.svg)]({2})".format(
-        #    str(repo["owner"]["login"]), str(repo["name"]), str(repo["html_url"])
-        # )
-
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
         MD_DOCUMENT += MD_DOCUMENT_GROUP_SEPARATOR
         MD_DOCUMENT = _separate(MD_DOCUMENT)
 
