@@ -89,14 +89,14 @@ if __name__ == '__main__':
     # Sort array by repository name
     SORTED_REPOS = sorted(STARRED_REPOS, key=lambda x: x['name'])
 
-    DOCUMENT_DATE = "Created at: {0}".format(datetime.now().date().strftime("%Y-%m-%d"))
+    DOCUMENT_DATE = "**Created at:** {0}".format(datetime.now().date().strftime("%Y-%m-%d"))
 
     # Generate Markdown document
     MD_DOCUMENT = MD_DOCUMENT_HEADER + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         MD_DOCUMENT_GENERATION + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         "(c) @bormaxi8080, 2023" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         DOCUMENT_DATE + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        "Starred repositories count: {0}".format(len(STARRED_REPOS)) + \
+        "**Starred repositories count:** {0}".format(len(STARRED_REPOS)) + \
         MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         MD_DOCUMENT_GROUP_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
 
