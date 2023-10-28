@@ -118,12 +118,11 @@ if __name__ == '__main__':
                   DOCUMENT_DATE + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
                   "**Starred repositories count:** {0}".format(len(STARRED_REPOS)) + \
                   MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-                  "- [Repositories](#Repositories)" + \
+                  "See also: " + \
                   MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-                  "- [Users](#Users)" + \
+                  "- [Starred Users](starred_users.md)" + \
                   MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-                  MD_DOCUMENT_GROUP_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-                  "# Repositories:" + \
+                  "# Starred Repositories:" + \
                   MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
 
     # Save repos to document structure
@@ -209,13 +208,29 @@ if __name__ == '__main__':
         MD_DOCUMENT += MD_DOCUMENT_GROUP_SEPARATOR
         MD_DOCUMENT = _separate(MD_DOCUMENT)
 
-    MD_DOCUMENT += MD_DOCUMENT_GROUP_SEPARATOR
-    MD_DOCUMENT = _separate(MD_DOCUMENT)
+    print("Saving document data...")
+    # Save Markdown document to file
+    _save_document("starred_repos.md", MD_DOCUMENT)
+    # Save json backup to file
+    _save_json("starred_repos.json", STARRED_REPOS)
 
     print("Done")
+
     print("Generating users data...")
 
-    # Sort owners
+    # Generate Markdown document
+    MD_DOCUMENT = MD_DOCUMENT_HEADER + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
+                  MD_DOCUMENT_GENERATION + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
+                  "(c) @bormaxi8080, 2023" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
+                  DOCUMENT_DATE + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
+                  "See also: " + \
+                  MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
+                  "- [Starred Repositories](starred_repos.md)" + \
+                  MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
+                  "# Starred Users:" + \
+                  MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
+
+    # Sort users
     STARRED_OWNERS_NAMES.sort()
 
     # Fetch owners data
@@ -223,10 +238,6 @@ if __name__ == '__main__':
         owner_data = fetch_user(owner)
         if owner_data is not None:
             STARRED_OWNERS.append(owner_data)
-
-    # Generate owners data
-    MD_DOCUMENT += "# Users:" + \
-                   MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
 
     for owner in STARRED_OWNERS:
         MD_DOCUMENT += "### [{0}]({1})".format(str(owner["login"]), str(owner["html_url"]))
@@ -268,13 +279,10 @@ if __name__ == '__main__':
         MD_DOCUMENT += MD_DOCUMENT_GROUP_SEPARATOR
         MD_DOCUMENT = _separate(MD_DOCUMENT)
 
-    print("Done")
-
     print("Saving document data...")
     # Save Markdown document to file
-    _save_document("starred_repos.md", MD_DOCUMENT)
+    _save_document("starred_users.md", MD_DOCUMENT)
     # Save json backup to file
-    _save_json("starred_repos.json", STARRED_REPOS)
     _save_json("starred_users.json", STARRED_OWNERS)
 
     print("Done")

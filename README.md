@@ -39,19 +39,23 @@ Results:
 
 NOTE: Simplification of the output: image badges have been removed, since with a large number of repositories, a document is generated that is too large and the page freezes.
 
-New version:
-
 ![alt text](./img/starred_repos.md.2.png "Markdown")
 
-Old version:
+You can see full results example in Markdown:
 
-![alt text](./img/starred_repos.md.png "Markdown")
+> [starred_repos.md](./starred_repos.md) 
 
-You can see full results example in [Markdown](./starred_repos.md) and [JSON](./starred_repos.json) documents
+> [starred_users.md](./starred_users.md)
+
+and JSON:
+
+> [starred_repos.json](./starred_repos.json) 
+
+> [starred_users.json](./starred_users.json)
 
 ## Related projects:
 
-Also I use [github-starred-repos-loader](https://github.com/bormaxi8080/github-starred-repos-loader) and [git-repos-updater](https://github.com/bormaxi8080/git-repos-updater) shell scripts to pull and update my starred GitHub collected repos locally.
+I use [github-starred-repos-loader](https://github.com/bormaxi8080/github-starred-repos-loader) and [git-repos-updater](https://github.com/bormaxi8080/git-repos-updater) shell scripts to pull and update my starred GitHub collected repos locally.
 
 ## Notes:
 
