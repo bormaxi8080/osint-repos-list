@@ -26,6 +26,9 @@ MD_DOCUMENT_LINE_SEPARATOR = "\r\n"
 MD_DOCUMENT_GROUP_SEPARATOR = "----"
 
 
+MD_DOCUMENT_WARNING = "WARNING! All tools, programs and techniques published in this repository are used for informational, educational purposes or for information security purposes. The authors are not responsible for the activities that users of these tools and techniques may carry out, and urge them not to use them to carry out harmful or destructive activities directed against other users or groups on the Internet."
+
+
 def fetch_user(user):
     not_found = "{'message': 'Not Found', 'documentation_url': 'https://docs.github.com/rest/users/users#get-a-user'}"
     params = None
@@ -116,6 +119,7 @@ if __name__ == '__main__':
                   MD_DOCUMENT_GENERATION + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
                   "(c) @bormaxi8080, 2023" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
                   DOCUMENT_DATE + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
+		  MD_DOCUMENT_WARNING + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
                   "**Starred repositories count:** {0}".format(len(STARRED_REPOS)) + \
                   MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
                   "See also: " + \
