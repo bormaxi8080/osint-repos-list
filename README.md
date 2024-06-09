@@ -1,8 +1,18 @@
-# github-starred-repos-builder
+# OSINT Repos List
 
-Python script for build all your starred GitHub repositories information in JSON and Markdown documents.
+This repository encapsulates a list of repositories from the GitHub, marked with an asterisk relating to the subject of OSINT, Cybersecurity, DevOps / System Administration and specific development.
 
-## Purposes:
+The list of starred repositories is here: https://github.com/bormaxi8080/osint-repos-list/blob/main/starred_repos.md
+
+The list of starred repositories creators is here: https://github.com/bormaxi8080/osint-repos-list/blob/main/starred_users.md
+
+## Build repos List
+
+Python script for build all your starred GitHub repositories information in JSON and Markdown documents named as builder.py.
+
+To build repos list run:
+
+```python3 builder.py```
 
 This Python script helps for generate Markdown description document contains all your GitHub starred repositories.
 
@@ -29,7 +39,6 @@ If you have a lot of starred GitHub repositories, operations may take a long tim
 ## Usage:
 
 - Clone this repository
-- Run pip3 install -r requirements.txt
 - Create environment variable GITHUB_API_TOKEN with your GitHub API token
 - Run 'python3 builder.py' and wait
 

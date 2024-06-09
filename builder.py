@@ -13,7 +13,7 @@ GITHUB_API_URL = "https://api.github.com"
 GITHUB_API_STARRED = "/user/starred"
 GITHUB_API_USERS = "/users/"
 
-GITHUB_REPO_URL = "https://github.com/bormaxi8080/github-starred-repos-builder"
+GITHUB_REPO_URL = "https://github.com/bormaxi8080/osint-repos-list"
 
 HEADERS = {
     "Accept": GITHUB_API_HEADER_ACCEPT,
