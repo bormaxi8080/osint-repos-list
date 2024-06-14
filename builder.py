@@ -244,7 +244,8 @@ if __name__ == '__main__':
             STARRED_OWNERS.append(owner_data)
 
     for owner in STARRED_OWNERS:
-        MD_DOCUMENT += "### [{0}]({1})".format(str(owner["login"]), str(owner["html_url"]))
+        if owner["login"] is not None and owner["html_url"] is not None:
+            MD_DOCUMENT += "### [{0}]({1})".format(str(owner["login"]), str(owner["html_url"]))
         if owner["name"] is not None:
             MD_DOCUMENT += " ({0})".format(str(owner["name"]))
         if owner["location"] is not None:
