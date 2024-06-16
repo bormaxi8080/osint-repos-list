@@ -244,37 +244,42 @@ if __name__ == '__main__':
             STARRED_OWNERS.append(owner_data)
 
     for owner in STARRED_OWNERS:
-        if owner["login"] is not None and owner["html_url"] is not None:
-            MD_DOCUMENT += "### [{0}]({1})".format(str(owner["login"]), str(owner["html_url"]))
-        if owner["name"] is not None:
+        if "login" in owner and "html_url" in owner:
+            if owner["login"] is not None and owner["html_url"] is not None:
+                MD_DOCUMENT += "### [{0}]({1})".format(str(owner["login"]), str(owner["html_url"]))
+        if "name" in owner and owner["name"] is not None:
             MD_DOCUMENT += " ({0})".format(str(owner["name"]))
-        if owner["location"] is not None:
+        if "location" in owner and owner["location"] is not None:
             MD_DOCUMENT += ", {0}".format(str(owner["location"]))
         MD_DOCUMENT = _separate(MD_DOCUMENT)
 
-        if owner["bio"] is not None:
+        if "bio" in owner and owner["bio"] is not None:
             MD_DOCUMENT += str(owner["bio"])
             MD_DOCUMENT = _separate(MD_DOCUMENT)
-        if owner["blog"] is not None:
+        if "blog" in owner and owner["blog"] is not None:
             if str(owner["blog"]) != "":
                 MD_DOCUMENT += "Site/Blog: {0}".format(str(owner["blog"]))
                 MD_DOCUMENT = _separate(MD_DOCUMENT)
 
-        MD_DOCUMENT += "Public repos: [{0}]({1}?tab=repositories) / Followers: [{2}]({3})".format(
-            str(owner["public_repos"]),
-            str(owner["html_url"]),
-            str(owner["followers"]),
-            str(owner["followers_url"]))
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
+        if "public_repos" in owner and owner["public_repos"] is not None\
+                and "html_url" in owner and owner["html_url"] is not None\
+                and "followers" in owner and owner["followers"] is not None\
+                and "followers_url" in owner and owner["followers_url"] is not None:
+            MD_DOCUMENT += "Public repos: [{0}]({1}?tab=repositories) / Followers: [{2}]({3})".format(
+                str(owner["public_repos"]),
+                str(owner["html_url"]),
+                str(owner["followers"]),
+                str(owner["followers_url"]))
+            MD_DOCUMENT = _separate(MD_DOCUMENT)
 
         flag = False
-        if owner["twitter_username"] is not None:
+        if "twitter_username" in owner and owner["twitter_username"] is not None:
             flag = True
             MD_DOCUMENT += "Twitter: [@{0}](https://twitter.com/{1})".format(
                 str(owner["twitter_username"]), str(owner["twitter_username"]))
-            if owner["email"] is not None:
+            if "email" in owner and owner["email"] is not None:
                 MD_DOCUMENT += " / "
-        if owner["email"] is not None:
+        if "email" in owner and owner["email"] is not None:
             flag = True
             MD_DOCUMENT += "Email: [{0}](mailto:{1})".format(
                 str(owner["email"]), str(owner["email"]))
