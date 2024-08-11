@@ -42,7 +42,9 @@ If you have a lot of starred GitHub repositories, operations may take a long tim
 - Create environment variable GITHUB_API_TOKEN with your GitHub API token
 - Run 'python3 builder.py' and wait
 
-![alt text](./img/shell.png "Terminal")
+![alt text](./img/shell1.png "Terminal")
+
+![alt text](./img/shell2.png "Terminal")
 
 - Bingo!!!
 
@@ -50,11 +52,20 @@ Results:
 
 ![alt text](./img/starred_repos.json.png "JSON")
 
-NOTE: Simplification of the output: image badges have been removed, since with a large number of repositories, a document is generated that is too large and the page freezes.
+### NOTE: Simplification of the output: image badges have been removed, since with a large number of repositories, a document is generated that is too large and the page freezes.
 
 ![alt text](./img/starred_repos.md.2.png "Markdown")
 
-You can see full results example in Markdown:
+### SEARCH EXAMPLE:
+
+You can search repos by keyword. For example, search repos by "SMS" keyword:
+
+![alt text](./img/starred_repos.search.1.png "Markdown")
+
+![alt text](./img/starred_repos.serach.2.png "Markdown")
+
+
+You can see full repos list in Markdown:
 
 > [starred_repos.md](./starred_repos.md) 
 
