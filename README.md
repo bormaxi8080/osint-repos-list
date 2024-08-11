@@ -56,15 +56,6 @@ Results:
 
 ![alt text](./img/starred_repos.md.2.png "Markdown")
 
-### SEARCH EXAMPLE:
-
-You can search repos by keyword. For example, search repos by "SMS" keyword:
-
-![alt text](./img/starred_repos.search.1.png "Markdown")
-
-![alt text](./img/starred_repos.serach.2.png "Markdown")
-
-
 You can see full repos list in Markdown:
 
 > [starred_repos.md](./starred_repos.md) 
@@ -76,6 +67,14 @@ and JSON:
 > [starred_repos.json](./starred_repos.json) 
 
 > [starred_users.json](./starred_users.json)
+
+### SEARCH EXAMPLE:
+
+You can search repos by keyword. For example, search repos by "SMS" keyword. Type "Ctrl+F" ("Cmd+F") and search:
+
+![alt text](./img/starred_repos.search.1.png "Markdown")
+
+![alt text](./img/starred_repos.search.2.png "Markdown")
 
 ## Related projects:
 
