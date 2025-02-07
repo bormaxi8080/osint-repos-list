@@ -206,9 +206,9 @@ if __name__ == '__main__':
 
         # Clone
         # MD_DOCUMENT += "[![GitHub clone](https://img.shields.io/badge/GitHub-Clone-green?logo=github)]({0})".format(str(repo["clone_url"]))
-        MD_DOCUMENT += "**Clone Url:** {0}".format(str(repo["clone_url"]))
+        # MD_DOCUMENT += "**Clone Url:** {0}".format(str(repo["clone_url"]))
+        # MD_DOCUMENT = _separate(MD_DOCUMENT)
 
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
         MD_DOCUMENT += MD_DOCUMENT_GROUP_SEPARATOR
         MD_DOCUMENT = _separate(MD_DOCUMENT)
 
