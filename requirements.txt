@@ -1,1 +1,2 @@
+colorama
 requests==2.32.4
