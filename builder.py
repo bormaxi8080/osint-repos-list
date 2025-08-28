@@ -5,7 +5,7 @@ import json
 from datetime import datetime
 from colorama import init, Fore
 
-# Инициализация colorama
+# Initialize Colorama
 init(autoreset=True)
 
 GITHUB_API_TOKEN = os.environ['GITHUB_API_TOKEN']
