@@ -1,9 +1,12 @@
 import os
 import requests
 import json
+import time
 
 from datetime import datetime
 from colorama import init, Fore
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 # Initialize Colorama
 init(autoreset=True)
@@ -34,36 +37,121 @@ MD_DOCUMENT_WARNING = (
 )
 
 
-def fetch_user(user):
+def create_session_with_retries():
+    """Создает сессию с автоматическими повторными попытками"""
+    session = requests.Session()
+
+    # Настройка стратегии повторных попыток
+    retry_strategy = Retry(
+        total=5,
+        backoff_factor=2,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["HEAD", "GET", "OPTIONS"]
+    )
+
+    adapter = HTTPAdapter(max_retries=retry_strategy)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+
+    return session
+
+
+# Создаем глобальную сессию с retry механизмом
+SESSION = create_session_with_retries()
+
+
+def fetch_user(user, max_retries=3):
     not_found = "{'message': 'Not Found', 'documentation_url': 'https://docs.github.com/rest/users/users#get-a-user'}"
-    params = None
-    res = requests.get(url=f"{GITHUB_API_URL}{GITHUB_API_USERS}{user}",
-                       params=params,
-                       headers=HEADERS)
-    result = res.json()
-    if str(result) == not_found:
-        return None
-    else:
-        return result
+
+    for attempt in range(max_retries):
+        try:
+            time.sleep(0.5)
+
+            res = SESSION.get(
+                url=f"{GITHUB_API_URL}{GITHUB_API_USERS}{user}",
+                headers=HEADERS,
+                timeout=(10, 30)
+            )
+
+            result = res.json()
+            if str(result) == not_found:
+                return None
+            else:
+                return result
+
+        except (requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout,
+                requests.exceptions.ChunkedEncodingError) as e:
+            print(Fore.RED + f"Ошибка при запросе пользователя {user}: {e}")
+            if attempt < max_retries - 1:
+                wait_time = 2 ** attempt
+                print(Fore.YELLOW + f"Повторная попытка через {wait_time} секунд... ({attempt + 1}/{max_retries})")
+                time.sleep(wait_time)
+            else:
+                print(Fore.RED + f"Не удалось получить данные пользователя {user} после {max_retries} попыток")
+                return None
+
+        except Exception as e:
+            print(Fore.RED + f"Неожиданная ошибка при запросе пользователя {user}: {e}")
+            return None
+
+    return None
 
 
-def fetch_starred_repos(page=""):
+def fetch_starred_repos(page="", max_retries=3):
     params = None
     if page != '':
         params = {"page": page}
 
-    res = requests.get(url=f"{GITHUB_API_URL}{GITHUB_API_STARRED}",
-                       params=params,
-                       headers=HEADERS)
+    for attempt in range(max_retries):
+        try:
+            time.sleep(0.5)
 
-    last_page = True
-    if 'rel="next"' in res.headers.get("Link", ""):
-        last_page = False
+            res = SESSION.get(
+                url=f"{GITHUB_API_URL}{GITHUB_API_STARRED}",
+                params=params,
+                headers=HEADERS,
+                timeout=(10, 30)
+            )
 
-    return {
-        "last_page": last_page,
-        "repos": res.json()
-    }
+            res.raise_for_status()
+
+            last_page = True
+            if 'rel="next"' in res.headers.get("Link", ""):
+                last_page = False
+
+            return {
+                "last_page": last_page,
+                "repos": res.json()
+            }
+
+        except (requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout,
+                requests.exceptions.ChunkedEncodingError) as e:
+            print(Fore.RED + f"Ошибка при запросе репозиториев (страница {page}): {e}")
+            if attempt < max_retries - 1:
+                wait_time = 2 ** attempt
+                print(Fore.YELLOW + f"Повторная попытка через {wait_time} секунд... ({attempt + 1}/{max_retries})")
+                time.sleep(wait_time)
+            else:
+                print(Fore.RED + f"Не удалось получить репозитории после {max_retries} попыток")
+                return {"last_page": True, "repos": []}
+
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 429:
+                wait_time = 60
+                print(Fore.YELLOW + f"Rate limit превышен. Ожидание {wait_time} секунд...")
+                time.sleep(wait_time)
+                if attempt < max_retries - 1:
+                    continue
+            print(Fore.RED + f"HTTP ошибка: {e}")
+            return {"last_page": True, "repos": []}
+
+        except Exception as e:
+            print(Fore.RED + f"Неожиданная ошибка: {e}")
+            return {"last_page": True, "repos": []}
+
+    return {"last_page": True, "repos": []}
 
 
 def _separate(document):
@@ -117,7 +205,7 @@ if __name__ == '__main__':
 
     DOCUMENT_DATE = f"**Created at:** {datetime.now().date().strftime('%Y-%m-%d')}"
 
-    # Markdown generation (оставляю без изменений)
+    # Markdown generation
     MD_DOCUMENT = MD_DOCUMENT_HEADER + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         MD_DOCUMENT_GENERATION + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         "(c) @bormaxi8080, 2025" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
@@ -183,7 +271,9 @@ if __name__ == '__main__':
 
     STARRED_OWNERS_NAMES.sort()
 
-    for owner in STARRED_OWNERS_NAMES:
+    print(Fore.CYAN + f"Fetching {len(STARRED_OWNERS_NAMES)} users data...")
+    for idx, owner in enumerate(STARRED_OWNERS_NAMES, 1):
+        print(Fore.BLUE + f"Fetching user {idx}/{len(STARRED_OWNERS_NAMES)}: {owner}")
         owner_data = fetch_user(owner)
         if owner_data is not None:
             STARRED_OWNERS.append(owner_data)
