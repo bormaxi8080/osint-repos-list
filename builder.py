@@ -26,7 +26,7 @@ HEADERS = {
     "Authorization": f"token {GITHUB_API_TOKEN}"
 }
 
-MD_DOCUMENT_HEADER = "## List of GitHub Starred Repositories and Users"
+MD_DOCUMENT_HEADER = "# List of GitHub Starred Repositories and Users"
 MD_DOCUMENT_GENERATION = (
     f"This document generated automatically, see {GITHUB_REPO_URL} for details"
 )
@@ -243,10 +243,10 @@ if __name__ == '__main__':
         MD_DOCUMENT_WARNING + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         f"**Starred repositories count:** {len(STARRED_REPOS)}" + \
         MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        "See also: " + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
+        "See also" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         "- [Starred Users](starred_users.md)" + MD_DOCUMENT_LINE_SEPARATOR + \
         MD_DOCUMENT_LINE_SEPARATOR + \
-        "# Starred Repositories:" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
+        "## Starred Repositories:" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
 
     for repo in SORTED_REPOS:
         OWNER_LOGIN = str(repo["owner"]["login"])
@@ -303,7 +303,7 @@ if __name__ == '__main__':
         "See also: " + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         "- [Starred Repositories](starred_repos.md)" + MD_DOCUMENT_LINE_SEPARATOR + \
         MD_DOCUMENT_LINE_SEPARATOR + \
-        "# Starred Users:" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
+        "## Starred Users" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
 
     STARRED_OWNERS_NAMES.sort()
 
