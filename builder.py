@@ -246,7 +246,7 @@ if __name__ == '__main__':
         "See also" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         "- [Starred Users](starred_users.md)" + MD_DOCUMENT_LINE_SEPARATOR + \
         MD_DOCUMENT_LINE_SEPARATOR + \
-        "## Starred Repositories:" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
+        "## Starred Repositories" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
 
     for repo in SORTED_REPOS:
         OWNER_LOGIN = str(repo["owner"]["login"])
