@@ -99,3 +99,7 @@ I use [github-starred-repos-loader](https://github.com/bormaxi8080/github-starre
 ### More About GitHub API Pagination Requests
 
 [https://docs.github.com/en/rest/guides/traversing-with-pagination](https://docs.github.com/en/rest/guides/traversing-with-pagination)
+
+### Donates
+
+[![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/bormaxi8080)
