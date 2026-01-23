@@ -212,9 +212,6 @@ def _build_repos_markdown(repos, repos_count, document_date, owners_names=None):
         MD_DOCUMENT_WARNING + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
         f"**Starred repositories count:** {repos_count}" +
         MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
-        "See also" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
-        "- [Starred Users](starred_users.md)" + MD_DOCUMENT_LINE_SEPARATOR +
-        MD_DOCUMENT_LINE_SEPARATOR +
         "## Starred Repositories" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
     )
 
@@ -331,9 +328,6 @@ if __name__ == '__main__':
         MD_DOCUMENT_GENERATION + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         "(c) @OSINTech, 2026" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         DOCUMENT_DATE + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        "See also: " + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        "- [Starred Repositories](starred_repos.md)" + MD_DOCUMENT_LINE_SEPARATOR + \
-        MD_DOCUMENT_LINE_SEPARATOR + \
         "## Starred Users" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
 
     STARRED_OWNERS_NAMES.sort()

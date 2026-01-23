@@ -20,7 +20,7 @@ or connect Me on Substack: [@OSINTech](https://substack.com/@osintech)
 
 by providing your email address and a link to your GitHub account
 
-- I will grant you access to the full version list repositories posted on GitHub.
+- I will grant you access to the full version list repositories posted on GitHub or send it on email.
 
 - All Substack subscribers have access to the full list of repositories, as well as a premium version of the list in the form of bookmarks/a board for the [start.me](https://start.me) service
 

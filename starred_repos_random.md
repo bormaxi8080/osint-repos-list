@@ -10,10 +10,6 @@ WARNING! All tools, programs and techniques published in this repository are use
 
 **Starred repositories count:** 100
 
-See also
-
-- [Starred Users](starred_users.md)
-
 ## Starred Repositories
 
 ### [BobTheSmuggler](https://github.com/TheCyb3rAlpha/BobTheSmuggler) from [TheCyb3rAlpha](https://github.com/TheCyb3rAlpha)
