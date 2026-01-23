@@ -2,6 +2,7 @@
 
 import json
 import os
+import random
 import time
 from datetime import datetime
 
@@ -28,7 +29,7 @@ HEADERS = {
 
 MD_DOCUMENT_HEADER = "# List of GitHub Starred Repositories and Users"
 MD_DOCUMENT_GENERATION = (
-    f"This document generated automatically, see {GITHUB_REPO_URL} for details"
+    f"This document generated automatically, see [{GITHUB_REPO_URL}]({GITHUB_REPO_URL}) for details"
 )
 MD_DOCUMENT_LINE_SEPARATOR = "\r\n"
 MD_DOCUMENT_GROUP_SEPARATOR = "----"
@@ -202,6 +203,65 @@ def _save_json(path, json_data):
     return
 
 
+def _build_repos_markdown(repos, repos_count, document_date, owners_names=None):
+    md_document = (
+        MD_DOCUMENT_HEADER + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
+        MD_DOCUMENT_GENERATION + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
+        "(c) @OSINTech, 2026" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
+        document_date + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
+        MD_DOCUMENT_WARNING + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
+        f"**Starred repositories count:** {repos_count}" +
+        MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
+        "See also" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
+        "- [Starred Users](starred_users.md)" + MD_DOCUMENT_LINE_SEPARATOR +
+        MD_DOCUMENT_LINE_SEPARATOR +
+        "## Starred Repositories" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
+    )
+
+    for repo in repos:
+        owner_login = str(repo["owner"]["login"])
+        if owners_names is not None and owner_login not in owners_names:
+            owners_names.append(owner_login)
+
+        md_document += (
+            f"### [{repo['name']}]({repo['html_url']}) "
+            f"from [{repo['owner']['login']}]({repo['owner']['html_url']})"
+        )
+        md_document = _separate(md_document)
+
+        if repo["description"] is None:
+            md_document += "No project description"
+        else:
+            md_document += str(repo["description"])
+        md_document = _separate(md_document)
+
+        md_document += f"**Stars:** {repo['stargazers_count']}"
+        created_on = datetime.strptime(
+            str(repo["created_at"]), "%Y-%m-%dT%H:%M:%SZ"
+        ).strftime("%Y-%m-%d")
+        updated_on = datetime.strptime(
+            str(repo["updated_at"]), "%Y-%m-%dT%H:%M:%SZ"
+        ).strftime("%Y-%m-%d")
+        md_document += f" / **Created on:** {created_on}"
+        md_document += f" / **Last commit:** {updated_on}"
+        md_document = _separate(md_document)
+
+        if repo["topics"]:
+            if len(repo["topics"]) > 0:
+                topics_ = ["#" + item for item in repo["topics"]]
+                str_topics = " ".join(topics_)
+                md_document += f"**Topics:** {str_topics}"
+                md_document = _separate(md_document)
+
+        md_document += f"**Repository Url:** {repo['html_url']}"
+        md_document = _separate(md_document)
+
+        md_document += MD_DOCUMENT_GROUP_SEPARATOR
+        md_document = _separate(md_document)
+
+    return md_document
+
+
 if __name__ == '__main__':
     print(Fore.GREEN + "Welcome to GitHub starred repos builder!")
     print(Fore.CYAN + f"See {GITHUB_REPO_URL} for details")
@@ -235,70 +295,41 @@ if __name__ == '__main__':
 
     DOCUMENT_DATE = f"**Created at:** {datetime.now().date().strftime('%Y-%m-%d')}"
 
-    # Markdown generation
-    MD_DOCUMENT = MD_DOCUMENT_HEADER + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        MD_DOCUMENT_GENERATION + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        "(c) @bormaxi8080, 2025" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        DOCUMENT_DATE + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        MD_DOCUMENT_WARNING + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        f"**Starred repositories count:** {len(STARRED_REPOS)}" + \
-        MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        "See also" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        "- [Starred Users](starred_users.md)" + MD_DOCUMENT_LINE_SEPARATOR + \
-        MD_DOCUMENT_LINE_SEPARATOR + \
-        "## Starred Repositories" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
-
-    for repo in SORTED_REPOS:
-        OWNER_LOGIN = str(repo["owner"]["login"])
-        if OWNER_LOGIN not in STARRED_OWNERS_NAMES:
-            STARRED_OWNERS_NAMES.append(OWNER_LOGIN)
-
-        MD_DOCUMENT += (
-            f"### [{repo['name']}]({repo['html_url']}) "
-            f"from [{repo['owner']['login']}]({repo['owner']['html_url']})"
-        )
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
-
-        if repo["description"] is None:
-            MD_DOCUMENT += "No project description"
-        else:
-            MD_DOCUMENT += str(repo["description"])
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
-
-        MD_DOCUMENT += f"**Stars:** {repo['stargazers_count']}"
-        CREATED_ON = datetime.strptime(
-            str(repo["created_at"]), "%Y-%m-%dT%H:%M:%SZ"
-        ).strftime("%Y-%m-%d")
-        UPDATED_ON = datetime.strptime(
-            str(repo["updated_at"]), "%Y-%m-%dT%H:%M:%SZ"
-        ).strftime("%Y-%m-%d")
-        MD_DOCUMENT += f" / **Created on:** {CREATED_ON}"
-        MD_DOCUMENT += f" / **Last commit:** {UPDATED_ON}"
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
-
-        if repo["topics"]:
-            if len(repo["topics"]) > 0:
-                topics_ = ["#" + item for item in repo["topics"]]
-                STR_TOPICS = " ".join(topics_)
-                MD_DOCUMENT += f"**Topics:** {STR_TOPICS}"
-                MD_DOCUMENT = _separate(MD_DOCUMENT)
-
-        MD_DOCUMENT += f"**Repository Url:** {repo['html_url']}"
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
-
-        MD_DOCUMENT += MD_DOCUMENT_GROUP_SEPARATOR
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
+    md_document = _build_repos_markdown(
+        repos=SORTED_REPOS,
+        repos_count=len(STARRED_REPOS),
+        document_date=DOCUMENT_DATE,
+        owners_names=STARRED_OWNERS_NAMES
+    )
 
     print(Fore.YELLOW + "Saving document data...")
-    _save_document("starred_repos.md", MD_DOCUMENT)
+    _save_document("starred_repos.md", md_document)
     _save_json("starred_repos.json", STARRED_REPOS)
+    print(Fore.GREEN + "Done")
+
+    print(Fore.YELLOW + "Generating random repos data...")
+    random_sample_size = min(100, len(STARRED_REPOS))
+    random_indices = sorted(
+        random.sample(range(len(STARRED_REPOS)), k=random_sample_size)
+    )
+    random_repos = [STARRED_REPOS[idx] for idx in random_indices]
+    random_sorted_repos = sorted(random_repos, key=lambda x: x['name'])
+    md_document_random = _build_repos_markdown(
+        repos=random_sorted_repos,
+        repos_count=len(random_repos),
+        document_date=DOCUMENT_DATE
+    )
+
+    print(Fore.YELLOW + "Saving random document data...")
+    _save_document("starred_repos_random.md", md_document_random)
+    _save_json("starred_repos_random.json", random_repos)
     print(Fore.GREEN + "Done")
 
     print(Fore.YELLOW + "Generating users data...")
 
     MD_DOCUMENT = MD_DOCUMENT_HEADER + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         MD_DOCUMENT_GENERATION + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        "(c) @bormaxi8080, 2025" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
+        "(c) @OSINTech, 2026" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         DOCUMENT_DATE + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         "See also: " + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
         "- [Starred Repositories](starred_repos.md)" + MD_DOCUMENT_LINE_SEPARATOR + \

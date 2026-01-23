@@ -135,3 +135,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+starred_repos.md
+starred_users.md
+
+starred_repos.json
+starred_users.json

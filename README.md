@@ -1,12 +1,30 @@
-# OSINT Repos List
+# OSINT Repos List (Limited Access Version)
 
 This repository encapsulates a list of repositories from the GitHub, marked with an asterisk relating to the subject of OSINT, Cybersecurity, DevOps / System Administration and specific development.
 
-The list of starred repositories is here: https://github.com/bormaxi8080/osint-repos-list/blob/main/starred_repos.md
+The list of 100 random starred repositories is here: [https://github.com/bormaxi8080/osint-repos-list/blob/main/starred_repos_random.md](https://github.com/bormaxi8080/osint-repos-list/blob/main/starred_repos_random.md)
 
-The list of starred repositories creators is here: https://github.com/bormaxi8080/osint-repos-list/blob/main/starred_users.md
+**The full version of the list includes more than 3,000 repositories.**
 
-## Build repos List
+**The list of repositories is updated weekly.**
+
+## How to access full repositories list?
+
+- Buy Me A Coffee:
+
+[![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/bormaxi8080)
+
+or connect Me on Substack: [@OSINTech](https://substack.com/@osintech)
+
+- Request Access in a [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSdO6Kh2oG5wCe1sNXNJm6H1JOLStJmBIVMi4srR5J39FH1-pw/viewform?usp=publish-editor)
+
+by providing your email address and a link to your GitHub account
+
+- I will grant you access to the full version list repositories posted on GitHub.
+
+- All Substack subscribers have access to the full list of repositories, as well as a premium version of the list in the form of bookmarks/a board for the [start.me](https://start.me) service
+
+## How to build your own repos List?
 
 Python script for build all your starred GitHub repositories information in JSON and Markdown documents named as builder.py.
 
