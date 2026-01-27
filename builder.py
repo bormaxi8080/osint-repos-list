@@ -1,8 +1,10 @@
 """Build starred repos/users markdown and JSON from GitHub API."""
 
+import argparse
 import json
 import os
 import random
+import sys
 import time
 from datetime import datetime
 
@@ -11,10 +13,12 @@ from colorama import Fore, init
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
 
+from json_builder import save_json
+from markdown_builder import build_repos_markdown, build_users_markdown
+from pdf_builder import save_pdf_from_data
+
 # Initialize Colorama
 init(autoreset=True)
-
-GITHUB_API_TOKEN = os.environ['GITHUB_API_TOKEN']
 
 GITHUB_API_HEADER_ACCEPT = "Accept: application/vnd.github+json"
 GITHUB_API_URL = "https://api.github.com"
@@ -22,12 +26,7 @@ GITHUB_API_STARRED = "/user/starred"
 GITHUB_API_USERS = "/users/"
 GITHUB_REPO_URL = "https://github.com/bormaxi8080/osint-repos-list"
 
-HEADERS = {
-    "Accept": GITHUB_API_HEADER_ACCEPT,
-    "Authorization": f"token {GITHUB_API_TOKEN}"
-}
-
-MD_DOCUMENT_HEADER = "# List of GitHub Starred Repositories and Users"
+MD_DOCUMENT_HEADER = "List of GitHub Starred Repositories and Users"
 MD_DOCUMENT_GENERATION = (
     f"This document generated automatically, see [{GITHUB_REPO_URL}]({GITHUB_REPO_URL}) for details"
 )
@@ -42,6 +41,12 @@ MD_DOCUMENT_WARNING = (
     "harmful or destructive activities directed against other users or groups "
     "on the Internet."
 )
+DESCRIPTION_TEXT = (
+    "This list catalogs your GitHub starred repositories and their owners, "
+    "including descriptions, topics, stars, and update dates."
+)
+CURRENT_YEAR = datetime.now().year
+COPYRIGHT_TEXT = f"(c) OSINTech, {CURRENT_YEAR}."
 
 
 def create_session_with_retries():
@@ -67,7 +72,18 @@ def create_session_with_retries():
 SESSION = create_session_with_retries()
 
 
-def fetch_user(user, max_retries=3):
+def _get_github_headers():
+    """Build GitHub API headers from environment token."""
+    token = os.environ.get("GITHUB_API_TOKEN")
+    if not token:
+        raise RuntimeError("GITHUB_API_TOKEN environment variable is not set.")
+    return {
+        "Accept": GITHUB_API_HEADER_ACCEPT,
+        "Authorization": f"token {token}"
+    }
+
+
+def fetch_user(user, headers, max_retries=3):
     """Fetch GitHub user data with retry handling."""
     not_found = (
         "{'message': 'Not Found', "
@@ -80,7 +96,7 @@ def fetch_user(user, max_retries=3):
 
             res = SESSION.get(
                 url=f"{GITHUB_API_URL}{GITHUB_API_USERS}{user}",
-                headers=HEADERS,
+                headers=headers,
                 timeout=(10, 30)
             )
 
@@ -120,8 +136,10 @@ def fetch_user(user, max_retries=3):
     return None
 
 
-def fetch_starred_repos(page="", max_retries=3):
+def fetch_starred_repos(page="", headers=None, max_retries=3):
     """Fetch starred repositories for the authenticated user."""
+    if headers is None:
+        headers = _get_github_headers()
     params = None
     if page != '':
         params = {"page": page}
@@ -133,7 +151,7 @@ def fetch_starred_repos(page="", max_retries=3):
             res = SESSION.get(
                 url=f"{GITHUB_API_URL}{GITHUB_API_STARRED}",
                 params=params,
-                headers=HEADERS,
+                headers=headers,
                 timeout=(10, 30)
             )
 
@@ -185,213 +203,337 @@ def fetch_starred_repos(page="", max_retries=3):
     return {"last_page": True, "repos": []}
 
 
-def _separate(document):
-    return document + f"{MD_DOCUMENT_LINE_SEPARATOR}{MD_DOCUMENT_LINE_SEPARATOR}"
-
-
 def _save_document(path, document_data):
+    """Write a UTF-8 text document to disk."""
     with open(path, "w", encoding="utf-8") as f:
         f.write(document_data)
     print(Fore.GREEN + f"Document saved: {path}")
     return
 
 
-def _save_json(path, json_data):
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(json_data, f, indent=2)
+def _save_json_document(path, json_data):
+    """Write JSON data to disk and log success."""
+    save_json(path, json_data)
     print(Fore.GREEN + f"Document saved: {path}")
     return
 
 
-def _build_repos_markdown(repos, repos_count, document_date, owners_names=None):
-    md_document = (
-        MD_DOCUMENT_HEADER + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
-        MD_DOCUMENT_GENERATION + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
-        "(c) @OSINTech, 2026" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
-        document_date + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
-        MD_DOCUMENT_WARNING + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
-        f"**Starred repositories count:** {repos_count}" +
-        MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR +
-        "## Starred Repositories" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
-    )
-
-    for repo in repos:
-        owner_login = str(repo["owner"]["login"])
-        if owners_names is not None and owner_login not in owners_names:
-            owners_names.append(owner_login)
-
-        md_document += (
-            f"### [{repo['name']}]({repo['html_url']}) "
-            f"from [{repo['owner']['login']}]({repo['owner']['html_url']})"
-        )
-        md_document = _separate(md_document)
-
-        if repo["description"] is None:
-            md_document += "No project description"
-        else:
-            md_document += str(repo["description"])
-        md_document = _separate(md_document)
-
-        md_document += f"**Stars:** {repo['stargazers_count']}"
-        created_on = datetime.strptime(
-            str(repo["created_at"]), "%Y-%m-%dT%H:%M:%SZ"
-        ).strftime("%Y-%m-%d")
-        updated_on = datetime.strptime(
-            str(repo["updated_at"]), "%Y-%m-%dT%H:%M:%SZ"
-        ).strftime("%Y-%m-%d")
-        md_document += f" / **Created on:** {created_on}"
-        md_document += f" / **Last commit:** {updated_on}"
-        md_document = _separate(md_document)
-
-        if repo["topics"]:
-            if len(repo["topics"]) > 0:
-                topics_ = ["#" + item for item in repo["topics"]]
-                str_topics = " ".join(topics_)
-                md_document += f"**Topics:** {str_topics}"
-                md_document = _separate(md_document)
-
-        md_document += f"**Repository Url:** {repo['html_url']}"
-        md_document = _separate(md_document)
-
-        md_document += MD_DOCUMENT_GROUP_SEPARATOR
-        md_document = _separate(md_document)
-
-    return md_document
+def _load_json_document(path):
+    """Load JSON content from disk."""
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 
-if __name__ == '__main__':
+def _resolve_users_json_path(path):
+    """Resolve users JSON filename variations to an existing path."""
+    if os.path.exists(path):
+        return path
+    base = os.path.basename(path)
+    directory = os.path.dirname(path)
+    if base == "starred_users.json":
+        alt = os.path.join(directory, "starred_user.json")
+    elif base == "starred_user.json":
+        alt = os.path.join(directory, "starred_users.json")
+    else:
+        alt = None
+    if alt and os.path.exists(alt):
+        return alt
+    return path
+
+
+def generate_markdown_documents(include_json=False):
+    """Fetch GitHub data and generate markdown (optionally JSON) files."""
     print(Fore.GREEN + "Welcome to GitHub starred repos builder!")
     print(Fore.CYAN + f"See {GITHUB_REPO_URL} for details")
 
-    STARRED_REPOS = []
-    FETCHED_PAGE = 1
-    STARRED_OWNERS_NAMES = []
-    STARRED_OWNERS = []
+    headers = _get_github_headers()
+
+    starred_repos = []
+    fetched_page = 1
+    starred_owners_names = []
+    starred_owners = []
 
     print(Fore.YELLOW + "Fetching GitHub starred repos...")
 
     # Fetch first page
-    print(Fore.BLUE + f"Pages fetched: {FETCHED_PAGE}")
-    fetched_result = fetch_starred_repos()
-    STARRED_REPOS.extend(fetched_result["repos"])
+    print(Fore.BLUE + f"Pages fetched: {fetched_page}")
+    fetched_result = fetch_starred_repos(headers=headers)
+    starred_repos.extend(fetched_result["repos"])
 
     # Fetch other pages in loop if exists
     if not fetched_result["last_page"]:
         while not fetched_result["last_page"]:
-            FETCHED_PAGE += 1
-            print(Fore.BLUE + f"Pages fetched: {FETCHED_PAGE}")
-            fetched_result = fetch_starred_repos(page=f"{FETCHED_PAGE}")
-            STARRED_REPOS.extend(fetched_result["repos"])
+            fetched_page += 1
+            print(Fore.BLUE + f"Pages fetched: {fetched_page}")
+            fetched_result = fetch_starred_repos(page=f"{fetched_page}", headers=headers)
+            starred_repos.extend(fetched_result["repos"])
 
-    print(Fore.CYAN + f"Repos fetched: {len(STARRED_REPOS)}")
+    print(Fore.CYAN + f"Repos fetched: {len(starred_repos)}")
 
     # Sort array by repository name
-    SORTED_REPOS = sorted(STARRED_REPOS, key=lambda x: x['name'])
+    sorted_repos = sorted(starred_repos, key=lambda x: x['name'])
 
     print(Fore.YELLOW + "Generating repos data...")
 
-    DOCUMENT_DATE = f"**Created at:** {datetime.now().date().strftime('%Y-%m-%d')}"
+    document_date = f"Generated at: {datetime.now().date().strftime('%Y-%m-%d')}"
 
-    md_document = _build_repos_markdown(
-        repos=SORTED_REPOS,
-        repos_count=len(STARRED_REPOS),
-        document_date=DOCUMENT_DATE,
-        owners_names=STARRED_OWNERS_NAMES
+    markdown_config = {
+        "header": MD_DOCUMENT_HEADER,
+        "generation_text": MD_DOCUMENT_GENERATION,
+        "description_text": DESCRIPTION_TEXT,
+        "line_separator": MD_DOCUMENT_LINE_SEPARATOR,
+        "group_separator": MD_DOCUMENT_GROUP_SEPARATOR,
+        "warning_text": MD_DOCUMENT_WARNING,
+        "copyright_text": (
+            f"**{COPYRIGHT_TEXT}** "
+            "[Substack: https://substack.com/@osintech](https://substack.com/@osintech)"
+        ),
+        "section_repos_title": "## Starred Repositories",
+        "section_users_title": "## Starred Users"
+    }
+
+    md_document = build_repos_markdown(
+        repos=sorted_repos,
+        repos_count=len(starred_repos),
+        document_date=document_date,
+        owners_names=starred_owners_names,
+        config=markdown_config
     )
 
     print(Fore.YELLOW + "Saving document data...")
     _save_document("starred_repos.md", md_document)
-    _save_json("starred_repos.json", STARRED_REPOS)
+    if include_json:
+        _save_json_document("starred_repos.json", starred_repos)
     print(Fore.GREEN + "Done")
 
     print(Fore.YELLOW + "Generating random repos data...")
-    random_sample_size = min(100, len(STARRED_REPOS))
+    random_sample_size = min(100, len(starred_repos))
     random_indices = sorted(
-        random.sample(range(len(STARRED_REPOS)), k=random_sample_size)
+        random.sample(range(len(starred_repos)), k=random_sample_size)
     )
-    random_repos = [STARRED_REPOS[idx] for idx in random_indices]
+    random_repos = [starred_repos[idx] for idx in random_indices]
     random_sorted_repos = sorted(random_repos, key=lambda x: x['name'])
-    md_document_random = _build_repos_markdown(
+    md_document_random = build_repos_markdown(
         repos=random_sorted_repos,
         repos_count=len(random_repos),
-        document_date=DOCUMENT_DATE
+        document_date=document_date,
+        owners_names=None,
+        config=markdown_config
     )
 
     print(Fore.YELLOW + "Saving random document data...")
     _save_document("starred_repos_random.md", md_document_random)
-    _save_json("starred_repos_random.json", random_repos)
+    if include_json:
+        _save_json_document("starred_repos_random.json", random_repos)
     print(Fore.GREEN + "Done")
 
     print(Fore.YELLOW + "Generating users data...")
 
-    MD_DOCUMENT = MD_DOCUMENT_HEADER + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        MD_DOCUMENT_GENERATION + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        "(c) @OSINTech, 2026" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        DOCUMENT_DATE + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR + \
-        "## Starred Users" + MD_DOCUMENT_LINE_SEPARATOR + MD_DOCUMENT_LINE_SEPARATOR
+    starred_owners_names.sort()
 
-    STARRED_OWNERS_NAMES.sort()
-
-    print(Fore.CYAN + f"Fetching {len(STARRED_OWNERS_NAMES)} users data...")
-    for idx, OWNER_LOGIN in enumerate(STARRED_OWNERS_NAMES, 1):
+    print(Fore.CYAN + f"Fetching {len(starred_owners_names)} users data...")
+    for idx, owner_login in enumerate(starred_owners_names, 1):
         print(
             Fore.BLUE
-            + f"Fetching user {idx}/{len(STARRED_OWNERS_NAMES)}: {OWNER_LOGIN}"
+            + f"Fetching user {idx}/{len(starred_owners_names)}: {owner_login}"
         )
-        OWNER_DATA = fetch_user(OWNER_LOGIN)
-        if OWNER_DATA is not None:
-            STARRED_OWNERS.append(OWNER_DATA)
+        owner_data = fetch_user(owner_login, headers=headers)
+        if owner_data is not None:
+            starred_owners.append(owner_data)
 
-    for OWNER_DATA in STARRED_OWNERS:
-        if "login" in OWNER_DATA and "html_url" in OWNER_DATA:
-            if OWNER_DATA["login"] is not None and OWNER_DATA["html_url"] is not None:
-                MD_DOCUMENT += f"### [{OWNER_DATA['login']}]({OWNER_DATA['html_url']})"
-        if "name" in OWNER_DATA and OWNER_DATA["name"] is not None:
-            MD_DOCUMENT += f" ({OWNER_DATA['name']})"
-        if "location" in OWNER_DATA and OWNER_DATA["location"] is not None:
-            MD_DOCUMENT += f", {OWNER_DATA['location']}"
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
-
-        if "bio" in OWNER_DATA and OWNER_DATA["bio"] is not None:
-            MD_DOCUMENT += str(OWNER_DATA["bio"])
-            MD_DOCUMENT = _separate(MD_DOCUMENT)
-        if "blog" in OWNER_DATA and OWNER_DATA["blog"] is not None \
-                and str(OWNER_DATA["blog"]) != "":
-            MD_DOCUMENT += f"Site/Blog: {OWNER_DATA['blog']}"
-            MD_DOCUMENT = _separate(MD_DOCUMENT)
-
-        if "public_repos" in OWNER_DATA and OWNER_DATA["public_repos"] is not None \
-                and "html_url" in OWNER_DATA and OWNER_DATA["html_url"] is not None \
-                and "followers" in OWNER_DATA and OWNER_DATA["followers"] is not None \
-                and "followers_url" in OWNER_DATA and OWNER_DATA["followers_url"] is not None:
-            MD_DOCUMENT += (
-                f"Public repos: [{OWNER_DATA['public_repos']}]"
-                f"({OWNER_DATA['html_url']}?tab=repositories) "
-                f"/ Followers: [{OWNER_DATA['followers']}]"
-                f"({OWNER_DATA['followers_url']})"
-            )
-            MD_DOCUMENT = _separate(MD_DOCUMENT)
-
-        HAS_CONTACT = False
-        if "twitter_username" in OWNER_DATA and OWNER_DATA["twitter_username"] is not None:
-            HAS_CONTACT = True
-            TWITTER_USERNAME = OWNER_DATA["twitter_username"]
-            MD_DOCUMENT += (
-                f"Twitter: [@{TWITTER_USERNAME}](https://twitter.com/{TWITTER_USERNAME})"
-            )
-            if "email" in OWNER_DATA and OWNER_DATA["email"] is not None:
-                MD_DOCUMENT += " / "
-        if "email" in OWNER_DATA and OWNER_DATA["email"] is not None:
-            HAS_CONTACT = True
-            OWNER_EMAIL = OWNER_DATA["email"]
-            MD_DOCUMENT += f"Email: [{OWNER_EMAIL}](mailto:{OWNER_EMAIL})"
-        if HAS_CONTACT:
-            MD_DOCUMENT = _separate(MD_DOCUMENT)
-
-        MD_DOCUMENT += MD_DOCUMENT_GROUP_SEPARATOR
-        MD_DOCUMENT = _separate(MD_DOCUMENT)
+    md_document_users = build_users_markdown(
+        users=starred_owners,
+        document_date=document_date,
+        config=markdown_config
+    )
 
     print(Fore.YELLOW + "Saving document data...")
-    _save_document("starred_users.md", MD_DOCUMENT)
-    _save_json("starred_users.json", STARRED_OWNERS)
+    _save_document("starred_users.md", md_document_users)
+    if include_json:
+        _save_json_document("starred_users.json", starred_owners)
     print(Fore.GREEN + "Done")
+
+
+def generate_json_documents():
+    """Fetch GitHub data and generate JSON files."""
+    print(Fore.GREEN + "Welcome to GitHub starred repos builder!")
+    print(Fore.CYAN + f"See {GITHUB_REPO_URL} for details")
+
+    headers = _get_github_headers()
+
+    starred_repos = []
+    fetched_page = 1
+    starred_owners_names = []
+    starred_owners = []
+
+    print(Fore.YELLOW + "Fetching GitHub starred repos...")
+
+    # Fetch first page
+    print(Fore.BLUE + f"Pages fetched: {fetched_page}")
+    fetched_result = fetch_starred_repos(headers=headers)
+    starred_repos.extend(fetched_result["repos"])
+
+    # Fetch other pages in loop if exists
+    if not fetched_result["last_page"]:
+        while not fetched_result["last_page"]:
+            fetched_page += 1
+            print(Fore.BLUE + f"Pages fetched: {fetched_page}")
+            fetched_result = fetch_starred_repos(page=f"{fetched_page}", headers=headers)
+            starred_repos.extend(fetched_result["repos"])
+
+    print(Fore.CYAN + f"Repos fetched: {len(starred_repos)}")
+
+    print(Fore.YELLOW + "Saving repos JSON data...")
+    _save_json_document("starred_repos.json", starred_repos)
+    print(Fore.GREEN + "Done")
+
+    print(Fore.YELLOW + "Generating random repos data...")
+    random_sample_size = min(100, len(starred_repos))
+    random_indices = sorted(
+        random.sample(range(len(starred_repos)), k=random_sample_size)
+    )
+    random_repos = [starred_repos[idx] for idx in random_indices]
+    _save_json_document("starred_repos_random.json", random_repos)
+    print(Fore.GREEN + "Done")
+
+    starred_repos_sorted = sorted(starred_repos, key=lambda x: x['name'])
+    for repo in starred_repos_sorted:
+        owner_login = str(repo["owner"]["login"])
+        if owner_login not in starred_owners_names:
+            starred_owners_names.append(owner_login)
+
+    starred_owners_names.sort()
+
+    print(Fore.YELLOW + "Generating users data...")
+    print(Fore.CYAN + f"Fetching {len(starred_owners_names)} users data...")
+    for idx, owner_login in enumerate(starred_owners_names, 1):
+        print(
+            Fore.BLUE
+            + f"Fetching user {idx}/{len(starred_owners_names)}: {owner_login}"
+        )
+        owner_data = fetch_user(owner_login, headers=headers)
+        if owner_data is not None:
+            starred_owners.append(owner_data)
+
+    _save_json_document("starred_users.json", starred_owners)
+    print(Fore.GREEN + "Done")
+
+
+def generate_pdf_from_json(
+    repos_json_path="starred_repos.json",
+    users_json_path="starred_users.json",
+    output_path=None
+):
+    """Generate the PDF from existing JSON files."""
+    if not os.path.exists(repos_json_path):
+        print(Fore.RED + f"Missing file: {repos_json_path}")
+        return False
+    users_json_path = _resolve_users_json_path(users_json_path)
+    if not os.path.exists(users_json_path):
+        print(Fore.RED + f"Missing file: {users_json_path}")
+        return False
+
+    repos = _load_json_document(repos_json_path)
+    users = _load_json_document(users_json_path)
+    document_date = f"Generated at: {datetime.now().date().strftime('%Y-%m-%d')}"
+    if output_path is None:
+        date_stamp = datetime.now().strftime("%Y.%m.%d")
+        output_path = f"OSINT_Repositories_{date_stamp}.pdf"
+
+    print(Fore.YELLOW + "Generating PDF document...")
+    pdf_config = {
+        "repos_header": {
+            "header": MD_DOCUMENT_HEADER,
+            "description_text": DESCRIPTION_TEXT,
+            "generation_text": (
+                "This document generated automatically. "
+                "See project repository for details:"
+            ),
+            "repo_url": GITHUB_REPO_URL,
+            "copyright_text": COPYRIGHT_TEXT,
+            "copyright_bold": True,
+            "copyright_link_prefix": "Substack: ",
+            "copyright_link_text": "https://substack.com/@osintech",
+            "copyright_link_url": "https://substack.com/@osintech",
+            "warning_text": MD_DOCUMENT_WARNING
+        },
+        "users_header": {
+            "header": MD_DOCUMENT_HEADER,
+            "description_text": DESCRIPTION_TEXT,
+            "generation_text": "This document generated automatically. See:",
+            "repo_url": GITHUB_REPO_URL,
+            "copyright_text": f"(c) @OSINTech, {CURRENT_YEAR}",
+            "warning_text": MD_DOCUMENT_WARNING
+        },
+        "section_repos_title": "Starred Repositories",
+        "section_users_title": "Starred Users"
+    }
+    return save_pdf_from_data(output_path, repos, users, document_date, pdf_config)
+
+
+def _parse_args(argv):
+    """Parse CLI arguments and normalize the mode option."""
+    parser = argparse.ArgumentParser(
+        description="Build starred repos/users markdown and PDF documents."
+    )
+    parser.add_argument(
+        "--mode",
+        "-m",
+        choices=["json", "markdown", "pdf", "full"],
+        default="full",
+        help=(
+            "json: generate json only; markdown: generate md only; pdf: generate pdf only; "
+            "full: json then markdown then pdf."
+        )
+    )
+    if not argv:
+        args, unknown = parser.parse_known_args([])
+        args.mode = "full"
+        return args
+
+    args, unknown = parser.parse_known_args(argv)
+
+    for arg in unknown:
+        if arg.startswith("mode="):
+            mode_value = arg.split("=", 1)[1].strip().lower()
+            if mode_value not in {"json", "markdown", "pdf", "full"}:
+                print(Fore.RED + f"Unknown mode: {mode_value}")
+                sys.exit(2)
+            args.mode = mode_value
+            break
+
+    return args
+
+
+def main():
+    """Run the builder based on CLI mode."""
+    args = _parse_args(sys.argv[1:])
+
+    if args.mode == "json":
+        generate_json_documents()
+        return
+
+    if args.mode == "markdown":
+        generate_markdown_documents(include_json=False)
+        return
+
+    if args.mode == "pdf":
+        success = generate_pdf_from_json()
+        if not success:
+            sys.exit(1)
+        return
+
+    if args.mode == "full":
+        generate_json_documents()
+        generate_markdown_documents(include_json=False)
+        success = generate_pdf_from_json()
+        if not success:
+            sys.exit(1)
+        return
+
+    print(Fore.RED + f"Unsupported mode: {args.mode}")
+    sys.exit(2)
+
+
+if __name__ == '__main__':
+    main()
