@@ -2,11 +2,15 @@
 
 This repository encapsulates a list of repositories from the GitHub, marked with an asterisk relating to the subject of OSINT, Cybersecurity, DevOps / System Administration and specific development.
 
+![alt text](./img/1.png "Terminal")
+
+![alt text](./img/2.png "Terminal")
+
 The list of 100 random starred repositories is here: [https://github.com/bormaxi8080/osint-repos-list/blob/main/starred_repos_random.md](https://github.com/bormaxi8080/osint-repos-list/blob/main/starred_repos_random.md)
 
 ----
 
-**The full version of the list includes more than 3,000 repositories.**
+**The full version of the list includes more than 3,000 repositories generated on PDF and Markdown formats.**
 
 **The list of repositories is updated weekly.**
 
@@ -20,7 +24,7 @@ The list of 100 random starred repositories is here: [https://github.com/bormaxi
 
 or Subscribe Me on Substack: [@OSINTech](https://substack.com/@osintech)
 
-- Connect Me on Substack: [@OSINTech](https://substack.com/@osintech) or Request Access in a [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSdO6Kh2oG5wCe1sNXNJm6H1JOLStJmBIVMi4srR5J39FH1-pw/viewform?usp=publish-editor) by providing your email address and a link to your GitHub account
+- Connect Me on Substack: [@OSINTech](https://substack.com/@osintech) or Request Access in a [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSdO6Kh2oG5wCe1sNXNJm6H1JOLStJmBIVMi4srR5J39FH1-pw/viewform?usp=publish-editor) by providing your email address and a link to GitHub account
 
 - I will grant you access to the full version list repositories posted on GitHub or send it on email.
 
@@ -36,7 +40,7 @@ To build repos list run:
 
 ```python3 builder.py```
 
-This Python script helps for generate Markdown description document contains all your GitHub starred repositories.
+This Python script helps for generate Markdown description document contains GitHub starred repositories.
 
 This is typically needed in a situation when you have many starred repositories to view, such as collection of various utilities.
 
@@ -44,7 +48,7 @@ This script does simple things:
 
 > Gets list of your starred GitHub repositories.
 >
-> Generate JSON and Markdown documents with your GitHub starred repos statistics
+> Generate JSON and Markdown documents with GitHub starred repos statistics
 
 That's all.
 
@@ -67,8 +71,34 @@ If you have a lot of starred GitHub repositories, operations may take a long tim
 ## Usage
 
 - Clone this repository
-- Create environment variable GITHUB_API_TOKEN with your GitHub API token
+- Create environment variable GITHUB_API_TOKEN with GitHub API token
 - Run 'python3 builder.py' and wait
+
+### Modes
+
+- Full generation (default): JSON -> Markdown -> PDF
+
+```bash
+python3 builder.py
+```
+
+- JSON only:
+
+```bash
+python3 builder.py -m json
+```
+
+- Markdown only (from existing JSON files):
+
+```bash
+python3 builder.py -m markdown
+```
+
+- PDF only (from existing JSON files):
+
+```bash
+python3 builder.py -m pdf
+```
 
 ![alt text](./img/shell1.png "Terminal")
 
@@ -108,7 +138,7 @@ I use [github-starred-repos-loader](https://github.com/bormaxi8080/github-starre
 
 ## Notes
 
-### How to get your GitHub personal API access token for API
+### How to get GitHub personal API access token for API
 
 [https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 

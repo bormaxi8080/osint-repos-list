@@ -241,37 +241,30 @@ def _resolve_users_json_path(path):
     return path
 
 
-def generate_markdown_documents(include_json=False):
-    """Fetch GitHub data and generate markdown (optionally JSON) files."""
+def generate_markdown_documents(
+    repos_json_path="starred_repos.json",
+    users_json_path="starred_users.json"
+):
+    """Generate markdown (and random) files from existing JSON data."""
+    if not os.path.exists(repos_json_path):
+        print(Fore.RED + f"Missing file: {repos_json_path}")
+        return False
+    users_json_path = _resolve_users_json_path(users_json_path)
+    if not os.path.exists(users_json_path):
+        print(Fore.RED + f"Missing file: {users_json_path}")
+        return False
+
     print(Fore.GREEN + "Welcome to GitHub starred repos builder!")
     print(Fore.CYAN + f"See {GITHUB_REPO_URL} for details")
 
-    headers = _get_github_headers()
+    repos = _load_json_document(repos_json_path)
+    users = _load_json_document(users_json_path)
 
-    starred_repos = []
-    fetched_page = 1
-    starred_owners_names = []
-    starred_owners = []
-
-    print(Fore.YELLOW + "Fetching GitHub starred repos...")
-
-    # Fetch first page
-    print(Fore.BLUE + f"Pages fetched: {fetched_page}")
-    fetched_result = fetch_starred_repos(headers=headers)
-    starred_repos.extend(fetched_result["repos"])
-
-    # Fetch other pages in loop if exists
-    if not fetched_result["last_page"]:
-        while not fetched_result["last_page"]:
-            fetched_page += 1
-            print(Fore.BLUE + f"Pages fetched: {fetched_page}")
-            fetched_result = fetch_starred_repos(page=f"{fetched_page}", headers=headers)
-            starred_repos.extend(fetched_result["repos"])
-
-    print(Fore.CYAN + f"Repos fetched: {len(starred_repos)}")
+    print(Fore.CYAN + f"Repos loaded: {len(repos)}")
+    print(Fore.CYAN + f"Users loaded: {len(users)}")
 
     # Sort array by repository name
-    sorted_repos = sorted(starred_repos, key=lambda x: x['name'])
+    sorted_repos = sorted(repos, key=lambda x: x['name'])
 
     print(Fore.YELLOW + "Generating repos data...")
 
@@ -294,24 +287,22 @@ def generate_markdown_documents(include_json=False):
 
     md_document = build_repos_markdown(
         repos=sorted_repos,
-        repos_count=len(starred_repos),
+        repos_count=len(repos),
         document_date=document_date,
-        owners_names=starred_owners_names,
+        owners_names=None,
         config=markdown_config
     )
 
     print(Fore.YELLOW + "Saving document data...")
     _save_document("starred_repos.md", md_document)
-    if include_json:
-        _save_json_document("starred_repos.json", starred_repos)
     print(Fore.GREEN + "Done")
 
     print(Fore.YELLOW + "Generating random repos data...")
-    random_sample_size = min(100, len(starred_repos))
+    random_sample_size = min(100, len(repos))
     random_indices = sorted(
-        random.sample(range(len(starred_repos)), k=random_sample_size)
+        random.sample(range(len(repos)), k=random_sample_size)
     )
-    random_repos = [starred_repos[idx] for idx in random_indices]
+    random_repos = [repos[idx] for idx in random_indices]
     random_sorted_repos = sorted(random_repos, key=lambda x: x['name'])
     md_document_random = build_repos_markdown(
         repos=random_sorted_repos,
@@ -322,36 +313,22 @@ def generate_markdown_documents(include_json=False):
     )
 
     print(Fore.YELLOW + "Saving random document data...")
+    _save_json_document("starred_repos_random.json", random_repos)
     _save_document("starred_repos_random.md", md_document_random)
-    if include_json:
-        _save_json_document("starred_repos_random.json", random_repos)
     print(Fore.GREEN + "Done")
 
     print(Fore.YELLOW + "Generating users data...")
 
-    starred_owners_names.sort()
-
-    print(Fore.CYAN + f"Fetching {len(starred_owners_names)} users data...")
-    for idx, owner_login in enumerate(starred_owners_names, 1):
-        print(
-            Fore.BLUE
-            + f"Fetching user {idx}/{len(starred_owners_names)}: {owner_login}"
-        )
-        owner_data = fetch_user(owner_login, headers=headers)
-        if owner_data is not None:
-            starred_owners.append(owner_data)
-
     md_document_users = build_users_markdown(
-        users=starred_owners,
+        users=users,
         document_date=document_date,
         config=markdown_config
     )
 
     print(Fore.YELLOW + "Saving document data...")
     _save_document("starred_users.md", md_document_users)
-    if include_json:
-        _save_json_document("starred_users.json", starred_owners)
     print(Fore.GREEN + "Done")
+    return True
 
 
 def generate_json_documents():
@@ -385,15 +362,6 @@ def generate_json_documents():
 
     print(Fore.YELLOW + "Saving repos JSON data...")
     _save_json_document("starred_repos.json", starred_repos)
-    print(Fore.GREEN + "Done")
-
-    print(Fore.YELLOW + "Generating random repos data...")
-    random_sample_size = min(100, len(starred_repos))
-    random_indices = sorted(
-        random.sample(range(len(starred_repos)), k=random_sample_size)
-    )
-    random_repos = [starred_repos[idx] for idx in random_indices]
-    _save_json_document("starred_repos_random.json", random_repos)
     print(Fore.GREEN + "Done")
 
     starred_repos_sorted = sorted(starred_repos, key=lambda x: x['name'])
@@ -514,7 +482,9 @@ def main():
         return
 
     if args.mode == "markdown":
-        generate_markdown_documents(include_json=False)
+        success = generate_markdown_documents()
+        if not success:
+            sys.exit(1)
         return
 
     if args.mode == "pdf":
@@ -525,7 +495,9 @@ def main():
 
     if args.mode == "full":
         generate_json_documents()
-        generate_markdown_documents(include_json=False)
+        success = generate_markdown_documents()
+        if not success:
+            sys.exit(1)
         success = generate_pdf_from_json()
         if not success:
             sys.exit(1)
