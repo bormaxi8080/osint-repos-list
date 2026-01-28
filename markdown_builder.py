@@ -23,9 +23,9 @@ def build_repos_markdown(
         "# " + config["header"] + line_separator + line_separator
         + config["description_text"] + line_separator + line_separator
         + config["generation_text"] + line_separator + line_separator
-        + document_date + line_separator + line_separator
         + config["copyright_text"] + line_separator + line_separator
         + config["warning_text"] + line_separator + line_separator
+        + document_date + line_separator + line_separator
         + f"**Starred repositories count:** {repos_count}"
         + line_separator + line_separator
         + config["section_repos_title"] + line_separator + line_separator
@@ -85,8 +85,8 @@ def build_users_markdown(users, document_date, config):
         config["header"] + line_separator + line_separator
         + config["description_text"] + line_separator + line_separator
         + config["generation_text"] + line_separator + line_separator
-        + document_date + line_separator + line_separator
         + config["copyright_text"] + line_separator + line_separator
+        + document_date + line_separator + line_separator
         + config["section_users_title"] + line_separator + line_separator
     )
 

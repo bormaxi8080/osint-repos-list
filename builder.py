@@ -47,6 +47,108 @@ DESCRIPTION_TEXT = (
 )
 CURRENT_YEAR = datetime.now().year
 COPYRIGHT_TEXT = f"(c) OSINTech, {CURRENT_YEAR}."
+REPOS_SUMMARY_PATH = "repos_summary.json"
+PDF_NAME_PREFIX = "OSINT_Repositories_"
+
+
+def _parse_pdf_date_from_name(filename):
+    """Parse PDF date from name like OSINT_Repositories_YYYY.MM.DD.pdf."""
+    if not filename.startswith(PDF_NAME_PREFIX) or not filename.endswith(".pdf"):
+        return None
+    date_part = filename[len(PDF_NAME_PREFIX):-4]
+    try:
+        return datetime.strptime(date_part, "%Y.%m.%d").date()
+    except ValueError:
+        return None
+
+
+def _normalize_repos_summary(raw_data):
+    """Normalize summary data into a list of entries with parsed dates."""
+    entries = []
+    if isinstance(raw_data, dict):
+        for name, count in raw_data.items():
+            if not isinstance(name, str):
+                continue
+            date_value = _parse_pdf_date_from_name(name)
+            if date_value is None:
+                continue
+            try:
+                count_value = int(count)
+            except (TypeError, ValueError):
+                continue
+            entries.append(
+                {
+                    "pdf": name,
+                    "repos_count": count_value,
+                    "date": date_value
+                }
+            )
+        return entries
+
+    if isinstance(raw_data, list):
+        for item in raw_data:
+            if not isinstance(item, dict):
+                continue
+            name = item.get("pdf") or item.get("file")
+            if not isinstance(name, str):
+                continue
+            try:
+                count_value = int(item.get("repos_count"))
+            except (TypeError, ValueError):
+                continue
+            date_value = item.get("date")
+            if isinstance(date_value, str):
+                try:
+                    date_value = datetime.strptime(date_value, "%Y-%m-%d").date()
+                except ValueError:
+                    date_value = None
+            if date_value is None:
+                date_value = _parse_pdf_date_from_name(name)
+            if date_value is None:
+                continue
+            entries.append(
+                {
+                    "pdf": name,
+                    "repos_count": count_value,
+                    "date": date_value
+                }
+            )
+    return entries
+
+
+def _load_repos_summary(path):
+    if not os.path.exists(path):
+        return []
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            raw_data = json.load(handle)
+        return _normalize_repos_summary(raw_data)
+    except (OSError, json.JSONDecodeError):
+        return []
+
+
+def _write_repos_summary(path, entries):
+    payload = [
+        {
+            "pdf": entry["pdf"],
+            "repos_count": entry["repos_count"],
+            "date": entry["date"].isoformat()
+        }
+        for entry in sorted(
+            entries,
+            key=lambda item: (item["date"], item["pdf"])
+        )
+    ]
+    with open(path, "w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2, ensure_ascii=False)
+
+
+def _get_previous_repos_count(entries, current_date):
+    previous_entries = [entry for entry in entries if entry["date"] < current_date]
+    if not previous_entries:
+        return None
+    previous_entry = max(previous_entries, key=lambda item: item["date"])
+    return previous_entry["repos_count"]
 
 
 def create_session_with_retries():
@@ -408,6 +510,18 @@ def generate_pdf_from_json(
         date_stamp = datetime.now().strftime("%Y.%m.%d")
         output_path = f"OSINT_Repositories_{date_stamp}.pdf"
 
+    pdf_name = os.path.basename(output_path)
+    current_date = _parse_pdf_date_from_name(pdf_name) or datetime.now().date()
+    current_count = len(repos)
+    summary_entries = _load_repos_summary(REPOS_SUMMARY_PATH)
+    previous_count = _get_previous_repos_count(summary_entries, current_date)
+    if previous_count is None:
+        newly_added = current_count
+    else:
+        newly_added = current_count - previous_count
+        if newly_added < 0:
+            newly_added = 0
+
     print(Fore.YELLOW + "Generating PDF document...")
     pdf_config = {
         "repos_header": {
@@ -436,7 +550,29 @@ def generate_pdf_from_json(
         "section_repos_title": "Starred Repositories",
         "section_users_title": "Starred Users"
     }
-    return save_pdf_from_data(output_path, repos, users, document_date, pdf_config)
+    success = save_pdf_from_data(
+        output_path,
+        repos,
+        users,
+        document_date,
+        pdf_config,
+        newly_added
+    )
+    if success:
+        summary_entries = [
+            entry
+            for entry in summary_entries
+            if entry["pdf"] != pdf_name
+        ]
+        summary_entries.append(
+            {
+                "pdf": pdf_name,
+                "repos_count": current_count,
+                "date": current_date
+            }
+        )
+        _write_repos_summary(REPOS_SUMMARY_PATH, summary_entries)
+    return success
 
 
 def _parse_args(argv):

@@ -1,6 +1,7 @@
 """PDF generation helpers for OSINT repositories list."""
 
 from datetime import datetime
+import os
 from urllib.parse import quote
 
 from colorama import Fore
@@ -22,10 +23,187 @@ ICON_COLORS = {
     "star": (255, 204, 0)
 }
 
+PDF_FONT_FAMILY = "Helvetica"
+PDF_FONT_SUPPORTS_UNICODE = False
+PDF_FONT_HAS_BOLD = True
 
-def _sanitize_pdf_text(text):
-    """Convert text to Latin-1-safe content for PDF output."""
-    return text.encode("latin-1", errors="replace").decode("latin-1")
+_EMOJI_RANGES = (
+    (0x1F1E6, 0x1F1FF),
+    (0x1F300, 0x1F5FF),
+    (0x1F600, 0x1F64F),
+    (0x1F680, 0x1F6FF),
+    (0x1F700, 0x1F77F),
+    (0x1F780, 0x1F7FF),
+    (0x1F800, 0x1F8FF),
+    (0x1F900, 0x1F9FF),
+    (0x1FA00, 0x1FA6F),
+    (0x1FA70, 0x1FAFF),
+    (0x2600, 0x26FF),
+    (0x2700, 0x27BF)
+)
+_EMOJI_SINGLETONS = {0x200D, 0xFE0F, 0xFE0E, 0x20E3}
+_CONTROL_SINGLETONS = {0xFEFF}
+
+
+def _configure_pdf_fonts(pdf):
+    """Try to load a Unicode-capable font; fall back to core fonts."""
+    global PDF_FONT_FAMILY, PDF_FONT_SUPPORTS_UNICODE, PDF_FONT_HAS_BOLD
+
+    base_dir = os.path.dirname(__file__)
+    candidates = [
+        (
+            "NotoSans",
+            os.path.join(base_dir, "fonts", "NotoSans-Regular.ttf"),
+            os.path.join(base_dir, "fonts", "NotoSans-Bold.ttf")
+        ),
+        (
+            "DejaVuSans",
+            os.path.join(base_dir, "fonts", "DejaVuSans.ttf"),
+            os.path.join(base_dir, "fonts", "DejaVuSans-Bold.ttf")
+        ),
+        (
+            "ArialUnicodeLocal",
+            os.path.join(base_dir, "fonts", "ArialUnicode.ttf"),
+            None
+        ),
+        (
+            "DejaVuSansSys",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+        ),
+        (
+            "LiberationSans",
+            "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+            "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"
+        ),
+        (
+            "ArialUnicodeMS",
+            "/Library/Fonts/Arial Unicode.ttf",
+            None
+        ),
+        (
+            "ArialUnicodeMS2",
+            "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+            None
+        ),
+        (
+            "ArialUnicodeMS3",
+            "/System/Library/Fonts/Supplemental/Arial Unicode MS.ttf",
+            None
+        )
+    ]
+
+    for family, regular_path, bold_path in candidates:
+        if not regular_path or not os.path.isfile(regular_path):
+            continue
+        try:
+            pdf.add_font(family, "", regular_path)
+        except Exception:
+            continue
+
+        PDF_FONT_FAMILY = family
+        PDF_FONT_SUPPORTS_UNICODE = True
+        PDF_FONT_HAS_BOLD = False
+
+        bold_path = bold_path if bold_path and os.path.isfile(bold_path) else None
+        if bold_path:
+            try:
+                pdf.add_font(family, "B", bold_path)
+                PDF_FONT_HAS_BOLD = True
+            except Exception:
+                PDF_FONT_HAS_BOLD = False
+        return
+
+
+def _set_pdf_font(pdf, bold=False, size=11):
+    """Set the current PDF font based on loaded font capabilities."""
+    if bold:
+        if PDF_FONT_HAS_BOLD:
+            pdf.set_font(PDF_FONT_FAMILY, style="B", size=size)
+        elif PDF_FONT_FAMILY != "Helvetica":
+            pdf.set_font("Helvetica", style="B", size=size)
+        else:
+            pdf.set_font(PDF_FONT_FAMILY, style="B", size=size)
+        return
+    pdf.set_font(PDF_FONT_FAMILY, style="", size=size)
+
+
+def _is_emoji_codepoint(codepoint):
+    if codepoint in _EMOJI_SINGLETONS:
+        return True
+    for start, end in _EMOJI_RANGES:
+        if start <= codepoint <= end:
+            return True
+    return False
+
+
+def _strip_control_chars(text):
+    cleaned = []
+    for ch in text:
+        if ch == "\n":
+            cleaned.append("\n")
+            continue
+        if ch == "\r":
+            cleaned.append("\n")
+            continue
+        if ch == "\t":
+            cleaned.append(" ")
+            continue
+        codepoint = ord(ch)
+        if codepoint in _CONTROL_SINGLETONS:
+            continue
+        if codepoint < 32 or 0x7F <= codepoint <= 0x9F:
+            continue
+        cleaned.append(ch)
+    return "".join(cleaned)
+
+
+def _strip_emoji(text):
+    return "".join(
+        ch for ch in text if not _is_emoji_codepoint(ord(ch))
+    )
+
+
+def _font_supports_codepoint(widths, codepoint):
+    if isinstance(widths, dict):
+        return codepoint in widths
+    if isinstance(widths, (list, tuple)):
+        return 0 <= codepoint < len(widths) and widths[codepoint] != 0
+    return True
+
+
+def _filter_text_for_current_font(pdf, text):
+    font = getattr(pdf, "current_font", None)
+    if not isinstance(font, dict):
+        return text
+    widths = font.get("cw")
+    if widths is None:
+        return text
+
+    cleaned = []
+    for ch in text:
+        if ch == "\n":
+            cleaned.append(ch)
+            continue
+        if _font_supports_codepoint(widths, ord(ch)):
+            cleaned.append(ch)
+    return "".join(cleaned)
+
+
+def _sanitize_pdf_text(text, pdf=None):
+    """Normalize text for PDF output with safe fallbacks."""
+    if text is None:
+        return ""
+    if not isinstance(text, str):
+        text = str(text)
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    text = _strip_control_chars(text)
+    if PDF_FONT_SUPPORTS_UNICODE:
+        text = _strip_emoji(text)
+        if pdf is not None:
+            text = _filter_text_for_current_font(pdf, text)
+        return text
+    return text.encode("latin-1", errors="ignore").decode("latin-1")
 
 
 def _wrap_pdf_lines(pdf, text, max_width):
@@ -108,6 +286,282 @@ def _wrap_pdf_lines_with_first_width(pdf, text, first_width, max_width):
     return wrapped_lines
 
 
+def _count_wrapped_lines(pdf, text, max_width):
+    return len(_wrap_pdf_lines(pdf, text, max_width))
+
+
+def _count_wrapped_lines_first_width(pdf, text, first_width, max_width):
+    return len(_wrap_pdf_lines_with_first_width(pdf, text, first_width, max_width))
+
+
+def _estimate_label_with_link_height(
+    pdf,
+    label,
+    link_text,
+    max_width,
+    line_height=5,
+    bold=False,
+    size=11
+):
+    _set_pdf_font(pdf, bold=bold, size=size)
+    label_text = _sanitize_pdf_text(label, pdf)
+    link_text_sanitized = _sanitize_pdf_text(link_text, pdf)
+    label_width = pdf.get_string_width(label_text)
+    link_width = pdf.get_string_width(link_text_sanitized)
+
+    if label_text == "":
+        lines = _count_wrapped_lines(pdf, link_text_sanitized, max_width)
+        return lines * line_height
+
+    if label_width + link_width <= max_width:
+        return line_height
+
+    link_lines = _count_wrapped_lines(pdf, link_text_sanitized, max_width)
+    return (1 + link_lines) * line_height
+
+
+def _estimate_bold_label_value_height(
+    pdf,
+    label,
+    value,
+    max_width,
+    line_height=5,
+    spacing=0
+):
+    _set_pdf_font(pdf, bold=True, size=11)
+    label_text = _sanitize_pdf_text(label, pdf)
+    label_width = pdf.get_string_width(label_text)
+    _set_pdf_font(pdf, bold=False, size=11)
+    value_text = _sanitize_pdf_text(value, pdf)
+
+    if label_width >= max_width:
+        _set_pdf_font(pdf, bold=True, size=11)
+        label_lines = _count_wrapped_lines(pdf, label_text, max_width)
+        _set_pdf_font(pdf, bold=False, size=11)
+        value_lines = _count_wrapped_lines(pdf, value_text, max_width)
+        if value_lines == 0:
+            value_lines = 1
+        return (label_lines + value_lines) * line_height + spacing
+
+    first_width = max_width - label_width
+    value_lines = _count_wrapped_lines_first_width(
+        pdf,
+        value_text,
+        first_width,
+        max_width
+    )
+    if value_lines == 0:
+        value_lines = 1
+    return value_lines * line_height + spacing
+
+
+def _estimate_icon_bold_label_value_height(
+    pdf,
+    label,
+    value,
+    max_width,
+    line_height=5,
+    spacing=0
+):
+    icon_advance = ICON_SIZE + 2
+    _set_pdf_font(pdf, bold=True, size=11)
+    label_text = _sanitize_pdf_text(label, pdf)
+    label_width = pdf.get_string_width(label_text)
+    _set_pdf_font(pdf, bold=False, size=11)
+    value_text = _sanitize_pdf_text(value, pdf)
+
+    if icon_advance + label_width >= max_width:
+        return line_height + _estimate_bold_label_value_height(
+            pdf,
+            label,
+            value,
+            max_width,
+            line_height=line_height,
+            spacing=spacing
+        )
+
+    first_width = max_width - icon_advance - label_width
+    value_lines = _count_wrapped_lines_first_width(
+        pdf,
+        value_text,
+        first_width,
+        max_width
+    )
+    if value_lines == 0:
+        value_lines = 1
+    return value_lines * line_height + spacing
+
+
+def _estimate_icon_bold_label_with_link_height(
+    pdf,
+    label,
+    link_text,
+    max_width,
+    line_height=5
+):
+    icon_advance = ICON_SIZE + 2
+    _set_pdf_font(pdf, bold=True, size=11)
+    label_text = _sanitize_pdf_text(label, pdf)
+    label_width = pdf.get_string_width(label_text)
+    _set_pdf_font(pdf, bold=False, size=11)
+    link_text_sanitized = _sanitize_pdf_text(link_text, pdf)
+    link_width = pdf.get_string_width(link_text_sanitized)
+
+    if icon_advance + label_width + link_width <= max_width:
+        return line_height
+
+    first_width = max_width - icon_advance - label_width
+    link_lines = _count_wrapped_lines_first_width(
+        pdf,
+        link_text_sanitized,
+        first_width,
+        max_width
+    )
+    if link_lines == 0:
+        link_lines = 1
+    return (1 + link_lines) * line_height
+
+
+def _estimate_icon_bold_label_links_height(
+    pdf,
+    label,
+    tags,
+    max_width,
+    line_height=5,
+    spacing=0
+):
+    icon_advance = ICON_SIZE + 2
+    _set_pdf_font(pdf, bold=True, size=11)
+    label_text = _sanitize_pdf_text(label, pdf)
+    label_width = pdf.get_string_width(label_text)
+    _set_pdf_font(pdf, bold=False, size=11)
+
+    line_count = 1
+    if icon_advance + label_width > max_width:
+        line_count += 1
+        current_width = label_width
+    else:
+        current_width = icon_advance + label_width
+    space_width = pdf.get_string_width(" ")
+
+    for tag in tags:
+        tag_text = _sanitize_pdf_text(f"#{tag}", pdf)
+        tag_width = pdf.get_string_width(tag_text)
+
+        if tag_width > max_width:
+            chunks = _wrap_pdf_lines_with_first_width(
+                pdf,
+                tag_text,
+                max_width,
+                max_width
+            )
+            chunk_lines = max(1, len(chunks))
+            line_count += chunk_lines
+            current_width = 0
+            continue
+
+        if current_width + tag_width > max_width:
+            line_count += 1
+            current_width = 0
+
+        current_width += tag_width
+
+        if current_width + space_width > max_width:
+            line_count += 1
+            current_width = 0
+        else:
+            current_width += space_width
+
+    return line_count * line_height + spacing
+
+
+def _estimate_repo_block_height(pdf, repo, max_width):
+    repo_name = str(repo.get("name", ""))
+    repo_url = str(repo.get("html_url", ""))
+    owner = repo.get("owner") or {}
+    owner_login = str(owner.get("login", ""))
+
+    description = repo.get("description")
+    if description is None:
+        description = "No project description"
+
+    stars = repo.get("stargazers_count")
+    created_on = _format_github_date(repo.get("created_at"))
+    updated_on = _format_github_date(repo.get("updated_at"))
+    topics = repo.get("topics") or []
+
+    height = 0
+    height += _estimate_label_with_link_height(
+        pdf,
+        "Repository: ",
+        repo_name,
+        max_width,
+        line_height=6,
+        bold=True,
+        size=12
+    )
+    height += 5
+
+    if repo_url:
+        height += _estimate_icon_bold_label_with_link_height(
+            pdf,
+            "Repository Url: ",
+            repo_url,
+            max_width
+        )
+
+    height += _estimate_icon_bold_label_with_link_height(
+        pdf,
+        "Repository Owner: ",
+        owner_login,
+        max_width
+    )
+
+    height += _estimate_icon_bold_label_value_height(
+        pdf,
+        "Description: ",
+        str(description),
+        max_width,
+        spacing=1
+    )
+
+    height += _estimate_icon_bold_label_value_height(
+        pdf,
+        "Stars: ",
+        str(stars),
+        max_width,
+        spacing=1
+    )
+
+    height += _estimate_icon_bold_label_value_height(
+        pdf,
+        "Created at: ",
+        created_on,
+        max_width,
+        spacing=1
+    )
+
+    height += _estimate_icon_bold_label_value_height(
+        pdf,
+        "Last commit: ",
+        updated_on,
+        max_width,
+        spacing=1
+    )
+
+    if topics:
+        height += _estimate_icon_bold_label_links_height(
+            pdf,
+            "Topics: ",
+            [str(item) for item in topics],
+            max_width,
+            spacing=1
+        )
+
+    height += 4
+    return height
+
+
 def _pdf_draw_icon(pdf, kind, size, line_height):
     """Draw a simple icon and advance the cursor by its width."""
     x_start = pdf.get_x()
@@ -184,7 +638,7 @@ def _pdf_draw_icon(pdf, kind, size, line_height):
 
 def _pdf_write_wrapped_text(pdf, text, max_width, line_height=5, spacing=0):
     """Write wrapped text to PDF with optional spacing."""
-    sanitized = _sanitize_pdf_text(text)
+    sanitized = _sanitize_pdf_text(text, pdf)
     for line in _wrap_pdf_lines(pdf, sanitized, max_width):
         if line.strip() == "":
             pdf.ln(line_height)
@@ -209,8 +663,8 @@ def _pdf_write_label_with_link(
     line_height=5
 ):
     """Write a label and clickable link, wrapping as needed."""
-    label_text = _sanitize_pdf_text(label)
-    link_text_sanitized = _sanitize_pdf_text(link_text)
+    label_text = _sanitize_pdf_text(label, pdf)
+    link_text_sanitized = _sanitize_pdf_text(link_text, pdf)
 
     pdf.set_text_color(0, 0, 0)
     label_width = pdf.get_string_width(label_text)
@@ -280,14 +734,13 @@ def _pdf_write_bold_label_with_link(
     line_height=5
 ):
     """Write a bold label and clickable link, wrapping as needed."""
-    label_text = _sanitize_pdf_text(label)
-    link_text_sanitized = _sanitize_pdf_text(link_text)
-
     pdf.set_text_color(0, 0, 0)
-    pdf.set_font("Helvetica", style="B", size=11)
+    _set_pdf_font(pdf, bold=True, size=11)
+    label_text = _sanitize_pdf_text(label, pdf)
     label_width = pdf.get_string_width(label_text)
 
-    pdf.set_font("Helvetica", size=11)
+    _set_pdf_font(pdf, bold=False, size=11)
+    link_text_sanitized = _sanitize_pdf_text(link_text, pdf)
     link_width = pdf.get_string_width(link_text_sanitized)
 
     if label_text == "":
@@ -308,9 +761,9 @@ def _pdf_write_bold_label_with_link(
         return
 
     if label_width + link_width <= max_width:
-        pdf.set_font("Helvetica", style="B", size=11)
+        _set_pdf_font(pdf, bold=True, size=11)
         pdf.cell(label_width, line_height, text=label_text)
-        pdf.set_font("Helvetica", size=11)
+        _set_pdf_font(pdf, bold=False, size=11)
         pdf.set_text_color(0, 0, 255)
         pdf.cell(
             0,
@@ -323,7 +776,7 @@ def _pdf_write_bold_label_with_link(
         pdf.set_text_color(0, 0, 0)
         return
 
-    pdf.set_font("Helvetica", style="B", size=11)
+    _set_pdf_font(pdf, bold=True, size=11)
     pdf.cell(
         0,
         line_height,
@@ -331,7 +784,7 @@ def _pdf_write_bold_label_with_link(
         new_x=XPos.LMARGIN,
         new_y=YPos.NEXT
     )
-    pdf.set_font("Helvetica", size=11)
+    _set_pdf_font(pdf, bold=False, size=11)
     pdf.set_text_color(0, 0, 255)
     for line in _wrap_pdf_lines(pdf, link_text_sanitized, max_width):
         if line.strip() == "":
@@ -357,14 +810,15 @@ def _pdf_write_bold_label_value(
     spacing=0
 ):
     """Write a bold label followed by a normal value, wrapping as needed."""
-    label_text = _sanitize_pdf_text(label)
-    value_text = _sanitize_pdf_text(value)
-
-    pdf.set_font("Helvetica", style="B", size=11)
+    _set_pdf_font(pdf, bold=True, size=11)
+    label_text = _sanitize_pdf_text(label, pdf)
     label_width = pdf.get_string_width(label_text)
+    _set_pdf_font(pdf, bold=False, size=11)
+    value_text = _sanitize_pdf_text(value, pdf)
     if label_width >= max_width:
+        _set_pdf_font(pdf, bold=True, size=11)
         _pdf_write_wrapped_text(pdf, label_text, max_width, line_height=line_height)
-        pdf.set_font("Helvetica", size=11)
+        _set_pdf_font(pdf, bold=False, size=11)
         _pdf_write_wrapped_text(
             pdf,
             value_text,
@@ -374,8 +828,9 @@ def _pdf_write_bold_label_value(
         )
         return
 
+    _set_pdf_font(pdf, bold=True, size=11)
     pdf.cell(label_width, line_height, text=label_text)
-    pdf.set_font("Helvetica", size=11)
+    _set_pdf_font(pdf, bold=False, size=11)
     first_width = max_width - label_width
     lines = _wrap_pdf_lines_with_first_width(pdf, value_text, first_width, max_width)
     if lines:
@@ -411,11 +866,11 @@ def _pdf_write_icon_bold_label_value(
 ):
     """Write a bold label with an icon and a normal value."""
     icon_advance = _pdf_draw_icon(pdf, icon_kind, ICON_SIZE, line_height)
-    label_text = _sanitize_pdf_text(label)
-    value_text = _sanitize_pdf_text(value)
-
-    pdf.set_font("Helvetica", style="B", size=11)
+    _set_pdf_font(pdf, bold=True, size=11)
+    label_text = _sanitize_pdf_text(label, pdf)
     label_width = pdf.get_string_width(label_text)
+    _set_pdf_font(pdf, bold=False, size=11)
+    value_text = _sanitize_pdf_text(value, pdf)
     if icon_advance + label_width >= max_width:
         pdf.ln(line_height)
         _pdf_write_bold_label_value(
@@ -428,8 +883,9 @@ def _pdf_write_icon_bold_label_value(
         )
         return
 
+    _set_pdf_font(pdf, bold=True, size=11)
     pdf.cell(label_width, line_height, text=label_text)
-    pdf.set_font("Helvetica", size=11)
+    _set_pdf_font(pdf, bold=False, size=11)
     first_width = max_width - icon_advance - label_width
     lines = _wrap_pdf_lines_with_first_width(pdf, value_text, first_width, max_width)
     if lines:
@@ -465,18 +921,17 @@ def _pdf_write_icon_bold_label_with_link(
 ):
     """Write a bold label with an icon and a clickable link."""
     icon_advance = _pdf_draw_icon(pdf, icon_kind, ICON_SIZE, line_height)
-    label_text = _sanitize_pdf_text(label)
-    link_text_sanitized = _sanitize_pdf_text(link_text)
-
-    pdf.set_font("Helvetica", style="B", size=11)
+    _set_pdf_font(pdf, bold=True, size=11)
+    label_text = _sanitize_pdf_text(label, pdf)
     label_width = pdf.get_string_width(label_text)
-    pdf.set_font("Helvetica", size=11)
+    _set_pdf_font(pdf, bold=False, size=11)
+    link_text_sanitized = _sanitize_pdf_text(link_text, pdf)
     link_width = pdf.get_string_width(link_text_sanitized)
 
     if icon_advance + label_width + link_width <= max_width:
-        pdf.set_font("Helvetica", style="B", size=11)
+        _set_pdf_font(pdf, bold=True, size=11)
         pdf.cell(label_width, line_height, text=label_text)
-        pdf.set_font("Helvetica", size=11)
+        _set_pdf_font(pdf, bold=False, size=11)
         pdf.set_text_color(0, 0, 255)
         pdf.cell(
             0,
@@ -489,7 +944,7 @@ def _pdf_write_icon_bold_label_with_link(
         pdf.set_text_color(0, 0, 0)
         return
 
-    pdf.set_font("Helvetica", style="B", size=11)
+    _set_pdf_font(pdf, bold=True, size=11)
     pdf.cell(
         0,
         line_height,
@@ -497,7 +952,7 @@ def _pdf_write_icon_bold_label_with_link(
         new_x=XPos.LMARGIN,
         new_y=YPos.NEXT
     )
-    pdf.set_font("Helvetica", size=11)
+    _set_pdf_font(pdf, bold=False, size=11)
     pdf.set_text_color(0, 0, 255)
     first_width = max_width - icon_advance - label_width
     lines = _wrap_pdf_lines_with_first_width(pdf, link_text_sanitized, first_width, max_width)
@@ -536,9 +991,8 @@ def _pdf_write_icon_bold_label_links(
 ):
     """Write a bold label with an icon and clickable tag links."""
     icon_advance = _pdf_draw_icon(pdf, icon_kind, ICON_SIZE, line_height)
-    label_text = _sanitize_pdf_text(label)
-
-    pdf.set_font("Helvetica", style="B", size=11)
+    _set_pdf_font(pdf, bold=True, size=11)
+    label_text = _sanitize_pdf_text(label, pdf)
     label_width = pdf.get_string_width(label_text)
     if icon_advance + label_width > max_width:
         pdf.ln(line_height)
@@ -546,7 +1000,7 @@ def _pdf_write_icon_bold_label_links(
         icon_advance = 0
 
     pdf.cell(label_width, line_height, text=label_text)
-    pdf.set_font("Helvetica", size=11)
+    _set_pdf_font(pdf, bold=False, size=11)
     pdf.set_text_color(0, 0, 255)
 
     space_width = pdf.get_string_width(" ")
@@ -554,7 +1008,7 @@ def _pdf_write_icon_bold_label_links(
 
     for tag in tags:
         tag_text = f"#{tag}"
-        tag_text = _sanitize_pdf_text(tag_text)
+        tag_text = _sanitize_pdf_text(tag_text, pdf)
         tag_url = f"{url_prefix}{quote(tag)}"
         tag_width = pdf.get_string_width(tag_text)
 
@@ -631,14 +1085,15 @@ def _pdf_draw_separator(pdf):
 def _pdf_write_warning(pdf, warning_text, max_width, line_height=5):
     """Write WARNING! in bold with the rest in normal text."""
     label = "WARNING!"
-    text = warning_text.strip()
+    _set_pdf_font(pdf, bold=False, size=11)
+    text = _sanitize_pdf_text(warning_text.strip(), pdf)
     body = text[len(label):].lstrip() if text.startswith(label) else text
     label_text = f"{label} "
 
-    pdf.set_font("Helvetica", style="B", size=11)
+    _set_pdf_font(pdf, bold=True, size=11)
     label_width = pdf.get_string_width(label_text)
     pdf.cell(label_width, line_height, text=label_text)
-    pdf.set_font("Helvetica", size=11)
+    _set_pdf_font(pdf, bold=False, size=11)
 
     if body:
         first_width = max_width - label_width
@@ -688,7 +1143,7 @@ def _write_created_at(pdf, document_date, max_width):
         date_label,
         date_value,
         max_width,
-        spacing=2
+        spacing=0
     )
 
 
@@ -698,10 +1153,11 @@ def _write_header_section(
     document_date,
     max_width,
     include_warning=False,
-    include_count=None
+    include_count=None,
+    include_new_since=None
 ):
     """Write a common header section for the PDF pages."""
-    pdf.set_font("Helvetica", style="B", size=16)
+    _set_pdf_font(pdf, bold=True, size=16)
     _pdf_write_wrapped_text(
         pdf,
         config["header"],
@@ -710,7 +1166,7 @@ def _write_header_section(
         spacing=2
     )
 
-    pdf.set_font("Helvetica", size=11)
+    _set_pdf_font(pdf, bold=False, size=11)
     if config.get("description_text"):
         _pdf_write_wrapped_text(
             pdf,
@@ -732,11 +1188,10 @@ def _write_header_section(
         max_width
     )
     pdf.ln(5)
-    _write_created_at(pdf, document_date, max_width)
     if config.get("copyright_link_url"):
-        pdf.set_font("Helvetica", style="B", size=11)
+        _set_pdf_font(pdf, bold=True, size=11)
         _pdf_write_wrapped_text(pdf, config["copyright_text"], max_width, spacing=1)
-        pdf.set_font("Helvetica", size=11)
+        _set_pdf_font(pdf, bold=False, size=11)
         _pdf_write_label_with_link(
             pdf,
             config.get("copyright_link_prefix", ""),
@@ -747,14 +1202,14 @@ def _write_header_section(
         pdf.ln(5)
     else:
         if config.get("copyright_bold"):
-            pdf.set_font("Helvetica", style="B", size=11)
+            _set_pdf_font(pdf, bold=True, size=11)
             _pdf_write_wrapped_text(
                 pdf,
                 config["copyright_text"],
                 max_width,
                 spacing=0
             )
-            pdf.set_font("Helvetica", size=11)
+            _set_pdf_font(pdf, bold=False, size=11)
         else:
             _pdf_write_wrapped_text(
                 pdf,
@@ -768,19 +1223,30 @@ def _write_header_section(
         _pdf_write_warning(pdf, config["warning_text"], max_width)
         pdf.ln(5)
 
+    _write_created_at(pdf, document_date, max_width)
     if include_count is not None:
-        _pdf_write_bold_label_value(
+        _pdf_write_icon_bold_label_value(
             pdf,
+            "star",
             "Starred repositories count: ",
             str(include_count),
             max_width,
             spacing=0
         )
+        if include_new_since is not None:
+            _pdf_write_icon_bold_label_value(
+                pdf,
+                "info",
+                "Newly added repositories since last update: ",
+                str(include_new_since),
+                max_width,
+                spacing=0
+            )
         pdf.ln(5)
         _pdf_draw_separator(pdf)
 
 
-def save_pdf_from_data(path, repos, users, document_date, config):
+def save_pdf_from_data(path, repos, users, document_date, config, new_since=None):
     """Generate and save the PDF from repository and user data."""
     if FPDF is None:
         print(
@@ -790,6 +1256,7 @@ def save_pdf_from_data(path, repos, users, document_date, config):
         return False
 
     pdf = FPDF()
+    _configure_pdf_fonts(pdf)
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
     max_width = pdf.w - pdf.l_margin - pdf.r_margin
@@ -800,27 +1267,31 @@ def save_pdf_from_data(path, repos, users, document_date, config):
         document_date,
         max_width,
         include_warning=True,
-        include_count=len(repos)
+        include_count=len(repos),
+        include_new_since=new_since
     )
 
-    pdf.set_font("Helvetica", style="B", size=13)
+    _set_pdf_font(pdf, bold=True, size=16)
     _pdf_write_wrapped_text(
         pdf,
         config["section_repos_title"],
         max_width,
-        line_height=6,
-        spacing=3
+        line_height=7,
+        spacing=2
     )
 
     sorted_repos = sorted(repos, key=lambda x: str(x.get("name", "")).lower())
     for repo in sorted_repos:
+        repo_block_height = _estimate_repo_block_height(pdf, repo, max_width)
+        if pdf.get_y() + repo_block_height > pdf.page_break_trigger:
+            pdf.add_page()
         repo_name = str(repo.get("name", ""))
         repo_url = str(repo.get("html_url", ""))
         owner = repo.get("owner") or {}
         owner_login = str(owner.get("login", ""))
         owner_url = str(owner.get("html_url", ""))
 
-        pdf.set_font("Helvetica", style="B", size=12)
+        _set_pdf_font(pdf, bold=True, size=12)
         _pdf_write_label_with_link(
             pdf,
             "Repository: ",
@@ -839,7 +1310,7 @@ def save_pdf_from_data(path, repos, users, document_date, config):
                 repo_url,
                 max_width
             )
-        pdf.set_font("Helvetica", size=11)
+        _set_pdf_font(pdf, bold=False, size=11)
         _pdf_write_icon_bold_label_with_link(
             pdf,
             "person",
@@ -911,7 +1382,7 @@ def save_pdf_from_data(path, repos, users, document_date, config):
         max_width
     )
 
-    pdf.set_font("Helvetica", style="B", size=13)
+    _set_pdf_font(pdf, bold=True, size=13)
     _pdf_write_wrapped_text(
         pdf,
         config["section_users_title"],
@@ -927,7 +1398,7 @@ def save_pdf_from_data(path, repos, users, document_date, config):
         name = owner_data.get("name")
         location = owner_data.get("location")
 
-        pdf.set_font("Helvetica", style="B", size=12)
+        _set_pdf_font(pdf, bold=True, size=12)
         _pdf_write_label_with_link(
             pdf,
             "User: ",
@@ -937,7 +1408,7 @@ def save_pdf_from_data(path, repos, users, document_date, config):
             line_height=6
         )
 
-        pdf.set_font("Helvetica", size=11)
+        _set_pdf_font(pdf, bold=False, size=11)
         if name is not None:
             _pdf_write_wrapped_text(pdf, f"Name: {name}", max_width, spacing=1)
         if location is not None:
