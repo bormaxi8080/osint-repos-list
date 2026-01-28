@@ -4,15 +4,16 @@ This list catalogs your GitHub starred repositories and their owners, including 
 
 This document generated automatically, see [https://github.com/bormaxi8080/osint-repos-list](https://github.com/bormaxi8080/osint-repos-list) for details
 
-**(c) OSINTech, 2026.** [Substack: https://substack.com/@osintech](https://substack.com/@osintech)
+**(c) OSINTech, 2026, All rights reserved.** [Substack: https://substack.com/@osintech](https://substack.com/@osintech)
 
-WARNING! All tools, programs and techniques published in this repository are used for informational, educational purposes or for information security purposes. The authors are not responsible for the activities that users of these tools and techniques may carry out, and urge them not to use them to carry out harmful or destructive activities directed against other users or groups on the Internet.
+WARNING! **Legal and ethical note.**  All tools, programs and techniques published in this repository are used for informational, educational purposes or for information security purposes. The authors are not responsible for the activities that users of these tools and techniques may carry out, and urge them not to use them to carry out harmful or destructive activities directed against other users or groups on the Internet.
 
 Generated at: 2026-01-28
 
 **Starred repositories count:** 100
 
 ## Starred Repositories
+
 
 ### [AMUSED](https://github.com/Carldeboer/AMUSED)
 

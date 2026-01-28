@@ -128,6 +128,32 @@ def _set_pdf_font(pdf, bold=False, size=11):
     pdf.set_font(PDF_FONT_FAMILY, style="", size=size)
 
 
+if FPDF is not None:
+    class OSINTPDF(FPDF):
+        """FPDF subclass with a standard footer."""
+
+        def footer(self):
+            footer_text = getattr(self, "footer_text", "")
+            show_page_number = getattr(self, "footer_show_page_number", True)
+            if not footer_text and not show_page_number:
+                return
+
+            self.set_y(-12)
+            if footer_text:
+                _set_pdf_font(self, bold=False, size=9)
+                self.set_text_color(0, 0, 0)
+                self.cell(0, 10, text=footer_text, align="L")
+
+            if show_page_number:
+                page_no = str(self.page_no())
+                self.set_y(-12)
+                _set_pdf_font(self, bold=True, size=9)
+                self.set_text_color(0, 0, 0)
+                self.cell(0, 10, text=page_no, align="R")
+else:
+    OSINTPDF = None
+
+
 def _is_emoji_codepoint(codepoint):
     if codepoint in _EMOJI_SINGLETONS:
         return True
@@ -284,6 +310,182 @@ def _wrap_pdf_lines_with_first_width(pdf, text, first_width, max_width):
         wrapped_lines.append(current)
 
     return wrapped_lines
+
+
+def _get_image_dimensions(path):
+    """Return (width, height) in pixels for PNG/JPEG images."""
+    try:
+        with open(path, "rb") as handle:
+            signature = handle.read(8)
+            if signature == b"\x89PNG\r\n\x1a\n":
+                handle.read(4)
+                chunk_type = handle.read(4)
+                if chunk_type != b"IHDR":
+                    return None
+                width = int.from_bytes(handle.read(4), "big")
+                height = int.from_bytes(handle.read(4), "big")
+                return width, height
+            if signature[:2] != b"\xFF\xD8":
+                return None
+            handle.seek(2)
+            while True:
+                marker = handle.read(2)
+                if len(marker) < 2:
+                    return None
+                while marker[0] != 0xFF:
+                    marker = marker[1:] + handle.read(1)
+                while marker[1] == 0xFF:
+                    marker = b"\xFF" + handle.read(1)
+                marker_type = marker[1]
+                if marker_type in (
+                    0xC0, 0xC1, 0xC2, 0xC3,
+                    0xC5, 0xC6, 0xC7,
+                    0xC9, 0xCA, 0xCB,
+                    0xCD, 0xCE, 0xCF
+                ):
+                    length = int.from_bytes(handle.read(2), "big")
+                    if length < 7:
+                        return None
+                    handle.read(1)
+                    height = int.from_bytes(handle.read(2), "big")
+                    width = int.from_bytes(handle.read(2), "big")
+                    return width, height
+                length = int.from_bytes(handle.read(2), "big")
+                if length < 2:
+                    return None
+                handle.seek(length - 2, 1)
+    except OSError:
+        return None
+    return None
+
+
+def _parse_markdown_bold_segments(text):
+    """Parse minimal markdown (**bold**) into (text, bold) segments."""
+    segments = []
+    bold = False
+    buffer = []
+    idx = 0
+    while idx < len(text):
+        if text[idx:idx + 2] == "**":
+            if buffer:
+                segments.append(("".join(buffer), bold))
+                buffer = []
+            bold = not bold
+            idx += 2
+            continue
+        buffer.append(text[idx])
+        idx += 1
+    if buffer:
+        segments.append(("".join(buffer), bold))
+
+    merged = []
+    for segment_text, segment_bold in segments:
+        if not segment_text:
+            continue
+        if merged and merged[-1][1] == segment_bold:
+            merged[-1] = (merged[-1][0] + segment_text, segment_bold)
+        else:
+            merged.append((segment_text, segment_bold))
+    return merged
+
+
+def _draw_header_image(pdf, image_path, y_top, text_width, max_width, line_height):
+    """Draw a header image to the right of two lines of text."""
+    if not image_path or not os.path.isfile(image_path):
+        return
+    dimensions = _get_image_dimensions(image_path)
+    if not dimensions:
+        return
+    img_width_px, img_height_px = dimensions
+    if img_width_px <= 0 or img_height_px <= 0:
+        return
+    padding = 3
+    max_image_width = max_width - text_width - padding
+    if max_image_width <= 0:
+        return
+    target_height = line_height * 2
+    aspect_ratio = img_width_px / img_height_px
+    image_width = target_height * aspect_ratio
+    image_height = target_height
+    if image_width > max_image_width:
+        image_width = max_image_width
+        image_height = image_width / aspect_ratio
+    if image_width <= 0 or image_height <= 0:
+        return
+    x_pos = pdf.l_margin + text_width + padding
+    current_x = pdf.get_x()
+    current_y = pdf.get_y()
+    pdf.image(image_path, x=x_pos, y=y_top, w=image_width, h=image_height)
+    pdf.set_xy(current_x, current_y)
+
+
+def _skip_leading_spaces(segments, seg_idx, seg_offset):
+    """Advance segment cursor past leading spaces."""
+    while seg_idx < len(segments):
+        segment_text = segments[seg_idx][0]
+        while seg_offset < len(segment_text) and segment_text[seg_offset] == " ":
+            seg_offset += 1
+        if seg_offset < len(segment_text):
+            break
+        seg_idx += 1
+        seg_offset = 0
+    return seg_idx, seg_offset
+
+
+def _consume_segments_for_line(segments, seg_idx, seg_offset, length):
+    """Consume characters from segments to assemble a line of given length."""
+    parts = []
+    remaining = length
+    while remaining > 0 and seg_idx < len(segments):
+        segment_text, segment_bold = segments[seg_idx]
+        available = len(segment_text) - seg_offset
+        take = min(available, remaining)
+        chunk = segment_text[seg_offset:seg_offset + take]
+        if chunk:
+            if parts and parts[-1][1] == segment_bold:
+                parts[-1] = (parts[-1][0] + chunk, segment_bold)
+            else:
+                parts.append((chunk, segment_bold))
+        seg_offset += take
+        remaining -= take
+        if seg_offset >= len(segment_text):
+            seg_idx += 1
+            seg_offset = 0
+    return parts, seg_idx, seg_offset
+
+
+def _pdf_write_markdown_bold_text_with_first_width(
+    pdf,
+    text,
+    first_width,
+    max_width,
+    line_height=5,
+    size=11
+):
+    """Write text with **bold** markers using a custom first-line width."""
+    segments = _parse_markdown_bold_segments(text)
+    plain_text = "".join(segment for segment, _ in segments)
+    if not plain_text:
+        pdf.ln(line_height)
+        return
+
+    _set_pdf_font(pdf, bold=False, size=size)
+    lines = _wrap_pdf_lines_with_first_width(pdf, plain_text, first_width, max_width)
+    seg_idx = 0
+    seg_offset = 0
+
+    for line in lines:
+        seg_idx, seg_offset = _skip_leading_spaces(segments, seg_idx, seg_offset)
+        parts, seg_idx, seg_offset = _consume_segments_for_line(
+            segments,
+            seg_idx,
+            seg_offset,
+            len(line)
+        )
+        for part_text, part_bold in parts:
+            _set_pdf_font(pdf, bold=part_bold, size=size)
+            pdf.cell(pdf.get_string_width(part_text), line_height, text=part_text)
+        pdf.ln(line_height)
 
 
 def _count_wrapped_lines(pdf, text, max_width):
@@ -1093,28 +1295,17 @@ def _pdf_write_warning(pdf, warning_text, max_width, line_height=5):
     _set_pdf_font(pdf, bold=True, size=11)
     label_width = pdf.get_string_width(label_text)
     pdf.cell(label_width, line_height, text=label_text)
-    _set_pdf_font(pdf, bold=False, size=11)
-
     if body:
         first_width = max_width - label_width
-        lines = _wrap_pdf_lines_with_first_width(pdf, body, first_width, max_width)
-        if lines:
-            pdf.cell(
-                0,
-                line_height,
-                text=lines[0],
-                new_x=XPos.LMARGIN,
-                new_y=YPos.NEXT
-            )
-            for line in lines[1:]:
-                pdf.cell(
-                    0,
-                    line_height,
-                    text=line,
-                    new_x=XPos.LMARGIN,
-                    new_y=YPos.NEXT
-                )
-            return
+        _pdf_write_markdown_bold_text_with_first_width(
+            pdf,
+            body,
+            first_width,
+            max_width,
+            line_height=line_height,
+            size=11
+        )
+        return
     pdf.ln(line_height)
 
 
@@ -1189,6 +1380,18 @@ def _write_header_section(
     )
     pdf.ln(5)
     if config.get("copyright_link_url"):
+        line_height = 5
+        y_top = pdf.get_y()
+        _set_pdf_font(pdf, bold=True, size=11)
+        copyright_text = _sanitize_pdf_text(config["copyright_text"], pdf)
+        line1_width = pdf.get_string_width(copyright_text)
+        _set_pdf_font(pdf, bold=False, size=11)
+        link_prefix = config.get("copyright_link_prefix", "")
+        link_text = config.get("copyright_link_text", config["copyright_link_url"])
+        link_line = _sanitize_pdf_text(f"{link_prefix}{link_text}", pdf)
+        line2_width = pdf.get_string_width(link_line)
+        text_width = max(line1_width, line2_width)
+
         _set_pdf_font(pdf, bold=True, size=11)
         _pdf_write_wrapped_text(pdf, config["copyright_text"], max_width, spacing=1)
         _set_pdf_font(pdf, bold=False, size=11)
@@ -1199,6 +1402,8 @@ def _write_header_section(
             config["copyright_link_url"],
             max_width
         )
+        image_path = os.path.join(os.path.dirname(__file__), "img", "osintech.jpeg")
+        _draw_header_image(pdf, image_path, y_top, text_width, max_width, line_height)
         pdf.ln(5)
     else:
         if config.get("copyright_bold"):
@@ -1255,9 +1460,11 @@ def save_pdf_from_data(path, repos, users, document_date, config, new_since=None
         )
         return False
 
-    pdf = FPDF()
+    pdf = OSINTPDF()
     _configure_pdf_fonts(pdf)
     pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.footer_text = config.get("footer_text", "")
+    pdf.footer_show_page_number = config.get("footer_show_page_number", True)
     pdf.add_page()
     max_width = pdf.w - pdf.l_margin - pdf.r_margin
 
@@ -1277,7 +1484,7 @@ def save_pdf_from_data(path, repos, users, document_date, config, new_since=None
         config["section_repos_title"],
         max_width,
         line_height=7,
-        spacing=2
+        spacing=3
     )
 
     sorted_repos = sorted(repos, key=lambda x: str(x.get("name", "")).lower())

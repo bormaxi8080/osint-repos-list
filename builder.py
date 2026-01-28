@@ -34,7 +34,7 @@ MD_DOCUMENT_LINE_SEPARATOR = "\r\n"
 MD_DOCUMENT_GROUP_SEPARATOR = "----"
 
 MD_DOCUMENT_WARNING = (
-    "WARNING! All tools, programs and techniques published in this repository "
+    "WARNING! **Legal and ethical note.** All tools, programs and techniques published in this repository "
     "are used for informational, educational purposes or for information security purposes. "
     "The authors are not responsible for the activities that users of these tools "
     "and techniques may carry out, and urge them not to use them to carry out "
@@ -46,7 +46,7 @@ DESCRIPTION_TEXT = (
     "including descriptions, topics, stars, and update dates."
 )
 CURRENT_YEAR = datetime.now().year
-COPYRIGHT_TEXT = f"(c) OSINTech, {CURRENT_YEAR}."
+COPYRIGHT_TEXT = f"(c) OSINTech, {CURRENT_YEAR}, All rights reserved"
 REPOS_SUMMARY_PATH = "repos_summary.json"
 PDF_NAME_PREFIX = "OSINT_Repositories_"
 
@@ -548,7 +548,9 @@ def generate_pdf_from_json(
             "warning_text": MD_DOCUMENT_WARNING
         },
         "section_repos_title": "Starred Repositories",
-        "section_users_title": "Starred Users"
+        "section_users_title": "Starred Users",
+        "footer_text": COPYRIGHT_TEXT,
+        "footer_show_page_number": True
     }
     success = save_pdf_from_data(
         output_path,

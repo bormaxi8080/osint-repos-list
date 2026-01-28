@@ -28,7 +28,7 @@ def build_repos_markdown(
         + document_date + line_separator + line_separator
         + f"**Starred repositories count:** {repos_count}"
         + line_separator + line_separator
-        + config["section_repos_title"] + line_separator + line_separator
+        + config["section_repos_title"] + line_separator + line_separator + line_separator
     )
 
     for repo in repos:
