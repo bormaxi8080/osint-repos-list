@@ -74,7 +74,7 @@ def _write_header_section(
         config["header"],
         max_width,
         line_height=7,
-        spacing=2
+        spacing=4
     )
 
     _set_pdf_font(pdf, bold=False, size=11)
@@ -99,6 +99,8 @@ def _write_header_section(
         max_width
     )
     pdf.ln(5)
+    _pdf_draw_separator(pdf)
+    pdf.ln(2)
     if config.get("copyright_link_url"):
         line_height = 5
         y_top = pdf.get_y()

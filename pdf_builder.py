@@ -2,12 +2,17 @@
 
 from colorama import Fore
 
-from pdf_estimate import _estimate_repo_block_height
+from pdf_estimate import (
+    _estimate_contributor_block_height,
+    _estimate_repo_block_height
+)
 from pdf_fonts import OSINTPDF, _configure_pdf_fonts, _set_pdf_font
 from pdf_fpdf import FPDF
 from pdf_header import _write_header_section
 from pdf_render import (
     _pdf_draw_separator,
+    _pdf_write_bold_label_value,
+    _pdf_write_bold_label_with_link,
     _pdf_write_icon_bold_label_links,
     _pdf_write_icon_bold_label_value,
     _pdf_write_icon_bold_label_with_link,
@@ -18,8 +23,8 @@ from pdf_render import (
 from pdf_utils import _format_github_date
 
 
-def save_pdf_from_data(path, repos, users, document_date, config, new_since=None):
-    """Generate and save the PDF from repository and user data."""
+def save_pdf_from_data(path, repos, contributors, document_date, config, new_since=None):
+    """Generate and save the PDF from repository and contributor data."""
     if FPDF is None:
         print(
             Fore.RED
@@ -35,6 +40,9 @@ def save_pdf_from_data(path, repos, users, document_date, config, new_since=None
     pdf.add_page()
     max_width = pdf.w - pdf.l_margin - pdf.r_margin
 
+    link_repos = pdf.add_link()
+    link_contributors = pdf.add_link()
+
     _write_header_section(
         pdf,
         config["repos_header"],
@@ -44,6 +52,28 @@ def save_pdf_from_data(path, repos, users, document_date, config, new_since=None
         include_count=len(repos),
         include_new_since=new_since
     )
+
+    _set_pdf_font(pdf, bold=False, size=11)
+    _pdf_write_label_with_link(
+        pdf,
+        "",
+        "Starred Repositories",
+        link_repos,
+        max_width,
+        line_height=6
+    )
+    _pdf_write_label_with_link(
+        pdf,
+        "",
+        "Starred Contributors",
+        link_contributors,
+        max_width,
+        line_height=6
+    )
+    pdf.ln(2)
+
+    pdf.add_page()
+    pdf.set_link(link_repos, page=pdf.page_no(), y=pdf.t_margin)
 
     _set_pdf_font(pdf, bold=True, size=16)
     _pdf_write_wrapped_text(
@@ -148,104 +178,140 @@ def save_pdf_from_data(path, repos, users, document_date, config, new_since=None
         _pdf_draw_separator(pdf)
 
     pdf.add_page()
+    pdf.set_link(link_contributors, page=pdf.page_no(), y=pdf.t_margin)
 
-    _write_header_section(
-        pdf,
-        config["users_header"],
-        document_date,
-        max_width
-    )
-
-    _set_pdf_font(pdf, bold=True, size=13)
+    _set_pdf_font(pdf, bold=True, size=16)
     _pdf_write_wrapped_text(
         pdf,
-        config["section_users_title"],
+        config["section_contributors_title"],
         max_width,
-        line_height=6,
+        line_height=7,
         spacing=3
     )
 
-    sorted_users = sorted(users, key=lambda x: str(x.get("login", "")).lower())
-    for owner_data in sorted_users:
-        login = str(owner_data.get("login", ""))
-        html_url = str(owner_data.get("html_url", ""))
-        name = owner_data.get("name")
-        location = owner_data.get("location")
+    sorted_contributors = sorted(
+        contributors,
+        key=lambda x: str(x.get("login", "")).lower()
+    )
+    for contributor_data in sorted_contributors:
+        contributor_block_height = _estimate_contributor_block_height(
+            pdf,
+            contributor_data,
+            max_width
+        )
+        if pdf.get_y() + contributor_block_height > pdf.page_break_trigger:
+            pdf.add_page()
+        login = str(contributor_data.get("login", ""))
+        html_url = str(contributor_data.get("html_url", ""))
+        name = contributor_data.get("name")
+        location = contributor_data.get("location")
 
         _set_pdf_font(pdf, bold=True, size=12)
         _pdf_write_label_with_link(
             pdf,
-            "User: ",
+            "Contributor: ",
             login,
             html_url,
             max_width,
             line_height=6
         )
 
+        line_height = 5
+        spacing = 1
         _set_pdf_font(pdf, bold=False, size=11)
         if name is not None:
-            _pdf_write_wrapped_text(pdf, f"Name: {name}", max_width, spacing=1)
+            _pdf_write_bold_label_value(
+                pdf,
+                "Name: ",
+                str(name),
+                max_width,
+                line_height=line_height,
+                spacing=spacing
+            )
         if location is not None:
-            _pdf_write_wrapped_text(pdf, f"Location: {location}", max_width, spacing=1)
+            _pdf_write_bold_label_value(
+                pdf,
+                "Location: ",
+                str(location),
+                max_width,
+                line_height=line_height,
+                spacing=spacing
+            )
 
-        bio = owner_data.get("bio")
+        bio = contributor_data.get("bio")
         if bio is not None:
-            _pdf_write_wrapped_text(pdf, str(bio), max_width, spacing=1)
+            _pdf_write_wrapped_text(
+                pdf,
+                str(bio),
+                max_width,
+                line_height=line_height,
+                spacing=spacing
+            )
 
-        blog = owner_data.get("blog")
+        blog = contributor_data.get("blog")
         if blog is not None and str(blog) != "":
-            _pdf_write_label_with_link(
+            _pdf_write_bold_label_with_link(
                 pdf,
                 "Site/Blog: ",
                 str(blog),
                 str(blog),
-                max_width
+                max_width,
+                line_height=line_height
             )
+            pdf.ln(spacing)
 
-        public_repos = owner_data.get("public_repos")
+        public_repos = contributor_data.get("public_repos")
         if public_repos is not None and html_url:
             repos_url = f"{html_url}?tab=repositories"
-            _pdf_write_label_with_link(
+            _pdf_write_bold_label_with_link(
                 pdf,
-                "Public repos: ",
+                "Public Repos: ",
                 str(public_repos),
                 repos_url,
-                max_width
+                max_width,
+                line_height=line_height
             )
+            pdf.ln(spacing)
 
-        followers = owner_data.get("followers")
-        followers_url = owner_data.get("followers_url")
+        followers = contributor_data.get("followers")
+        followers_url = contributor_data.get("followers_url")
         if followers is not None and followers_url:
-            _pdf_write_label_with_link(
+            _pdf_write_bold_label_with_link(
                 pdf,
                 "Followers: ",
                 str(followers),
                 str(followers_url),
-                max_width
+                max_width,
+                line_height=line_height
             )
+            pdf.ln(spacing)
 
-        twitter_username = owner_data.get("twitter_username")
+        twitter_username = contributor_data.get("twitter_username")
         if twitter_username is not None:
             twitter_handle = f"@{twitter_username}"
             twitter_url = f"https://twitter.com/{twitter_username}"
-            _pdf_write_label_with_link(
+            _pdf_write_bold_label_with_link(
                 pdf,
                 "Twitter: ",
                 twitter_handle,
                 twitter_url,
-                max_width
+                max_width,
+                line_height=line_height
             )
+            pdf.ln(spacing)
 
-        owner_email = owner_data.get("email")
-        if owner_email is not None:
-            mailto = f"mailto:{owner_email}"
+        contributor_email = contributor_data.get("email")
+        if contributor_email is not None:
+            mailto = f"mailto:{contributor_email}"
             _pdf_write_label_with_link(
                 pdf,
                 "Email: ",
-                str(owner_email),
+                str(contributor_email),
                 mailto,
-                max_width
+                max_width,
+                line_height=line_height
             )
+            pdf.ln(spacing)
 
         _pdf_draw_separator(pdf)
 

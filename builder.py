@@ -1,4 +1,4 @@
-"""Build starred repos/users markdown and JSON from GitHub API."""
+"""Build starred repos/contributors markdown and JSON from GitHub API."""
 
 import argparse
 import json
@@ -14,7 +14,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
 
 from json_builder import save_json
-from markdown_builder import build_repos_markdown, build_users_markdown
+from markdown_builder import build_repos_markdown, build_contributors_markdown
 from pdf_builder import save_pdf_from_data
 
 # Initialize Colorama
@@ -23,10 +23,10 @@ init(autoreset=True)
 GITHUB_API_HEADER_ACCEPT = "Accept: application/vnd.github+json"
 GITHUB_API_URL = "https://api.github.com"
 GITHUB_API_STARRED = "/user/starred"
-GITHUB_API_USERS = "/users/"
+GITHUB_API_CONTRIBUTORS = "/users/"
 GITHUB_REPO_URL = "https://github.com/bormaxi8080/osint-repos-list"
 
-MD_DOCUMENT_HEADER = "List of GitHub Starred Repositories and Users"
+MD_DOCUMENT_HEADER = "List of GitHub Starred Repositories and Contributors"
 MD_DOCUMENT_GENERATION = (
     f"This document generated automatically, see [{GITHUB_REPO_URL}]({GITHUB_REPO_URL}) for details"
 )
@@ -185,8 +185,8 @@ def _get_github_headers():
     }
 
 
-def fetch_user(user, headers, max_retries=3):
-    """Fetch GitHub user data with retry handling."""
+def fetch_contributor(contributor_login, headers, max_retries=3):
+    """Fetch GitHub contributor data with retry handling."""
     not_found = (
         "{'message': 'Not Found', "
         "'documentation_url': 'https://docs.github.com/rest/users/users#get-a-user'}"
@@ -197,7 +197,7 @@ def fetch_user(user, headers, max_retries=3):
             time.sleep(0.5)
 
             res = SESSION.get(
-                url=f"{GITHUB_API_URL}{GITHUB_API_USERS}{user}",
+                url=f"{GITHUB_API_URL}{GITHUB_API_CONTRIBUTORS}{contributor_login}",
                 headers=headers,
                 timeout=(10, 30)
             )
@@ -211,7 +211,10 @@ def fetch_user(user, headers, max_retries=3):
         except (requests.exceptions.ConnectionError,
                 requests.exceptions.Timeout,
                 requests.exceptions.ChunkedEncodingError) as e:
-            print(Fore.RED + f"Ошибка при запросе пользователя {user}: {e}")
+            print(
+                Fore.RED
+                + f"Ошибка при запросе контрибьютора {contributor_login}: {e}"
+            )
             if attempt < max_retries - 1:
                 wait_time = 2 ** attempt
                 print(
@@ -223,16 +226,25 @@ def fetch_user(user, headers, max_retries=3):
             else:
                 print(
                     Fore.RED
-                    + f"Не удалось получить данные пользователя {user} после {max_retries} попыток"
+                    + (
+                        f"Не удалось получить данные контрибьютора "
+                        f"{contributor_login} после {max_retries} попыток"
+                    )
                 )
                 return None
 
         except requests.exceptions.RequestException as e:
-            print(Fore.RED + f"Ошибка при запросе пользователя {user}: {e}")
+            print(
+                Fore.RED
+                + f"Ошибка при запросе контрибьютора {contributor_login}: {e}"
+            )
             return None
 
         except ValueError as e:
-            print(Fore.RED + f"Ошибка разбора ответа пользователя {user}: {e}")
+            print(
+                Fore.RED
+                + f"Ошибка разбора ответа контрибьютора {contributor_login}: {e}"
+            )
             return None
 
     return None
@@ -326,8 +338,8 @@ def _load_json_document(path):
         return json.load(f)
 
 
-def _resolve_users_json_path(path):
-    """Resolve users JSON filename variations to an existing path."""
+def _resolve_contributors_json_path(path):
+    """Resolve contributors JSON filename variations to an existing path."""
     if os.path.exists(path):
         return path
     base = os.path.basename(path)
@@ -345,25 +357,25 @@ def _resolve_users_json_path(path):
 
 def generate_markdown_documents(
     repos_json_path="starred_repos.json",
-    users_json_path="starred_contributors.json"
+    contributors_json_path="starred_contributors.json"
 ):
     """Generate markdown (and random) files from existing JSON data."""
     if not os.path.exists(repos_json_path):
         print(Fore.RED + f"Missing file: {repos_json_path}")
         return False
-    users_json_path = _resolve_users_json_path(users_json_path)
-    if not os.path.exists(users_json_path):
-        print(Fore.RED + f"Missing file: {users_json_path}")
+    contributors_json_path = _resolve_contributors_json_path(contributors_json_path)
+    if not os.path.exists(contributors_json_path):
+        print(Fore.RED + f"Missing file: {contributors_json_path}")
         return False
 
     print(Fore.GREEN + "Welcome to GitHub starred repos builder!")
     print(Fore.CYAN + f"See {GITHUB_REPO_URL} for details")
 
     repos = _load_json_document(repos_json_path)
-    users = _load_json_document(users_json_path)
+    contributors = _load_json_document(contributors_json_path)
 
     print(Fore.CYAN + f"Repos loaded: {len(repos)}")
-    print(Fore.CYAN + f"Users loaded: {len(users)}")
+    print(Fore.CYAN + f"Contributors loaded: {len(contributors)}")
 
     # Sort array by repository name
     sorted_repos = sorted(repos, key=lambda x: x['name'])
@@ -384,7 +396,7 @@ def generate_markdown_documents(
             "[Substack: https://substack.com/@osintech](https://substack.com/@osintech)"
         ),
         "section_repos_title": "## Starred Repositories",
-        "section_users_title": "## Starred Users"
+        "section_contributors_title": "## Starred Contributors"
     }
 
     md_document = build_repos_markdown(
@@ -419,16 +431,16 @@ def generate_markdown_documents(
     _save_document("starred_repos_random.md", md_document_random)
     print(Fore.GREEN + "Done")
 
-    print(Fore.YELLOW + "Generating users data...")
+    print(Fore.YELLOW + "Generating contributors data...")
 
-    md_document_users = build_users_markdown(
-        users=users,
+    md_document_contributors = build_contributors_markdown(
+        contributors=contributors,
         document_date=document_date,
         config=markdown_config
     )
 
     print(Fore.YELLOW + "Saving document data...")
-    _save_document("starred_contributors.md", md_document_users)
+    _save_document("starred_contributors.md", md_document_contributors)
     print(Fore.GREEN + "Done")
     return True
 
@@ -474,14 +486,14 @@ def generate_json_documents():
 
     starred_owners_names.sort()
 
-    print(Fore.YELLOW + "Generating users data...")
-    print(Fore.CYAN + f"Fetching {len(starred_owners_names)} users data...")
+    print(Fore.YELLOW + "Generating contributors data...")
+    print(Fore.CYAN + f"Fetching {len(starred_owners_names)} contributors data...")
     for idx, owner_login in enumerate(starred_owners_names, 1):
         print(
             Fore.BLUE
-            + f"Fetching user {idx}/{len(starred_owners_names)}: {owner_login}"
+            + f"Fetching contributor {idx}/{len(starred_owners_names)}: {owner_login}"
         )
-        owner_data = fetch_user(owner_login, headers=headers)
+        owner_data = fetch_contributor(owner_login, headers=headers)
         if owner_data is not None:
             starred_owners.append(owner_data)
 
@@ -640,20 +652,20 @@ def generate_startme_html(
 
 def generate_pdf_from_json(
     repos_json_path="starred_repos.json",
-    users_json_path="starred_contributors.json",
+    contributors_json_path="starred_contributors.json",
     output_path=None
 ):
     """Generate the PDF from existing JSON files."""
     if not os.path.exists(repos_json_path):
         print(Fore.RED + f"Missing file: {repos_json_path}")
         return False
-    users_json_path = _resolve_users_json_path(users_json_path)
-    if not os.path.exists(users_json_path):
-        print(Fore.RED + f"Missing file: {users_json_path}")
+    contributors_json_path = _resolve_contributors_json_path(contributors_json_path)
+    if not os.path.exists(contributors_json_path):
+        print(Fore.RED + f"Missing file: {contributors_json_path}")
         return False
 
     repos = _load_json_document(repos_json_path)
-    users = _load_json_document(users_json_path)
+    contributors = _load_json_document(contributors_json_path)
     document_date = f"Generated at: {datetime.now().date().strftime('%Y-%m-%d')}"
     if output_path is None:
         date_stamp = datetime.now().strftime("%Y.%m.%d")
@@ -688,7 +700,7 @@ def generate_pdf_from_json(
             "copyright_link_url": "https://substack.com/@osintech",
             "warning_text": MD_DOCUMENT_WARNING
         },
-        "users_header": {
+        "contributors_header": {
             "header": MD_DOCUMENT_HEADER,
             "description_text": DESCRIPTION_TEXT,
             "generation_text": "This document generated automatically. See:",
@@ -697,14 +709,14 @@ def generate_pdf_from_json(
             "warning_text": MD_DOCUMENT_WARNING
         },
         "section_repos_title": "Starred Repositories",
-        "section_users_title": "Starred Users",
+        "section_contributors_title": "Starred Contributors",
         "footer_text": COPYRIGHT_TEXT,
         "footer_show_page_number": True
     }
     success = save_pdf_from_data(
         output_path,
         repos,
-        users,
+        contributors,
         document_date,
         pdf_config,
         newly_added
@@ -729,7 +741,7 @@ def generate_pdf_from_json(
 def _parse_args(argv):
     """Parse CLI arguments and normalize the mode option."""
     parser = argparse.ArgumentParser(
-        description="Build starred repos/users markdown and PDF documents."
+        description="Build starred repos/contributors markdown and PDF documents."
     )
     parser.add_argument(
         "--mode",

@@ -192,6 +192,21 @@ def _estimate_icon_bold_label_links_height(
     return line_count * line_height + spacing
 
 
+def _estimate_wrapped_text_height(
+    pdf,
+    text,
+    max_width,
+    line_height=5,
+    spacing=0
+):
+    _set_pdf_font(pdf, bold=False, size=11)
+    text_sanitized = _sanitize_pdf_text(text, pdf)
+    lines = _count_wrapped_lines(pdf, text_sanitized, max_width)
+    if lines == 0:
+        lines = 1
+    return lines * line_height + spacing
+
+
 def _estimate_repo_block_height(pdf, repo, max_width):
     repo_name = str(repo.get("name", ""))
     repo_url = str(repo.get("html_url", ""))
@@ -274,6 +289,116 @@ def _estimate_repo_block_height(pdf, repo, max_width):
             max_width,
             spacing=1
         )
+
+    height += 4
+    return height
+
+
+def _estimate_contributor_block_height(pdf, contributor, max_width):
+    login = str(contributor.get("login", ""))
+    html_url = str(contributor.get("html_url", ""))
+    name = contributor.get("name")
+    location = contributor.get("location")
+    bio = contributor.get("bio")
+    blog = contributor.get("blog")
+    public_repos = contributor.get("public_repos")
+    followers = contributor.get("followers")
+    followers_url = contributor.get("followers_url")
+    twitter_username = contributor.get("twitter_username")
+    contributor_email = contributor.get("email")
+
+    height = 0
+    height += _estimate_label_with_link_height(
+        pdf,
+        "Contributor: ",
+        login,
+        max_width,
+        line_height=6,
+        bold=True,
+        size=12
+    )
+
+    line_height = 5
+    spacing = 1
+    if name is not None:
+        height += _estimate_bold_label_value_height(
+            pdf,
+            "Name: ",
+            str(name),
+            max_width,
+            line_height=line_height,
+            spacing=spacing
+        )
+    if location is not None:
+        height += _estimate_bold_label_value_height(
+            pdf,
+            "Location: ",
+            str(location),
+            max_width,
+            line_height=line_height,
+            spacing=spacing
+        )
+    if bio is not None:
+        height += _estimate_wrapped_text_height(
+            pdf,
+            str(bio),
+            max_width,
+            line_height=line_height,
+            spacing=spacing
+        )
+    if blog is not None and str(blog) != "":
+        height += _estimate_label_with_link_height(
+            pdf,
+            "Site/Blog: ",
+            str(blog),
+            max_width,
+            line_height=line_height,
+            bold=True,
+            size=11
+        )
+        height += spacing
+    if public_repos is not None and html_url:
+        height += _estimate_label_with_link_height(
+            pdf,
+            "Public Repos: ",
+            str(public_repos),
+            max_width,
+            line_height=line_height,
+            bold=True,
+            size=11
+        )
+        height += spacing
+    if followers is not None and followers_url:
+        height += _estimate_label_with_link_height(
+            pdf,
+            "Followers: ",
+            str(followers),
+            max_width,
+            line_height=line_height,
+            bold=True,
+            size=11
+        )
+        height += spacing
+    if twitter_username is not None:
+        height += _estimate_label_with_link_height(
+            pdf,
+            "Twitter: ",
+            f"@{twitter_username}",
+            max_width,
+            line_height=line_height,
+            bold=True,
+            size=11
+        )
+        height += spacing
+    if contributor_email is not None:
+        height += _estimate_label_with_link_height(
+            pdf,
+            "Email: ",
+            str(contributor_email),
+            max_width,
+            line_height=line_height
+        )
+        height += spacing
 
     height += 4
     return height

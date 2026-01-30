@@ -2,9 +2,11 @@
 
 This repository encapsulates a list of repositories from the GitHub, marked with an asterisk relating to the subject of OSINT, Cybersecurity, DevOps / System Administration and specific development.
 
-![alt text](./img/1.png "Terminal")
+![alt text](./img/1.png "Starred Repositories and Contributors")
 
-![alt text](./img/2.png "Terminal")
+![alt text](./img/2.png "Starred Repositories")
+
+![alt text](./img/3.png "Strred Contributors")
 
 The list of 100 random starred repositories is here: [https://github.com/bormaxi8080/osint-repos-list/blob/main/starred_repos_random.md](https://github.com/bormaxi8080/osint-repos-list/blob/main/starred_repos_random.md)
 
