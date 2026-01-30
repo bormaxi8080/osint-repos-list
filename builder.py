@@ -491,7 +491,6 @@ def generate_json_documents():
 
 def generate_topics_json(
     repos_json_path="starred_repos.json",
-    users_json_path="starred_contributors.json",
     output_path="starred_topics.json"
 ):
     """Build starred_topics.json from starred repos data."""
@@ -535,6 +534,106 @@ def generate_topics_json(
         topics_payload.append({"topic": topic, "repositories": unique_repos})
 
     _save_json_document(output_path, topics_payload)
+    print(Fore.GREEN + "Done")
+    return True
+
+
+def generate_startme_html(
+    topics_json_path="starred_topics.json",
+    output_path="starred_repos.html",
+    columns=4
+):
+    """Build start.me-compatible HTML bookmarks from topics JSON."""
+    if not os.path.exists(topics_json_path):
+        print(Fore.RED + f"Missing file: {topics_json_path}")
+        return False
+
+    print(Fore.YELLOW + "Generating start.me bookmarks...")
+
+    topics = _load_json_document(topics_json_path)
+    if not isinstance(topics, list):
+        print(Fore.RED + f"Invalid topics data in {topics_json_path}")
+        return False
+
+    filtered_topics = []
+    for item in topics:
+        if not isinstance(item, dict):
+            continue
+        topic_name = item.get("topic")
+        repositories = item.get("repositories")
+        if not isinstance(topic_name, str) or not isinstance(repositories, list):
+            continue
+        if len(repositories) <= 20:
+            continue
+        filtered_topics.append(
+            {
+                "topic": topic_name,
+                "repositories": repositories
+            }
+        )
+
+    filtered_topics.sort(key=lambda entry: entry["topic"].lower())
+    for entry in filtered_topics:
+        entry["repositories"] = sorted(
+            entry["repositories"],
+            key=lambda repo: str(repo.get("full_name", "")).lower()
+        )
+
+    timestamp = str(int(time.time()))
+
+    def _escape(value):
+        return (
+            str(value)
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+        )
+
+    lines = [
+        "<!DOCTYPE NETSCAPE-Bookmark-file-1>",
+        "<!-- This is an automatically generated file.",
+        "     It will be read and overwritten.",
+        "     DO NOT EDIT! -->",
+        '<META CONTENT="text/html; charset=UTF-8" HTTP-EQUIV="Content-Type">',
+        "<TITLE>Bookmarks</TITLE>",
+        "<H1>Bookmarks</H1>",
+        "<DL><p>",
+        (
+            f'<DT><H3 FOLDED="true" PAGE="true" ADD_DATE="{timestamp}" '
+            f'LAST_MODIFIED="{timestamp}" COLUMNS="{int(columns)}">'
+            "Starred Repositories</H3>"
+        ),
+        "<DL><p>"
+    ]
+
+    for entry in filtered_topics:
+        topic_name = _escape(entry["topic"])
+        lines.append(
+            (
+                f'<DT><H3 FOLDED="true" BOOKMARKS="true" FEEDS="false" '
+                f'ADD_DATE="{timestamp}" LAST_MODIFIED="{timestamp}">{topic_name}</H3>'
+            )
+        )
+        lines.append("<DL><p>")
+        for repo in entry["repositories"]:
+            full_name = repo.get("full_name")
+            html_url = repo.get("html_url")
+            if not isinstance(full_name, str) or not isinstance(html_url, str):
+                continue
+            lines.append(
+                (
+                    f'<DT><A HREF="{_escape(html_url)}" '
+                    f'ADD_DATE="{timestamp}" LAST_MODIFIED="{timestamp}">'
+                    f"{_escape(full_name)}</A>"
+                )
+            )
+        lines.append("</DL><p>")
+
+    lines.append("</DL><p>")
+    lines.append("</DL><p>")
+
+    _save_document(output_path, "\n".join(lines))
     print(Fore.GREEN + "Done")
     return True
 
@@ -635,11 +734,12 @@ def _parse_args(argv):
     parser.add_argument(
         "--mode",
         "-m",
-        choices=["json", "markdown", "pdf", "topics", "full"],
+        choices=["json", "markdown", "pdf", "topics", "startme", "full"],
         default="full",
         help=(
             "json: generate json only; markdown: generate md only; pdf: generate pdf only; "
-            "topics: generate topics only; full: json then topics then markdown then pdf."
+            "topics: generate topics only; startme: generate start.me bookmarks only; "
+            "full: json then topics then markdown then pdf then startme."
         )
     )
     if not argv:
@@ -652,7 +752,7 @@ def _parse_args(argv):
     for arg in unknown:
         if arg.startswith("mode="):
             mode_value = arg.split("=", 1)[1].strip().lower()
-            if mode_value not in {"json", "markdown", "pdf", "topics", "full"}:
+            if mode_value not in {"json", "markdown", "pdf", "topics", "startme", "full"}:
                 print(Fore.RED + f"Unknown mode: {mode_value}")
                 sys.exit(2)
             args.mode = mode_value
@@ -687,6 +787,12 @@ def main():
             sys.exit(1)
         return
 
+    if args.mode == "startme":
+        success = generate_startme_html()
+        if not success:
+            sys.exit(1)
+        return
+
     if args.mode == "full":
         generate_json_documents()
         success = generate_topics_json()
@@ -696,6 +802,9 @@ def main():
         if not success:
             sys.exit(1)
         success = generate_pdf_from_json()
+        if not success:
+            sys.exit(1)
+        success = generate_startme_html()
         if not success:
             sys.exit(1)
         return

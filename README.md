@@ -106,6 +106,12 @@ python3 builder.py -m pdf
 python3 builder.py -m topics
 ```
 
+- start.me bookmarks only (from existing JSON files):
+
+```bash
+python3 builder.py -m startme
+```
+
 ![alt text](./img/shell1.png "Terminal")
 
 ![alt text](./img/shell2.png "Terminal")
