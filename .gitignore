@@ -137,9 +137,10 @@ dmypy.json
 .pyre/
 
 starred_repos.md
-starred_users.md
+starred_contributors.md
 
 starred_repos.json
-starred_users.json
+starred_contributors.json
+starred_topics.json
 
 OSINT_Repositories_*.pdf

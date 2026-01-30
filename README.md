@@ -100,6 +100,12 @@ python3 builder.py -m markdown
 python3 builder.py -m pdf
 ```
 
+- Topics only (from existing JSON files):
+
+```bash
+python3 builder.py -m topics
+```
+
 ![alt text](./img/shell1.png "Terminal")
 
 ![alt text](./img/shell2.png "Terminal")

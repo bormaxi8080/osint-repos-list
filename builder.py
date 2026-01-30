@@ -332,10 +332,10 @@ def _resolve_users_json_path(path):
         return path
     base = os.path.basename(path)
     directory = os.path.dirname(path)
-    if base == "starred_users.json":
-        alt = os.path.join(directory, "starred_user.json")
-    elif base == "starred_user.json":
-        alt = os.path.join(directory, "starred_users.json")
+    if base == "starred_contributors.json":
+        alt = os.path.join(directory, "starred_contributor.json")
+    elif base == "starred_contributor.json":
+        alt = os.path.join(directory, "starred_contributors.json")
     else:
         alt = None
     if alt and os.path.exists(alt):
@@ -345,7 +345,7 @@ def _resolve_users_json_path(path):
 
 def generate_markdown_documents(
     repos_json_path="starred_repos.json",
-    users_json_path="starred_users.json"
+    users_json_path="starred_contributors.json"
 ):
     """Generate markdown (and random) files from existing JSON data."""
     if not os.path.exists(repos_json_path):
@@ -428,7 +428,7 @@ def generate_markdown_documents(
     )
 
     print(Fore.YELLOW + "Saving document data...")
-    _save_document("starred_users.md", md_document_users)
+    _save_document("starred_contributors.md", md_document_users)
     print(Fore.GREEN + "Done")
     return True
 
@@ -485,13 +485,63 @@ def generate_json_documents():
         if owner_data is not None:
             starred_owners.append(owner_data)
 
-    _save_json_document("starred_users.json", starred_owners)
+    _save_json_document("starred_contributors.json", starred_owners)
     print(Fore.GREEN + "Done")
+
+
+def generate_topics_json(
+    repos_json_path="starred_repos.json",
+    users_json_path="starred_contributors.json",
+    output_path="starred_topics.json"
+):
+    """Build starred_topics.json from starred repos data."""
+    if not os.path.exists(repos_json_path):
+        print(Fore.RED + f"Missing file: {repos_json_path}")
+        return False
+
+    print(Fore.YELLOW + "Generating topics data...")
+
+    repos = _load_json_document(repos_json_path)
+    topics_map = {}
+    for repo in repos:
+        topics = repo.get("topics") or []
+        if not isinstance(topics, list):
+            continue
+        full_name = repo.get("full_name")
+        html_url = repo.get("html_url")
+        if not isinstance(full_name, str) or not isinstance(html_url, str):
+            continue
+        repo_entry = {"full_name": full_name, "html_url": html_url}
+        for topic in topics:
+            if not isinstance(topic, str):
+                continue
+            topic = topic.strip()
+            if not topic:
+                continue
+            topics_map.setdefault(topic, []).append(repo_entry)
+
+    topics_payload = []
+    for topic in sorted(topics_map, key=lambda value: value.lower()):
+        repos_list = topics_map[topic]
+        seen = set()
+        unique_repos = []
+        for item in repos_list:
+            key = (item["full_name"], item["html_url"])
+            if key in seen:
+                continue
+            seen.add(key)
+            unique_repos.append(item)
+        unique_repos.sort(key=lambda item: item["full_name"].lower())
+        topics_payload.append({"topic": topic, "repositories": unique_repos})
+
+    _save_json_document(output_path, topics_payload)
+    print(Fore.GREEN + "Done")
+    return True
 
 
 def generate_pdf_from_json(
     repos_json_path="starred_repos.json",
-    users_json_path="starred_users.json",
+    users_json_path="starred_contributors.json",
     output_path=None
 ):
     """Generate the PDF from existing JSON files."""
@@ -585,11 +635,11 @@ def _parse_args(argv):
     parser.add_argument(
         "--mode",
         "-m",
-        choices=["json", "markdown", "pdf", "full"],
+        choices=["json", "markdown", "pdf", "topics", "full"],
         default="full",
         help=(
             "json: generate json only; markdown: generate md only; pdf: generate pdf only; "
-            "full: json then markdown then pdf."
+            "topics: generate topics only; full: json then topics then markdown then pdf."
         )
     )
     if not argv:
@@ -602,7 +652,7 @@ def _parse_args(argv):
     for arg in unknown:
         if arg.startswith("mode="):
             mode_value = arg.split("=", 1)[1].strip().lower()
-            if mode_value not in {"json", "markdown", "pdf", "full"}:
+            if mode_value not in {"json", "markdown", "pdf", "topics", "full"}:
                 print(Fore.RED + f"Unknown mode: {mode_value}")
                 sys.exit(2)
             args.mode = mode_value
@@ -631,8 +681,17 @@ def main():
             sys.exit(1)
         return
 
+    if args.mode == "topics":
+        success = generate_topics_json()
+        if not success:
+            sys.exit(1)
+        return
+
     if args.mode == "full":
         generate_json_documents()
+        success = generate_topics_json()
+        if not success:
+            sys.exit(1)
         success = generate_markdown_documents()
         if not success:
             sys.exit(1)
