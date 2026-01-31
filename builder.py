@@ -613,8 +613,7 @@ def generate_startme_html(
         "<DL><p>",
         (
             f'<DT><H3 FOLDED="true" PAGE="true" ADD_DATE="{timestamp}" '
-            f'LAST_MODIFIED="{timestamp}" COLUMNS="{int(columns)}">'
-            "Starred Repositories</H3>"
+            f'LAST_MODIFIED="{timestamp}">Starred Repositories</H3>'
         ),
         "<DL><p>"
     ]
@@ -624,7 +623,8 @@ def generate_startme_html(
         lines.append(
             (
                 f'<DT><H3 FOLDED="true" BOOKMARKS="true" FEEDS="false" '
-                f'ADD_DATE="{timestamp}" LAST_MODIFIED="{timestamp}">{topic_name}</H3>'
+                f'ADD_DATE="{timestamp}" LAST_MODIFIED="{timestamp}">'
+                f'{topic_name}</H3>'
             )
         )
         lines.append("<DL><p>")
