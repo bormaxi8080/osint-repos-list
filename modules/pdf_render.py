@@ -2,11 +2,11 @@
 
 from urllib.parse import quote
 
-from pdf_fpdf import XPos, YPos
-from pdf_fonts import _set_pdf_font
-from pdf_icons import ICON_SIZE, _pdf_draw_icon
-from pdf_sanitize import _sanitize_pdf_text
-from pdf_wrap import _wrap_pdf_lines, _wrap_pdf_lines_with_first_width
+from .pdf_fpdf import XPos, YPos
+from .pdf_fonts import _set_pdf_font
+from .pdf_icons import ICON_SIZE, _pdf_draw_icon
+from .pdf_sanitize import _sanitize_pdf_text
+from .pdf_wrap import _wrap_pdf_lines, _wrap_pdf_lines_with_first_width
 
 
 def _pdf_write_wrapped_text(pdf, text, max_width, line_height=5, spacing=0):

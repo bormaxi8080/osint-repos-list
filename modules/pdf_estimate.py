@@ -1,10 +1,10 @@
 """Height estimation helpers for PDF output."""
 
-from pdf_fonts import _set_pdf_font
-from pdf_icons import ICON_SIZE
-from pdf_sanitize import _sanitize_pdf_text
-from pdf_utils import _format_github_date
-from pdf_wrap import (
+from .pdf_fonts import _set_pdf_font
+from .pdf_icons import ICON_SIZE
+from .pdf_sanitize import _sanitize_pdf_text
+from .pdf_utils import _format_github_date
+from .pdf_wrap import (
     _count_wrapped_lines,
     _count_wrapped_lines_first_width,
     _wrap_pdf_lines_with_first_width

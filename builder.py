@@ -13,9 +13,9 @@ from colorama import Fore, init
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
 
-from json_builder import save_json
-from markdown_builder import build_repos_markdown, build_contributors_markdown
-from pdf_builder import save_pdf_from_data
+from modules.json_builder import save_json
+from modules.markdown_builder import build_repos_markdown, build_contributors_markdown
+from modules.pdf_builder import save_pdf_from_data
 
 # Initialize Colorama
 init(autoreset=True)
@@ -49,6 +49,7 @@ CURRENT_YEAR = datetime.now().year
 COPYRIGHT_TEXT = f"(c) OSINTech, {CURRENT_YEAR}, All rights reserved"
 REPOS_SUMMARY_PATH = "repos_summary.json"
 PDF_NAME_PREFIX = "OSINT_Repositories_"
+PDF_OUTPUT_DIR = "pdf"
 
 
 def _parse_pdf_date_from_name(filename):
@@ -669,7 +670,18 @@ def generate_pdf_from_json(
     document_date = f"Generated at: {datetime.now().date().strftime('%Y-%m-%d')}"
     if output_path is None:
         date_stamp = datetime.now().strftime("%Y.%m.%d")
-        output_path = f"OSINT_Repositories_{date_stamp}.pdf"
+        output_path = os.path.join(
+            PDF_OUTPUT_DIR,
+            f"{PDF_NAME_PREFIX}{date_stamp}.pdf"
+        )
+    else:
+        output_dir = os.path.dirname(output_path)
+        if output_dir == "":
+            output_path = os.path.join(PDF_OUTPUT_DIR, output_path)
+
+    output_dir = os.path.dirname(output_path)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
 
     pdf_name = os.path.basename(output_path)
     current_date = _parse_pdf_date_from_name(pdf_name) or datetime.now().date()

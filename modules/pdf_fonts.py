@@ -2,7 +2,7 @@
 
 import os
 
-from pdf_fpdf import FPDF
+from .pdf_fpdf import FPDF
 
 PDF_FONT_STATE = {
     "family": "Helvetica",
@@ -13,7 +13,7 @@ PDF_FONT_STATE = {
 
 def _configure_pdf_fonts(pdf):
     """Try to load a Unicode-capable font; fall back to core fonts."""
-    base_dir = os.path.dirname(__file__)
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
     candidates = [
         (
             "NotoSans",

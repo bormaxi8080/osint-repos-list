@@ -1,7 +1,7 @@
 """Minimal markdown helpers for PDF output."""
 
-from pdf_fonts import _set_pdf_font
-from pdf_wrap import _wrap_pdf_lines_with_first_width
+from .pdf_fonts import _set_pdf_font
+from .pdf_wrap import _wrap_pdf_lines_with_first_width
 
 
 def _parse_markdown_bold_segments(text):

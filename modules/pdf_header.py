@@ -2,16 +2,18 @@
 
 import os
 
-from pdf_fonts import _set_pdf_font
-from pdf_images import _draw_header_image
-from pdf_markdown import _pdf_write_markdown_bold_text_with_first_width
-from pdf_render import (
+from .pdf_fonts import _set_pdf_font
+from .pdf_images import _draw_header_image
+from .pdf_markdown import _pdf_write_markdown_bold_text_with_first_width
+from .pdf_render import (
     _pdf_draw_separator,
     _pdf_write_icon_bold_label_value,
     _pdf_write_label_with_link,
     _pdf_write_wrapped_text
 )
-from pdf_sanitize import _sanitize_pdf_text
+from .pdf_sanitize import _sanitize_pdf_text
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
 
 def _pdf_write_warning(pdf, warning_text, max_width, line_height=5):
@@ -124,7 +126,7 @@ def _write_header_section(
             config["copyright_link_url"],
             max_width
         )
-        image_path = os.path.join(os.path.dirname(__file__), "img", "osintech.jpeg")
+        image_path = os.path.join(BASE_DIR, "img", "osintech.jpeg")
         _draw_header_image(pdf, image_path, y_top, text_width, max_width, line_height)
         pdf.ln(5)
     else:

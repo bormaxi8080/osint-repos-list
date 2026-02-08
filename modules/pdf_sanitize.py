@@ -1,6 +1,6 @@
 """Text sanitization helpers for PDF output."""
 
-from pdf_fonts import PDF_FONT_STATE
+from .pdf_fonts import PDF_FONT_STATE
 
 _EMOJI_RANGES = (
     (0x1F1E6, 0x1F1FF),

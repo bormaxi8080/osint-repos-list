@@ -2,14 +2,14 @@
 
 from colorama import Fore
 
-from pdf_estimate import (
+from .pdf_estimate import (
     _estimate_contributor_block_height,
     _estimate_repo_block_height
 )
-from pdf_fonts import OSINTPDF, _configure_pdf_fonts, _set_pdf_font
-from pdf_fpdf import FPDF
-from pdf_header import _write_header_section
-from pdf_render import (
+from .pdf_fonts import OSINTPDF, _configure_pdf_fonts, _set_pdf_font
+from .pdf_fpdf import FPDF
+from .pdf_header import _write_header_section
+from .pdf_render import (
     _pdf_draw_separator,
     _pdf_write_bold_label_value,
     _pdf_write_bold_label_with_link,
@@ -20,7 +20,7 @@ from pdf_render import (
     _pdf_write_starred_bold_label_value,
     _pdf_write_wrapped_text
 )
-from pdf_utils import _format_github_date
+from .pdf_utils import _format_github_date
 
 
 def save_pdf_from_data(path, repos, contributors, document_date, config, new_since=None):
