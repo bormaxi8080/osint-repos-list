@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import random
+import shutil
 import sys
 import time
 from datetime import datetime
@@ -50,6 +51,11 @@ COPYRIGHT_TEXT = f"(c) OSINTech, {CURRENT_YEAR}, All rights reserved"
 REPOS_SUMMARY_PATH = "repos_summary.json"
 PDF_NAME_PREFIX = "OSINT_Repositories_"
 PDF_OUTPUT_DIR = "pdf"
+STARRED_REPOS_JSON_PATH = "starred_repos.json"
+STARRED_REPOS_PREVIOUS_JSON_PATH = "starred_repos_previous.json"
+STARRED_CONTRIBUTORS_JSON_PATH = "starred_contributors.json"
+STARRED_TOPICS_JSON_PATH = "starred_topics.json"
+STARRED_REPOS_HTML_PATH = "starred_repos.html"
 
 
 def _parse_pdf_date_from_name(filename):
@@ -339,6 +345,63 @@ def _load_json_document(path):
         return json.load(f)
 
 
+def _repo_identity(repo):
+    """Build a stable repository identity key for diffing."""
+    if not isinstance(repo, dict):
+        return ("unknown", "")
+    repo_id = repo.get("id")
+    if repo_id is not None:
+        return ("id", str(repo_id))
+    full_name = repo.get("full_name")
+    if isinstance(full_name, str) and full_name != "":
+        return ("full_name", full_name)
+    html_url = repo.get("html_url")
+    if isinstance(html_url, str) and html_url != "":
+        return ("html_url", html_url)
+    owner = repo.get("owner") or {}
+    owner_login = ""
+    if isinstance(owner, dict):
+        owner_login = str(owner.get("login", ""))
+    return ("name_owner", str(repo.get("name", "")), owner_login)
+
+
+def _get_newly_added_repositories(current_repos, previous_repos):
+    """Return repositories that exist in current list but not in previous."""
+    if not isinstance(current_repos, list):
+        return []
+    if not isinstance(previous_repos, list):
+        previous_repos = []
+    previous_repo_keys = {_repo_identity(repo) for repo in previous_repos}
+    return [
+        repo
+        for repo in current_repos
+        if _repo_identity(repo) not in previous_repo_keys
+    ]
+
+
+def _save_previous_repos_snapshot(
+    repos_json_path=STARRED_REPOS_JSON_PATH,
+    previous_path=STARRED_REPOS_PREVIOUS_JSON_PATH
+):
+    """Copy current repos JSON into previous snapshot file."""
+    if not os.path.exists(repos_json_path):
+        print(
+            Fore.YELLOW
+            + f"Previous snapshot skipped: missing file {repos_json_path}"
+        )
+        return None
+    try:
+        shutil.copyfile(repos_json_path, previous_path)
+    except OSError as exc:
+        print(
+            Fore.RED
+            + f"Failed to save previous repos snapshot {previous_path}: {exc}"
+        )
+        return False
+    print(Fore.GREEN + f"Previous repos snapshot saved: {previous_path}")
+    return True
+
+
 def _resolve_contributors_json_path(path):
     """Resolve contributors JSON filename variations to an existing path."""
     if os.path.exists(path):
@@ -357,8 +420,8 @@ def _resolve_contributors_json_path(path):
 
 
 def generate_markdown_documents(
-    repos_json_path="starred_repos.json",
-    contributors_json_path="starred_contributors.json"
+    repos_json_path=STARRED_REPOS_JSON_PATH,
+    contributors_json_path=STARRED_CONTRIBUTORS_JSON_PATH
 ):
     """Generate markdown (and random) files from existing JSON data."""
     if not os.path.exists(repos_json_path):
@@ -446,7 +509,7 @@ def generate_markdown_documents(
     return True
 
 
-def generate_json_documents():
+def generate_json_documents(create_new_version=False):
     """Fetch GitHub data and generate JSON files."""
     print(Fore.GREEN + "Welcome to GitHub starred repos builder!")
     print(Fore.CYAN + f"See {GITHUB_REPO_URL} for details")
@@ -476,7 +539,11 @@ def generate_json_documents():
     print(Fore.CYAN + f"Repos fetched: {len(starred_repos)}")
 
     print(Fore.YELLOW + "Saving repos JSON data...")
-    _save_json_document("starred_repos.json", starred_repos)
+    if create_new_version:
+        snapshot_result = _save_previous_repos_snapshot()
+        if snapshot_result is False:
+            return False
+    _save_json_document(STARRED_REPOS_JSON_PATH, starred_repos)
     print(Fore.GREEN + "Done")
 
     starred_repos_sorted = sorted(starred_repos, key=lambda x: x['name'])
@@ -498,13 +565,14 @@ def generate_json_documents():
         if owner_data is not None:
             starred_owners.append(owner_data)
 
-    _save_json_document("starred_contributors.json", starred_owners)
+    _save_json_document(STARRED_CONTRIBUTORS_JSON_PATH, starred_owners)
     print(Fore.GREEN + "Done")
+    return True
 
 
 def generate_topics_json(
-    repos_json_path="starred_repos.json",
-    output_path="starred_topics.json"
+    repos_json_path=STARRED_REPOS_JSON_PATH,
+    output_path=STARRED_TOPICS_JSON_PATH
 ):
     """Build starred_topics.json from starred repos data."""
     if not os.path.exists(repos_json_path):
@@ -552,8 +620,8 @@ def generate_topics_json(
 
 
 def generate_startme_html(
-    topics_json_path="starred_topics.json",
-    output_path="starred_repos.html",
+    topics_json_path=STARRED_TOPICS_JSON_PATH,
+    output_path=STARRED_REPOS_HTML_PATH,
     columns=4
 ):
     """Build start.me-compatible HTML bookmarks from topics JSON."""
@@ -652,9 +720,11 @@ def generate_startme_html(
 
 
 def generate_pdf_from_json(
-    repos_json_path="starred_repos.json",
-    contributors_json_path="starred_contributors.json",
-    output_path=None
+    repos_json_path=STARRED_REPOS_JSON_PATH,
+    contributors_json_path=STARRED_CONTRIBUTORS_JSON_PATH,
+    output_path=None,
+    include_new_version_section=False,
+    previous_repos_json_path=STARRED_REPOS_PREVIOUS_JSON_PATH
 ):
     """Generate the PDF from existing JSON files."""
     if not os.path.exists(repos_json_path):
@@ -667,6 +737,26 @@ def generate_pdf_from_json(
 
     repos = _load_json_document(repos_json_path)
     contributors = _load_json_document(contributors_json_path)
+    newly_added_repos = None
+    if include_new_version_section:
+        previous_repos = []
+        if os.path.exists(previous_repos_json_path):
+            previous_repos = _load_json_document(previous_repos_json_path)
+            if not isinstance(previous_repos, list):
+                print(
+                    Fore.RED
+                    + f"Invalid previous repos data in {previous_repos_json_path}"
+                )
+                previous_repos = []
+        else:
+            print(
+                Fore.YELLOW
+                + f"Missing file: {previous_repos_json_path}. "
+                "All repositories will be treated as newly added."
+            )
+        newly_added_repos = _get_newly_added_repositories(repos, previous_repos)
+        print(Fore.CYAN + f"Newly added repositories: {len(newly_added_repos)}")
+
     document_date = f"Generated at: {datetime.now().date().strftime('%Y-%m-%d')}"
     if output_path is None:
         date_stamp = datetime.now().strftime("%Y.%m.%d")
@@ -687,13 +777,16 @@ def generate_pdf_from_json(
     current_date = _parse_pdf_date_from_name(pdf_name) or datetime.now().date()
     current_count = len(repos)
     summary_entries = _load_repos_summary(REPOS_SUMMARY_PATH)
-    previous_count = _get_previous_repos_count(summary_entries, current_date)
-    if previous_count is None:
-        newly_added = current_count
+    if include_new_version_section:
+        newly_added = len(newly_added_repos)
     else:
-        newly_added = current_count - previous_count
-        if newly_added < 0:
-            newly_added = 0
+        previous_count = _get_previous_repos_count(summary_entries, current_date)
+        if previous_count is None:
+            newly_added = current_count
+        else:
+            newly_added = current_count - previous_count
+            if newly_added < 0:
+                newly_added = 0
 
     print(Fore.YELLOW + "Generating PDF document...")
     pdf_config = {
@@ -720,6 +813,7 @@ def generate_pdf_from_json(
             "copyright_text": f"(c) @OSINTech, {CURRENT_YEAR}",
             "warning_text": MD_DOCUMENT_WARNING
         },
+        "section_new_repos_title": "Newly Added Repositories",
         "section_repos_title": "Starred Repositories",
         "section_contributors_title": "Starred Contributors",
         "footer_text": COPYRIGHT_TEXT,
@@ -731,7 +825,8 @@ def generate_pdf_from_json(
         contributors,
         document_date,
         pdf_config,
-        newly_added
+        newly_added,
+        newly_added_repos
     )
     if success:
         summary_entries = [
@@ -766,6 +861,14 @@ def _parse_args(argv):
             "full: json then topics then markdown then pdf then startme."
         )
     )
+    parser.add_argument(
+        "--new-version",
+        action="store_true",
+        help=(
+            "Save current starred_repos.json as starred_repos_previous.json "
+            "before updating, and include newly added repositories section in PDF."
+        )
+    )
     if not argv:
         args, unknown = parser.parse_known_args([])
         args.mode = "full"
@@ -790,7 +893,9 @@ def main():
     args = _parse_args(sys.argv[1:])
 
     if args.mode == "json":
-        generate_json_documents()
+        success = generate_json_documents(create_new_version=args.new_version)
+        if not success:
+            sys.exit(1)
         return
 
     if args.mode == "markdown":
@@ -800,7 +905,9 @@ def main():
         return
 
     if args.mode == "pdf":
-        success = generate_pdf_from_json()
+        success = generate_pdf_from_json(
+            include_new_version_section=args.new_version
+        )
         if not success:
             sys.exit(1)
         return
@@ -818,14 +925,20 @@ def main():
         return
 
     if args.mode == "full":
-        generate_json_documents()
+        success = generate_json_documents(
+            create_new_version=args.new_version
+        )
+        if not success:
+            sys.exit(1)
         success = generate_topics_json()
         if not success:
             sys.exit(1)
         success = generate_markdown_documents()
         if not success:
             sys.exit(1)
-        success = generate_pdf_from_json()
+        success = generate_pdf_from_json(
+            include_new_version_section=args.new_version
+        )
         if not success:
             sys.exit(1)
         success = generate_startme_html()

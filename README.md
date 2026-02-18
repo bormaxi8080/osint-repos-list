@@ -78,7 +78,7 @@ If you have a lot of starred GitHub repositories, operations may take a long tim
 
 ### Modes
 
-- Full generation (default): JSON -> Markdown -> PDF
+- Full generation (default): JSON -> Topics -> Markdown -> PDF -> start.me HTML
 
 ```bash
 python3 builder.py
@@ -113,6 +113,22 @@ python3 builder.py -m topics
 ```bash
 python3 builder.py -m startme
 ```
+
+### New Version Flag
+
+Use `--new-version` when you publish a new snapshot:
+
+```bash
+python3 builder.py -m full --new-version
+```
+
+The flag works with `-m full`, `-m json`, and `-m pdf`:
+
+- Before writing a new `starred_repos.json`, the current file is copied to `starred_repos_previous.json`.
+- During PDF generation, the second page contains `Newly Added Repositories` (difference between `starred_repos.json` and `starred_repos_previous.json`) in the same format as the main repositories list.
+- Then the regular sections continue on a new page: full repositories list and contributors list.
+
+Markdown generation (`starred_repos.md`) is unchanged.
 
 ![alt text](./img/shell1.png "Terminal")
 
