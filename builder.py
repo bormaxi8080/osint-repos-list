@@ -865,8 +865,9 @@ def _parse_args(argv):
         "--new-version",
         action="store_true",
         help=(
-            "Save current starred_repos.json as starred_repos_previous.json "
-            "before updating, and include newly added repositories section in PDF."
+            "Enable snapshot workflow: save current starred_repos.json as "
+            "starred_repos_previous.json before update, and include newly added "
+            "repositories section in PDF."
         )
     )
     if not argv:
@@ -888,12 +889,38 @@ def _parse_args(argv):
     return args
 
 
+def _resolve_new_version_mode(args):
+    """Resolve effective new-version behavior for the selected mode."""
+    if args.new_version:
+        return True
+    if args.mode != "full":
+        return False
+    if not os.path.exists(STARRED_REPOS_JSON_PATH):
+        print(
+            Fore.YELLOW
+            + (
+                "Full mode detected without existing starred_repos.json. "
+                "New version workflow skipped for this first run."
+            )
+        )
+        return False
+    print(
+        Fore.CYAN
+        + (
+            "Full mode detected with existing starred_repos.json. "
+            "New version workflow enabled automatically."
+        )
+    )
+    return True
+
+
 def main():
     """Run the builder based on CLI mode."""
     args = _parse_args(sys.argv[1:])
+    new_version_mode = _resolve_new_version_mode(args)
 
     if args.mode == "json":
-        success = generate_json_documents(create_new_version=args.new_version)
+        success = generate_json_documents(create_new_version=new_version_mode)
         if not success:
             sys.exit(1)
         return
@@ -906,7 +933,7 @@ def main():
 
     if args.mode == "pdf":
         success = generate_pdf_from_json(
-            include_new_version_section=args.new_version
+            include_new_version_section=new_version_mode
         )
         if not success:
             sys.exit(1)
@@ -926,7 +953,7 @@ def main():
 
     if args.mode == "full":
         success = generate_json_documents(
-            create_new_version=args.new_version
+            create_new_version=new_version_mode
         )
         if not success:
             sys.exit(1)
@@ -937,7 +964,7 @@ def main():
         if not success:
             sys.exit(1)
         success = generate_pdf_from_json(
-            include_new_version_section=args.new_version
+            include_new_version_section=new_version_mode
         )
         if not success:
             sys.exit(1)

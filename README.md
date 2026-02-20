@@ -84,6 +84,11 @@ If you have a lot of starred GitHub repositories, operations may take a long tim
 python3 builder.py
 ```
 
+If `starred_repos.json` already exists, `-m full` automatically enables the "new version" workflow:
+
+- Current `starred_repos.json` is copied to `starred_repos_previous.json` before refresh.
+- PDF includes `Newly Added Repositories` section.
+
 - JSON only:
 
 ```bash
@@ -116,7 +121,8 @@ python3 builder.py -m startme
 
 ### New Version Flag
 
-Use `--new-version` when you publish a new snapshot:
+Use `--new-version` to explicitly enable the workflow in `json` and `pdf` modes
+(or to force it in any mode):
 
 ```bash
 python3 builder.py -m full --new-version
