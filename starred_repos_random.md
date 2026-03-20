@@ -8,222 +8,224 @@ This document generated automatically, see [https://github.com/bormaxi8080/osint
 
 **Legal and ethical note.** All tools, programs and techniques published in this repository are used for informational, educational purposes or for information security purposes. The authors are not responsible for the activities that users of these tools and techniques may carry out, and urge them not to use them to carry out harmful or destructive activities directed against other users or groups on the Internet.
 
-Generated at: 2026-03-13
+Generated at: 2026-03-20
 
 **Starred repositories count:** 100
 
 ## Starred Repositories
 
 
-### [API-mega-list](https://github.com/cporter202/API-mega-list)
+### [33-js-concepts](https://github.com/leonardomso/33-js-concepts)
 
-Repository Url: https://github.com/cporter202/API-mega-list
+Repository Url: https://github.com/leonardomso/33-js-concepts
 
-Repository Owner: [cporter202](https://github.com/cporter202)
+Repository Owner: [leonardomso](https://github.com/leonardomso)
 
-Description: This GitHub repo is a powerhouse collection of APIs you can start using immediately to build everything from simple automations to full-scale applications. One of the most valuable API lists on GitHub—period. 💪
+Description: 📜 33 JavaScript concepts every developer should know.
 
-**Stars:** 3056 / **Created at:** 2025-12-09 / **Last commit:** 2026-03-13
+**Stars:** 66300 / **Created at:** 2018-09-04 / **Last commit:** 2026-03-20
 
-**Topics:** #api #api-library #api-list #apis
-
-----
-
-### [Awesome-KAPE](https://github.com/AndrewRathbun/Awesome-KAPE)
-
-Repository Url: https://github.com/AndrewRathbun/Awesome-KAPE
-
-Repository Owner: [AndrewRathbun](https://github.com/AndrewRathbun)
-
-Description: A curated list of KAPE-related resources
-
-**Stars:** 184 / **Created at:** 2021-08-23 / **Last commit:** 2026-03-12
-
-**Topics:** #awesome #awesome-list #dfir #digitalforensics #eztools #kape
+**Topics:** #angular #concepts #es6 #es6-javascript #hacktoberfest #javascript #javascript-closures #javascript-engines #javascript-programming #nodejs #primitive-types #programming #react
 
 ----
 
-### [Checkmate](https://github.com/bluewave-labs/Checkmate)
+### [AWSGoat](https://github.com/ine-labs/AWSGoat)
 
-Repository Url: https://github.com/bluewave-labs/Checkmate
+Repository Url: https://github.com/ine-labs/AWSGoat
 
-Repository Owner: [bluewave-labs](https://github.com/bluewave-labs)
+Repository Owner: [ine-labs](https://github.com/ine-labs)
 
-Description: Checkmate is an open-source, self-hosted tool designed to track and monitor server hardware, uptime, response times, and incidents in real-time with beautiful visualizations. Don't be shy, join here: https://discord.com/invite/NAb6H3UTjK :)
+Description: AWSGoat : A Damn Vulnerable AWS Infrastructure
 
-**Stars:** 9393 / **Created at:** 2024-04-30 / **Last commit:** 2026-03-12
-
-**Topics:** #good-first-contribution #good-first-issue #good-first-project #hacktoberfest #help-wanted #incident #infrastructure #infrastructure-monitoring #mui #mui-material #server-monitor #server-monitoring #server-monitoring-tools #statuspage #uptime #uptime-checker #uptime-monitor #uptime-monitoring #uptime-status #uptimerobot
+**Stars:** 1985 / **Created at:** 2022-07-13 / **Last commit:** 2026-03-20
 
 ----
 
-### [Deep-Live-Cam](https://github.com/hacksider/Deep-Live-Cam)
+### [Canvascript](https://github.com/VBproDev/Canvascript)
 
-Repository Url: https://github.com/hacksider/Deep-Live-Cam
+Repository Url: https://github.com/VBproDev/Canvascript
 
-Repository Owner: [hacksider](https://github.com/hacksider)
+Repository Owner: [VBproDev](https://github.com/VBproDev)
 
-Description: real time face swap and one-click video deepfake with only a single image
+Description: Create HTML canvas graphics without writing code. Just draw with your pointer on the HTML canvas, then get the code to render it.
 
-**Stars:** 79992 / **Created at:** 2023-09-24 / **Last commit:** 2026-03-13
+**Stars:** 95 / **Created at:** 2024-09-10 / **Last commit:** 2026-03-04
 
-**Topics:** #ai #ai-deep-fake #ai-face #ai-webcam #artificial-intelligence #deep-fake #deepfake #deepfake-webcam #faceswap #fake-webcam #gan #real-time-deepfake #realtime #realtime-deepfake #realtime-face-changer #video-deepfake #webcam #webcamera
-
-----
-
-### [Digital-Footprint-OSINT-Tool](https://github.com/Hamed233/Digital-Footprint-OSINT-Tool)
-
-Repository Url: https://github.com/Hamed233/Digital-Footprint-OSINT-Tool
-
-Repository Owner: [Hamed233](https://github.com/Hamed233)
-
-Description: A powerful Open Source Intelligence (OSINT) tool for analyzing digital footprints across multiple platforms. This tool helps researchers and security professionals map an individual's online presence while respecting privacy and platform policies.
-
-**Stars:** 159 / **Created at:** 2024-12-04 / **Last commit:** 2026-03-02
-
-**Topics:** #footprint #osint #osint-python #osint-reconnaissance #python #tool
+**Topics:** #canvas-api #graphic-design #html5 #javascript #no-code #performance #web-game-dev
 
 ----
 
-### [Domain_checker](https://github.com/IvanGlinkin/Domain_checker)
+### [CardScan4Linux](https://github.com/ins1gn1a/CardScan4Linux)
 
-Repository Url: https://github.com/IvanGlinkin/Domain_checker
+Repository Url: https://github.com/ins1gn1a/CardScan4Linux
 
-Repository Owner: [IvanGlinkin](https://github.com/IvanGlinkin)
+Repository Owner: [ins1gn1a](https://github.com/ins1gn1a)
 
-Description: Domain_checker application is the trial/demo version for the new EASM (External Attack Surface Management) system called HydrAttack (hydrattack.com), the main idea of which is, based only on the domain name, find almost all of the subdomains and their top 100 open ports
+Description: Use this script to search through locally stored files for any Credit/Debit card details.
 
-**Stars:** 189 / **Created at:** 2023-03-10 / **Last commit:** 2026-03-06
+**Stars:** 31 / **Created at:** 2015-09-09 / **Last commit:** 2026-02-19
 
-----
-
-### [FlipperStuff](https://github.com/Sorted1/FlipperStuff)
-
-Repository Url: https://github.com/Sorted1/FlipperStuff
-
-Repository Owner: [Sorted1](https://github.com/Sorted1)
-
-Description: All Things You Can Actively Use On Your Flipper Zero
-
-**Stars:** 284 / **Created at:** 2023-01-01 / **Last commit:** 2026-02-28
+**Topics:** #credit
 
 ----
 
-### [GPOHunter](https://github.com/PShlyundin/GPOHunter)
+### [CryptoFrame](https://github.com/x011/CryptoFrame)
 
-Repository Url: https://github.com/PShlyundin/GPOHunter
+Repository Url: https://github.com/x011/CryptoFrame
 
-Repository Owner: [PShlyundin](https://github.com/PShlyundin)
+Repository Owner: [x011](https://github.com/x011)
 
-Description: A security assessment tool for analyzing Active Directory Group Policy Objects (GPOs) to identify misconfigurations and vulnerabilities
+Description: CryptoFrame is a command-line tool engineered for the secure practice of steganography within video files.
 
-**Stars:** 320 / **Created at:** 2024-11-18 / **Last commit:** 2026-02-23
+**Stars:** 45 / **Created at:** 2024-01-18 / **Last commit:** 2026-02-04
 
-----
-
-### [GlobalBuildingAtlas](https://github.com/zhu-xlab/GlobalBuildingAtlas)
-
-Repository Url: https://github.com/zhu-xlab/GlobalBuildingAtlas
-
-Repository Owner: [zhu-xlab](https://github.com/zhu-xlab)
-
-Description: GlobalBuildingAtlas: an open global and complete dataset of building polygons, heights and LoD1 3D models
-
-**Stars:** 2013 / **Created at:** 2024-04-12 / **Last commit:** 2026-03-13
+**Topics:** #aes-encryption #cryptography #cyber-security #data-hiding #digital-forensics #ffmpeg #file-hider #hide-file #information-security #lossless-codecs #lsb-steganography #open-source #privacy-tools #python #rsa-encryption #secure-communication #steganography #video-encryption #video-processing #video-steganalysis
 
 ----
 
-### [GmsCore](https://github.com/microg/GmsCore)
+### [DFShell](https://github.com/D3Ext/DFShell)
 
-Repository Url: https://github.com/microg/GmsCore
+Repository Url: https://github.com/D3Ext/DFShell
 
-Repository Owner: [microg](https://github.com/microg)
+Repository Owner: [D3Ext](https://github.com/D3Ext)
 
-Description: Free implementation of Play Services
+Description: D3Ext's Forward Shell  
 
-**Stars:** 12531 / **Created at:** 2014-04-23 / **Last commit:** 2026-03-13
+**Stars:** 120 / **Created at:** 2022-07-20 / **Last commit:** 2025-11-08
 
-**Topics:** #android #auth #cloud-messaging #firebase #geolocation #google #google-cloud-messaging #java #kotlin #kotlin-android #maps #microg #mobile #push-notifications
-
-----
-
-### [IMDSpoof](https://github.com/grahamhelton/IMDSpoof)
-
-Repository Url: https://github.com/grahamhelton/IMDSpoof
-
-Repository Owner: [grahamhelton](https://github.com/grahamhelton)
-
-Description: IMDSPOOF is a cyber deception tool that spoofs the AWS IMDS service to return HoneyTokens that can be alerted on.
-
-**Stars:** 106 / **Created at:** 2023-11-24 / **Last commit:** 2026-01-29
+**Topics:** #forward-shell #hacking #hackthebox #kali-linux #offensive-security #oscp #pentest #python #python3 #webshell
 
 ----
 
-### [Kanvas](https://github.com/WithSecureLabs/Kanvas)
+### [Excel-to-Trello](https://github.com/Ademking/Excel-to-Trello)
 
-Repository Url: https://github.com/WithSecureLabs/Kanvas
+Repository Url: https://github.com/Ademking/Excel-to-Trello
 
-Repository Owner: [WithSecureLabs](https://github.com/WithSecureLabs)
+Repository Owner: [Ademking](https://github.com/Ademking)
 
-Description: A simple-to-use IR (incident response) case management tool for tracking and documenting investigations.
+Description: Creates Trello Cards/Labels using Excel
 
-**Stars:** 440 / **Created at:** 2025-07-02 / **Last commit:** 2026-02-27
-
-**Topics:** #dfir-tools #incident-management #incident-response #incident-response-tooling
+**Stars:** 2 / **Created at:** 2020-06-17 / **Last commit:** 2025-07-01
 
 ----
 
-### [LLMFeeder](https://github.com/jatinkrmalik/LLMFeeder)
+### [Hunner](https://github.com/b3-v3r/Hunner)
 
-Repository Url: https://github.com/jatinkrmalik/LLMFeeder
+Repository Url: https://github.com/b3-v3r/Hunner
 
-Repository Owner: [jatinkrmalik](https://github.com/jatinkrmalik)
+Repository Owner: [b3-v3r](https://github.com/b3-v3r)
 
-Description: Brower extension to convert web pages to clean Markdown and copy to clipboard so you can feed it to your favorite LLM model as context with just 1 click!
+Description: Hacking framework
 
-**Stars:** 297 / **Created at:** 2025-05-29 / **Last commit:** 2026-03-12
+**Stars:** 958 / **Created at:** 2017-06-02 / **Last commit:** 2026-03-19
 
-**Topics:** #ai #automation #browser #chrome-extension #developer-tools #firefox-addon #llm #markdown
-
-----
-
-### [Loki](https://github.com/Neo23x0/Loki)
-
-Repository Url: https://github.com/Neo23x0/Loki
-
-Repository Owner: [Neo23x0](https://github.com/Neo23x0)
-
-Description: Loki - Simple IOC and YARA Scanner
-
-**Stars:** 3730 / **Created at:** 2015-01-18 / **Last commit:** 2026-03-11
-
-**Topics:** #antivirus #dfir #hash #ioc #otx #python #scanner #signature #yara #yara-rules
+**Topics:** #ftpbrut #hack #hacking-framework #hackmail #sshbrut
 
 ----
 
-### [MQTTack](https://github.com/souravbaghz/MQTTack)
+### [IMAPLoginTester](https://github.com/rm1984/IMAPLoginTester)
 
-Repository Url: https://github.com/souravbaghz/MQTTack
+Repository Url: https://github.com/rm1984/IMAPLoginTester
 
-Repository Owner: [souravbaghz](https://github.com/souravbaghz)
+Repository Owner: [rm1984](https://github.com/rm1984)
 
-Description: MQTT Security Testing
+Description: A simple Python script that reads a text file with lots of e-mails and passwords, and tries to check if those credentials are valid by trying to login on IMAP servers.
 
-**Stars:** 24 / **Created at:** 2022-07-26 / **Last commit:** 2026-01-29
+**Stars:** 73 / **Created at:** 2020-12-18 / **Last commit:** 2025-12-23
+
+**Topics:** #credentials #email #hacking #imap #imaplib #login #mail #mail-login #password #passwords #penetration-testing #python #python3 #script #socks5
 
 ----
 
-### [Marketing-for-Engineers](https://github.com/goabstract/Marketing-for-Engineers)
+### [Legendary_OSINT](https://github.com/K2SOsint/Legendary_OSINT)
 
-Repository Url: https://github.com/goabstract/Marketing-for-Engineers
+Repository Url: https://github.com/K2SOsint/Legendary_OSINT
 
-Repository Owner: [goabstract](https://github.com/goabstract)
+Repository Owner: [K2SOsint](https://github.com/K2SOsint)
 
-Description: A curated collection of marketing articles & tools to grow your product. 
+Description: A list of OSINT tools & resources for (fraud-)investigators, CTI-analysts, KYC, AML and more. 
 
-**Stars:** 13054 / **Created at:** 2017-04-19 / **Last commit:** 2026-03-12
+**Stars:** 719 / **Created at:** 2025-09-12 / **Last commit:** 2026-03-19
 
-**Topics:** #awesome-list #bootstrapper #entrepreneurs #hardware #indiedev #marketing #mobile-app #startup-resources
+**Topics:** #cti #cyberthreatintelligence #osint #osint-tools-list #socmint
+
+----
+
+### [LuLu](https://github.com/objective-see/LuLu)
+
+Repository Url: https://github.com/objective-see/LuLu
+
+Repository Owner: [objective-see](https://github.com/objective-see)
+
+Description: LuLu is the free open-source macOS firewall
+
+**Stars:** 12171 / **Created at:** 2017-09-10 / **Last commit:** 2026-03-20
+
+----
+
+### [Magma-Osint](https://github.com/Anonimo501/Magma-Osint)
+
+Repository Url: https://github.com/Anonimo501/Magma-Osint
+
+Repository Owner: [Anonimo501](https://github.com/Anonimo501)
+
+Description: No project description
+
+**Stars:** 51 / **Created at:** 2022-01-25 / **Last commit:** 2026-03-09
+
+----
+
+### [MalwareSourceCode](https://github.com/vxunderground/MalwareSourceCode)
+
+Repository Url: https://github.com/vxunderground/MalwareSourceCode
+
+Repository Owner: [vxunderground](https://github.com/vxunderground)
+
+Description: Collection of malware source code for a variety of platforms in an array of different programming languages.
+
+**Stars:** 17891 / **Created at:** 2020-10-10 / **Last commit:** 2026-03-19
+
+**Topics:** #malware #malware-detection #malware-development #malware-research
+
+----
+
+### [MetaFinder](https://github.com/Josue87/MetaFinder)
+
+Repository Url: https://github.com/Josue87/MetaFinder
+
+Repository Owner: [Josue87](https://github.com/Josue87)
+
+Description: Search for documents in a domain through Search Engines (Google, Bing and Baidu). The objective is to extract metadata
+
+**Stars:** 218 / **Created at:** 2020-12-09 / **Last commit:** 2025-12-30
+
+**Topics:** #crawler #metadata #osint
+
+----
+
+### [NetExec](https://github.com/Pennyw0rth/NetExec)
+
+Repository Url: https://github.com/Pennyw0rth/NetExec
+
+Repository Owner: [Pennyw0rth](https://github.com/Pennyw0rth)
+
+Description: The Network Execution Tool
+
+**Stars:** 5351 / **Created at:** 2023-09-08 / **Last commit:** 2026-03-20
+
+**Topics:** #active-directory #hacking #infosec #infosectools #networks #pentest #pentest-tool #pentest-tools #pentesting #python #python3 #red-team #security #security-tools #windows
+
+----
+
+### [OSINT-for-countries](https://github.com/paulpogoda/OSINT-for-countries)
+
+Repository Url: https://github.com/paulpogoda/OSINT-for-countries
+
+Repository Owner: [paulpogoda](https://github.com/paulpogoda)
+
+Description: Methodology, links, tools for OSINT in different countries
+
+**Stars:** 6 / **Created at:** 2024-11-01 / **Last commit:** 2025-09-10
 
 ----
 
@@ -235,129 +237,141 @@ Repository Owner: [CScorza](https://github.com/CScorza)
 
 Description: Creazione d'identità Fake - Impostazione Privacy Profili Social - Creazione Ambiente di Lavoro 
 
-**Stars:** 462 / **Created at:** 2022-12-10 / **Last commit:** 2026-03-01
+**Stars:** 462 / **Created at:** 2022-12-10 / **Last commit:** 2026-03-20
 
 **Topics:** #email #fake #osint #phone #privacy #profile #protection #sms #social-network #telgram #virtualization #whatsapp
 
 ----
 
-### [OffenOsint](https://github.com/Double2Sky/OffenOsint)
+### [OpenRediWrecked](https://github.com/blackhatethicalhacking/OpenRediWrecked)
 
-Repository Url: https://github.com/Double2Sky/OffenOsint
+Repository Url: https://github.com/blackhatethicalhacking/OpenRediWrecked
 
-Repository Owner: [Double2Sky](https://github.com/Double2Sky)
+Repository Owner: [blackhatethicalhacking](https://github.com/blackhatethicalhacking)
 
-Description: Beta release
+Description: A powerful and sophisticated tool for detecting and exploiting open redirect vulnerabilities using the sed utility and a selected list of carefully crafted payloads with encoding techniques.
 
-**Stars:** 184 / **Created at:** 2021-01-09 / **Last commit:** 2026-02-13
+**Stars:** 47 / **Created at:** 2023-02-10 / **Last commit:** 2025-12-31
 
-----
-
-### [OpenPlanter](https://github.com/ShinMegamiBoson/OpenPlanter)
-
-Repository Url: https://github.com/ShinMegamiBoson/OpenPlanter
-
-Repository Owner: [ShinMegamiBoson](https://github.com/ShinMegamiBoson)
-
-Description: No project description
-
-**Stars:** 1466 / **Created at:** 2026-02-20 / **Last commit:** 2026-03-13
+**Topics:** #bugbounty #hacking #infosec #openredirect-scanner #penetration-testing #pentesting
 
 ----
 
-### [Proxy](https://github.com/bash-bunny/Proxy)
+### [PhoneSploit-Pro](https://github.com/AzeemIdrisi/PhoneSploit-Pro)
 
-Repository Url: https://github.com/bash-bunny/Proxy
+Repository Url: https://github.com/AzeemIdrisi/PhoneSploit-Pro
 
-Repository Owner: [bash-bunny](https://github.com/bash-bunny)
+Repository Owner: [AzeemIdrisi](https://github.com/AzeemIdrisi)
 
-Description: Tool for search proxies
+Description: An all-in-one hacking tool to remotely exploit Android devices using ADB and Metasploit-Framework to get a Meterpreter session.
 
-**Stars:** 1 / **Created at:** 2019-06-22 / **Last commit:** 2023-10-01
+**Stars:** 5672 / **Created at:** 2022-12-24 / **Last commit:** 2026-03-18
 
-----
-
-### [PyMacroRecord](https://github.com/LOUDO56/PyMacroRecord)
-
-Repository Url: https://github.com/LOUDO56/PyMacroRecord
-
-Repository Owner: [LOUDO56](https://github.com/LOUDO56)
-
-Description: Free and Open Source Macro Recorder with a modern GUI using Python
-
-**Stars:** 551 / **Created at:** 2023-08-04 / **Last commit:** 2026-03-12
-
-**Topics:** #keyboard #macro #macro-recorder #mouse #python #record
+**Topics:** #adb #android #android-debug-bridge #android-hacking #collaborate #cybersecurity #exploit #hack #hacking #hacking-script #hacking-tool #hacktoberfest #metasploit-framework #meterpreter #penetration-testing #pentest-tool #pentesting #phonesploit #phonesploit-pro #python
 
 ----
 
-### [Resume-Matcher](https://github.com/srbhr/Resume-Matcher)
+### [RedNixOS](https://github.com/redcode-labs/RedNixOS)
 
-Repository Url: https://github.com/srbhr/Resume-Matcher
+Repository Url: https://github.com/redcode-labs/RedNixOS
 
-Repository Owner: [srbhr](https://github.com/srbhr)
+Repository Owner: [redcode-labs](https://github.com/redcode-labs)
 
-Description: Improve your resumes with Resume Matcher. Get insights, keyword suggestions and tune your resumes to job descriptions. 
+Description: NixOS-based 'distro' for cybersecurity enthusiasts
 
-**Stars:** 26294 / **Created at:** 2020-04-08 / **Last commit:** 2026-03-13
+**Stars:** 214 / **Created at:** 2022-07-03 / **Last commit:** 2026-03-12
 
-**Topics:** #applicant-tracking-system #ats #hacktoberfest #machine-learning #natural-language-processing #nextjs #python #resume #resume-builder #resume-parser #text-similarity #typescript #vector-search #word-embeddings
-
-----
-
-### [Search-That-Hash](https://github.com/Jayy001/Search-That-Hash)
-
-Repository Url: https://github.com/Jayy001/Search-That-Hash
-
-Repository Owner: [Jayy001](https://github.com/Jayy001)
-
-Description: 🔎Searches Hash APIs to crack your hash quickly🔎 If hash is not found, automatically pipes into HashCat⚡
-
-**Stars:** 1400 / **Created at:** 2020-08-30 / **Last commit:** 2026-03-08
-
-**Topics:** #cracks #cybersecurity #hacking #hacking-tool #hash #hashcat #infosec #john #tool
+**Topics:** #cybersecurity #distro #infosec #nix #nixos #os #red-team
 
 ----
 
-### [SimRepo](https://github.com/Mubelotix/SimRepo)
+### [Robber](https://github.com/MojtabaTajik/Robber)
 
-Repository Url: https://github.com/Mubelotix/SimRepo
+Repository Url: https://github.com/MojtabaTajik/Robber
 
-Repository Owner: [Mubelotix](https://github.com/Mubelotix)
+Repository Owner: [MojtabaTajik](https://github.com/MojtabaTajik)
 
-Description: Shows similar repositories in the sidebar
+Description: Robber is open source tool for finding executables prone to DLL hijacking
 
-**Stars:** 287 / **Created at:** 2025-05-29 / **Last commit:** 2026-03-10
+**Stars:** 786 / **Created at:** 2015-11-16 / **Last commit:** 2026-03-05
 
-**Topics:** #embeddings #git #github #machine-learning #recommendations #repositories #vector
-
-----
-
-### [TGConvertor](https://github.com/nazar220160/TGConvertor)
-
-Repository Url: https://github.com/nazar220160/TGConvertor
-
-Repository Owner: [nazar220160](https://github.com/nazar220160)
-
-Description: Convert Telegram session files between Pyrogram, Kurigram, Telethon and TDATA formats. Simple, fast, and CLI-friendly.
-
-**Stars:** 137 / **Created at:** 2022-11-23 / **Last commit:** 2026-02-25
-
-**Topics:** #cli-tool #converter #convertor #kurigram #pyrogram #python #python-library #session-converter #session-management #sessions #tdata #telegram #telegram-api #telethon
+**Topics:** #candidate-dlls #delphi #dll-hijacking #dlls #security #vulnerability-scanners
 
 ----
 
-### [TikTok-Api](https://github.com/davidteather/TikTok-Api)
+### [SamSploit](https://github.com/legly/SamSploit)
 
-Repository Url: https://github.com/davidteather/TikTok-Api
+Repository Url: https://github.com/legly/SamSploit
 
-Repository Owner: [davidteather](https://github.com/davidteather)
+Repository Owner: [legly](https://github.com/legly)
 
-Description: The Unofficial TikTok API Wrapper In Python
+Description: A professional ethical hacking tool. 
 
-**Stars:** 6165 / **Created at:** 2019-05-26 / **Last commit:** 2026-03-13
+**Stars:** 30 / **Created at:** 2022-05-26 / **Last commit:** 2026-03-17
 
-**Topics:** #api #download-tiktoks #hacktoberfest #python #tik #tiktok #tiktok-api #tiktok-automation #tiktok-compilations #tiktok-downloader #tiktok-python #tiktok-scraper #tiktok-signature #tiktok-trending-page #tiktokapi #tok #trending
+----
+
+### [SocialOSINTbr](https://github.com/DavizinBR/SocialOSINTbr)
+
+Repository Url: https://github.com/DavizinBR/SocialOSINTbr
+
+Repository Owner: [DavizinBR](https://github.com/DavizinBR)
+
+Description: investigação de contas nas redes sociais
+
+**Stars:** 76 / **Created at:** 2023-05-15 / **Last commit:** 2026-03-11
+
+----
+
+### [SpiderSuite](https://github.com/spidersuite/SpiderSuite)
+
+Repository Url: https://github.com/spidersuite/SpiderSuite
+
+Repository Owner: [spidersuite](https://github.com/spidersuite)
+
+Description: SpiderSuite releases, wiki and roadmap
+
+**Stars:** 937 / **Created at:** 2023-04-05 / **Last commit:** 2026-03-18
+
+**Topics:** #bugbounty #cplusplus #crawler #gui #information-gathering #osint-tool #pentest #recon #security-tools #spider #web-spider #webcrawler
+
+----
+
+### [SploitScan](https://github.com/xaitax/SploitScan)
+
+Repository Url: https://github.com/xaitax/SploitScan
+
+Repository Owner: [xaitax](https://github.com/xaitax)
+
+Description: SploitScan is a sophisticated cybersecurity utility designed to provide detailed information on vulnerabilities and associated exploits.
+
+**Stars:** 1315 / **Created at:** 2024-01-14 / **Last commit:** 2026-03-20
+
+----
+
+### [TgBackUP](https://github.com/x53e76f0f/TgBackUP)
+
+Repository Url: https://github.com/x53e76f0f/TgBackUP
+
+Repository Owner: [x53e76f0f](https://github.com/x53e76f0f)
+
+Description: A project for storing configuration files, passwords or text files with ChaCha20 encryption and Gzip compression on Telegram servers.
+
+**Stars:** 23 / **Created at:** 2022-09-25 / **Last commit:** 2026-03-17
+
+----
+
+### [Threat-Actor-Usernames-Scrape](https://github.com/spmedia/Threat-Actor-Usernames-Scrape)
+
+Repository Url: https://github.com/spmedia/Threat-Actor-Usernames-Scrape
+
+Repository Owner: [spmedia](https://github.com/spmedia)
+
+Description: A collection of intel and usernames scraped from various cybercrime sources & forums. DarkForums, HackForums, Patched, Cracked, BreachForums, LeakBase, XSS, Dread, & more
+
+**Stars:** 170 / **Created at:** 2025-03-14 / **Last commit:** 2026-03-19
+
+**Topics:** #cti #cyber-security #cybersecurity #cyberthreatintelligence #cyberthreats #enrichment #osint #osint-reconnaissance #scraping #scraping-websites #threat-hunting #threat-intelligence #threathunting #threatintel #threatintel-feeds #threatintelligence
 
 ----
 
@@ -369,59 +383,115 @@ Repository Owner: [KrishKrosh](https://github.com/KrishKrosh)
 
 Description: Use your Mac trackpad as a weighing scale
 
-**Stars:** 8755 / **Created at:** 2025-07-21 / **Last commit:** 2026-03-13
+**Stars:** 8767 / **Created at:** 2025-07-21 / **Last commit:** 2026-03-20
 
 ----
 
-### [acled-project](https://github.com/heltmulig/acled-project)
+### [UniLaunch](https://github.com/timo-reymann/UniLaunch)
 
-Repository Url: https://github.com/heltmulig/acled-project
+Repository Url: https://github.com/timo-reymann/UniLaunch
 
-Repository Owner: [heltmulig](https://github.com/heltmulig)
+Repository Owner: [timo-reymann](https://github.com/timo-reymann)
 
-Description: No project description
+Description: Advanced universal autostart tool for use on Linux, MacOS and Windows. 
 
-**Stars:** 2 / **Created at:** 2017-05-28 / **Last commit:** 2023-10-19
+**Stars:** 41 / **Created at:** 2024-01-10 / **Last commit:** 2026-03-03
 
-----
-
-### [awsScrape](https://github.com/jhaddix/awsScrape)
-
-Repository Url: https://github.com/jhaddix/awsScrape
-
-Repository Owner: [jhaddix](https://github.com/jhaddix)
-
-Description: A tool to scrape the AWS ranges looking for a keyword in SSL certificate data.
-
-**Stars:** 238 / **Created at:** 2023-03-18 / **Last commit:** 2026-03-06
+**Topics:** #autostart #dotnet #dotnet-core
 
 ----
 
-### [basalt](https://github.com/erikjuhani/basalt)
+### [VeraCrypt](https://github.com/veracrypt/VeraCrypt)
 
-Repository Url: https://github.com/erikjuhani/basalt
+Repository Url: https://github.com/veracrypt/VeraCrypt
 
-Repository Owner: [erikjuhani](https://github.com/erikjuhani)
+Repository Owner: [veracrypt](https://github.com/veracrypt)
 
-Description: TUI Application to manage Obsidian notes directly from the terminal
+Description: Disk encryption with strong security based on TrueCrypt
 
-**Stars:** 1073 / **Created at:** 2023-09-19 / **Last commit:** 2026-03-13
+**Stars:** 9358 / **Created at:** 2014-11-08 / **Last commit:** 2026-03-20
 
-**Topics:** #markdown #obsidian #ratatui #tui
+**Topics:** #encryption #encryption-algorithms #encryption-decryption #idrix #veracrypt #veracrypt-source
 
 ----
 
-### [bg-remove](https://github.com/addyosmani/bg-remove)
+### [afwall](https://github.com/ukanth/afwall)
 
-Repository Url: https://github.com/addyosmani/bg-remove
+Repository Url: https://github.com/ukanth/afwall
 
-Repository Owner: [addyosmani](https://github.com/addyosmani)
+Repository Owner: [ukanth](https://github.com/ukanth)
 
-Description: Free image background removal - private, client-side and powered by Transformers.js
+Description: AFWall+ (Android Firewall +) - iptables based firewall for Android 
 
-**Stars:** 945 / **Created at:** 2024-11-01 / **Last commit:** 2026-03-11
+**Stars:** 3311 / **Created at:** 2012-10-27 / **Last commit:** 2026-03-20
 
-**Topics:** #background-image #background-image-remover #background-remover #images
+**Topics:** #afwall #android #android-firewall #block #crowdin #firewall #iptables
+
+----
+
+### [assetfinder](https://github.com/tomnomnom/assetfinder)
+
+Repository Url: https://github.com/tomnomnom/assetfinder
+
+Repository Owner: [tomnomnom](https://github.com/tomnomnom)
+
+Description: Find domains and subdomains related to a given domain
+
+**Stars:** 3545 / **Created at:** 2019-06-23 / **Last commit:** 2026-03-19
+
+----
+
+### [awesome-browser-exploit](https://github.com/Escapingbug/awesome-browser-exploit)
+
+Repository Url: https://github.com/Escapingbug/awesome-browser-exploit
+
+Repository Owner: [Escapingbug](https://github.com/Escapingbug)
+
+Description: awesome list of browser exploitation tutorials
+
+**Stars:** 2270 / **Created at:** 2018-05-23 / **Last commit:** 2026-03-17
+
+**Topics:** #awesome #awesome-list #browser-exploitation
+
+----
+
+### [awesome-censys-queries](https://github.com/thehappydinoa/awesome-censys-queries)
+
+Repository Url: https://github.com/thehappydinoa/awesome-censys-queries
+
+Repository Owner: [thehappydinoa](https://github.com/thehappydinoa)
+
+Description: A collection of fascinating and bizarre Censys Search Queries 
+
+**Stars:** 1210 / **Created at:** 2022-08-16 / **Last commit:** 2026-03-14
+
+**Topics:** #awesome #awesome-list #censys #censys-dorks #dorks #hacktoberfest #ics #iot #osint #queries #search #security-tools
+
+----
+
+### [awesome-cybersecurity-internships](https://github.com/paralax/awesome-cybersecurity-internships)
+
+Repository Url: https://github.com/paralax/awesome-cybersecurity-internships
+
+Repository Owner: [paralax](https://github.com/paralax)
+
+Description: a list of cybersecurity internships
+
+**Stars:** 573 / **Created at:** 2018-03-04 / **Last commit:** 2026-03-19
+
+----
+
+### [bash-dungeon](https://github.com/wolandark/bash-dungeon)
+
+Repository Url: https://github.com/wolandark/bash-dungeon
+
+Repository Owner: [wolandark](https://github.com/wolandark)
+
+Description: An educational dungeon crawler in the shell
+
+**Stars:** 386 / **Created at:** 2024-02-05 / **Last commit:** 2026-03-02
+
+**Topics:** #bash #cli-game #educational-game #linux #shell #text-adventure
 
 ----
 
@@ -433,113 +503,113 @@ Repository Owner: [sindresorhus](https://github.com/sindresorhus)
 
 Description: Elegant Facebook Messenger desktop app
 
-**Stars:** 7332 / **Created at:** 2015-09-16 / **Last commit:** 2026-03-12
+**Stars:** 7339 / **Created at:** 2015-09-16 / **Last commit:** 2026-03-20
 
 **Topics:** #app #caprine #chat #electron #electron-app #facebook #facebook-messenger #macos #macos-app #messenger #nodejs
 
 ----
 
-### [chaplin](https://github.com/amanvirparhar/chaplin)
+### [celery-beat-example](https://github.com/Enforcer/celery-beat-example)
 
-Repository Url: https://github.com/amanvirparhar/chaplin
+Repository Url: https://github.com/Enforcer/celery-beat-example
 
-Repository Owner: [amanvirparhar](https://github.com/amanvirparhar)
+Repository Owner: [Enforcer](https://github.com/Enforcer)
 
-Description: A real-time silent speech recognition tool.
+Description: No project description
 
-**Stars:** 714 / **Created at:** 2025-02-03 / **Last commit:** 2026-03-12
-
-**Topics:** #auto-avsr #avsr #llm #ollama #speech-recognition #speech-to-text #vsr
+**Stars:** 11 / **Created at:** 2017-03-10 / **Last commit:** 2024-06-02
 
 ----
 
-### [chipmunk](https://github.com/esrlabs/chipmunk)
+### [chalk.ist](https://github.com/Idered/chalk.ist)
 
-Repository Url: https://github.com/esrlabs/chipmunk
+Repository Url: https://github.com/Idered/chalk.ist
 
-Repository Owner: [esrlabs](https://github.com/esrlabs)
+Repository Owner: [Idered](https://github.com/Idered)
 
-Description: log analysis tool
+Description: 📷 Create beautiful images of your source code
 
-**Stars:** 704 / **Created at:** 2017-11-13 / **Last commit:** 2026-03-07
-
-**Topics:** #logger #logging #logs-analysis #logstash #logviewer #search
+**Stars:** 1821 / **Created at:** 2022-03-08 / **Last commit:** 2026-03-19
 
 ----
 
-### [chunkr](https://github.com/lumina-ai-inc/chunkr)
+### [cheatsheets](https://github.com/cipher387/cheatsheets)
 
-Repository Url: https://github.com/lumina-ai-inc/chunkr
+Repository Url: https://github.com/cipher387/cheatsheets
 
-Repository Owner: [lumina-ai-inc](https://github.com/lumina-ai-inc)
+Repository Owner: [cipher387](https://github.com/cipher387)
 
-Description: Vision infrastructure to turn complex documents into RAG/LLM-ready data
+Description: High quality and text versions of cheat sheets from Cyber Detective Twitter
 
-**Stars:** 2939 / **Created at:** 2024-08-24 / **Last commit:** 2026-03-10
+**Stars:** 733 / **Created at:** 2024-03-03 / **Last commit:** 2026-03-16
 
-----
-
-### [citus](https://github.com/citusdata/citus)
-
-Repository Url: https://github.com/citusdata/citus
-
-Repository Owner: [citusdata](https://github.com/citusdata)
-
-Description: Distributed PostgreSQL as an extension
-
-**Stars:** 12364 / **Created at:** 2016-02-01 / **Last commit:** 2026-03-13
-
-**Topics:** #citus #citus-extension #database #database-cluster #distributed-database #multi-tenant #postgres #postgresql #relational-database #scale #sharding #sql
+**Topics:** #cheatsheet #cheatsheets #linux #osint #python #socmint
 
 ----
 
-### [commonforms](https://github.com/jbarrow/commonforms)
+### [chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp)
 
-Repository Url: https://github.com/jbarrow/commonforms
+Repository Url: https://github.com/ChromeDevTools/chrome-devtools-mcp
 
-Repository Owner: [jbarrow](https://github.com/jbarrow)
+Repository Owner: [ChromeDevTools](https://github.com/ChromeDevTools)
 
-Description: CommonForms — open models to auto-detect PDF form fields
+Description: Chrome DevTools for coding agents
 
-**Stars:** 967 / **Created at:** 2025-09-17 / **Last commit:** 2026-03-11
+**Stars:** 30450 / **Created at:** 2025-09-11 / **Last commit:** 2026-03-20
 
-----
-
-### [cpdown](https://github.com/ysm-dev/cpdown)
-
-Repository Url: https://github.com/ysm-dev/cpdown
-
-Repository Owner: [ysm-dev](https://github.com/ysm-dev)
-
-Description: 📥 cpdown - Copy to clipboard any webpage content/youtube subtitle as clean markdown with one click or shortcut
-
-**Stars:** 523 / **Created at:** 2025-05-20 / **Last commit:** 2026-03-11
-
-**Topics:** #extension #llm #markdown #productivity #react #subtitle #wxt #youtube
+**Topics:** #browser #chrome #chrome-devtools #debugging #devtools #mcp #mcp-server #puppeteer
 
 ----
 
-### [email_verification_tool](https://github.com/zeeshanahmad0201/email_verification_tool)
+### [cloudgpt](https://github.com/ustayready/cloudgpt)
 
-Repository Url: https://github.com/zeeshanahmad0201/email_verification_tool
+Repository Url: https://github.com/ustayready/cloudgpt
 
-Repository Owner: [zeeshanahmad0201](https://github.com/zeeshanahmad0201)
+Repository Owner: [ustayready](https://github.com/ustayready)
 
-Description: Efficient and lightweight GOlang-based tool for validating email addresses with syntax checks and domain verification.
+Description: Vulnerability scanner for AWS customer managed policies using ChatGPT
 
-**Stars:** 29 / **Created at:** 2024-09-13 / **Last commit:** 2026-01-30
+**Stars:** 166 / **Created at:** 2023-04-13 / **Last commit:** 2026-03-17
 
 ----
 
-### [fakesni](https://github.com/stopcenz/fakesni)
+### [commix](https://github.com/commixproject/commix)
 
-Repository Url: https://github.com/stopcenz/fakesni
+Repository Url: https://github.com/commixproject/commix
 
-Repository Owner: [stopcenz](https://github.com/stopcenz)
+Repository Owner: [commixproject](https://github.com/commixproject)
 
-Description: Программа для обхода блокировок путем модификации заголовков протокола TLS.
+Description: Automated All-in-One OS Command Injection Exploitation Tool
 
-**Stars:** 118 / **Created at:** 2021-08-01 / **Last commit:** 2026-03-13
+**Stars:** 5681 / **Created at:** 2015-03-20 / **Last commit:** 2026-03-19
+
+**Topics:** #bugbounty #command-injection #commix #detection #exploitation #open-source #pentesting #python #takeover #vulnerability-scanner
+
+----
+
+### [dir2txt](https://github.com/shubhamoy/dir2txt)
+
+Repository Url: https://github.com/shubhamoy/dir2txt
+
+Repository Owner: [shubhamoy](https://github.com/shubhamoy)
+
+Description: A blazing-fast CLI tool to export a directory's structure and contents into a neatly formatted `.txt` or `.json` file.
+
+**Stars:** 66 / **Created at:** 2025-04-17 / **Last commit:** 2026-02-24
+
+**Topics:** #code-generation #context #cpp #gpt #llm #rag
+
+----
+
+### [fdupes](https://github.com/adrianlopezroche/fdupes)
+
+Repository Url: https://github.com/adrianlopezroche/fdupes
+
+Repository Owner: [adrianlopezroche](https://github.com/adrianlopezroche)
+
+Description: FDUPES is a program for identifying or deleting duplicate files residing within specified directories.
+
+**Stars:** 2910 / **Created at:** 2014-05-15 / **Last commit:** 2026-03-19
 
 ----
 
@@ -555,45 +625,39 @@ Description: An SSH file manager that lets you edit files like they are local
 
 ----
 
-### [flipperzero-CLI-wifi-cracker](https://github.com/grugnoymeme/flipperzero-CLI-wifi-cracker)
+### [flipperzero-IR_Blaster](https://github.com/mateusz-szafraniec/flipperzero-IR_Blaster)
 
-Repository Url: https://github.com/grugnoymeme/flipperzero-CLI-wifi-cracker
+Repository Url: https://github.com/mateusz-szafraniec/flipperzero-IR_Blaster
 
-Repository Owner: [grugnoymeme](https://github.com/grugnoymeme)
+Repository Owner: [mateusz-szafraniec](https://github.com/mateusz-szafraniec)
 
-Description: CLI - Analyze WPA/WPA2 handshakes from FlipperZero's captured .pcaps to find out the WiFi Passwords.
+Description: IR Blaster for Flipper Zero
 
-**Stars:** 334 / **Created at:** 2023-05-03 / **Last commit:** 2026-03-03
-
-**Topics:** #crack #flipper #flipper-zero #flipperzero #hacking #hacking-tool #hashcat #hcxpcapngtool #marauder #password #password-cracker #pcap #pcap-analyzer #stealer #wifi #wireshark
+**Stars:** 25 / **Created at:** 2024-07-26 / **Last commit:** 2026-03-14
 
 ----
 
-### [flipperzero-geigercounter](https://github.com/nmrr/flipperzero-geigercounter)
+### [flipperzero-goodies](https://github.com/wetox-team/flipperzero-goodies)
 
-Repository Url: https://github.com/nmrr/flipperzero-geigercounter
+Repository Url: https://github.com/wetox-team/flipperzero-goodies
 
-Repository Owner: [nmrr](https://github.com/nmrr)
+Repository Owner: [wetox-team](https://github.com/wetox-team)
 
-Description: ☢☢ A geiger counter application for the Flipper Zero ☢☢
+Description: flipper zero goodies [intercom_keys][scripts]
 
-**Stars:** 252 / **Created at:** 2023-01-08 / **Last commit:** 2026-02-24
-
-**Topics:** #flipper-zero #flipperzero #geiger #geiger-counter #radioactivity #uranium
+**Stars:** 1359 / **Created at:** 2020-10-24 / **Last commit:** 2026-03-19
 
 ----
 
-### [fluxer](https://github.com/fluxerapp/fluxer)
+### [flipperzero-protobuf-jvm](https://github.com/flipperdevices/flipperzero-protobuf-jvm)
 
-Repository Url: https://github.com/fluxerapp/fluxer
+Repository Url: https://github.com/flipperdevices/flipperzero-protobuf-jvm
 
-Repository Owner: [fluxerapp](https://github.com/fluxerapp)
+Repository Owner: [flipperdevices](https://github.com/flipperdevices)
 
-Description: A free and open source instant messaging and VoIP platform built for friends, groups, and communities.
+Description: No project description
 
-**Stars:** 6288 / **Created at:** 2026-01-01 / **Last commit:** 2026-03-13
-
-**Topics:** #fluxer #fluxerapp
+**Stars:** 12 / **Created at:** 2022-04-29 / **Last commit:** 2026-03-14
 
 ----
 
@@ -605,89 +669,51 @@ Repository Owner: [forwardemail](https://github.com/forwardemail)
 
 Description: Privacy-focused encrypted email for everyone.  All-in-one alternative to Gmail + Mailchimp + Sendgrid.
 
-**Stars:** 1495 / **Created at:** 2019-12-17 / **Last commit:** 2026-03-12
+**Stars:** 1541 / **Created at:** 2019-12-17 / **Last commit:** 2026-03-20
 
 **Topics:** #aes256 #chacha20 #custom #domain #email #encrypted #forwarder #forwarding #free #imap #mail #newsletter #pop #privacy #send #smtp #sqlite
 
 ----
 
-### [fresh-resume-schema](https://github.com/fresh-standard/fresh-resume-schema)
+### [fuxploider](https://github.com/almandin/fuxploider)
 
-Repository Url: https://github.com/fresh-standard/fresh-resume-schema
+Repository Url: https://github.com/almandin/fuxploider
 
-Repository Owner: [fresh-standard](https://github.com/fresh-standard)
+Repository Owner: [almandin](https://github.com/almandin)
 
-Description: A rational schema for your résumé or CV.
+Description: File upload vulnerability scanner and exploitation tool.
 
-**Stars:** 559 / **Created at:** 2015-11-19 / **Last commit:** 2026-03-11
+**Stars:** 3305 / **Created at:** 2017-07-14 / **Last commit:** 2026-03-18
 
-----
-
-### [fw](https://github.com/CapibaraZero/fw)
-
-Repository Url: https://github.com/CapibaraZero/fw
-
-Repository Owner: [CapibaraZero](https://github.com/CapibaraZero)
-
-Description: CapibaraZero main firmware repository
-
-**Stars:** 437 / **Created at:** 2023-11-15 / **Last commit:** 2026-03-07
+**Topics:** #detection #exploitation #pentesting #python3 #takeover #vulnerability-scanner
 
 ----
 
-### [gau](https://github.com/lc/gau)
+### [gallery-dl](https://github.com/mikf/gallery-dl)
 
-Repository Url: https://github.com/lc/gau
+Repository Url: https://github.com/mikf/gallery-dl
 
-Repository Owner: [lc](https://github.com/lc)
+Repository Owner: [mikf](https://github.com/mikf)
 
-Description: Fetch known URLs from AlienVault's Open Threat Exchange, the Wayback Machine, and Common Crawl.
+Description: Command-line program to download image galleries and collections from several image hosting sites
 
-**Stars:** 4845 / **Created at:** 2020-02-25 / **Last commit:** 2026-03-12
+**Stars:** 17282 / **Created at:** 2014-10-12 / **Last commit:** 2026-03-20
 
-**Topics:** #alienvault #gau #hacktoberfest #security #wayback-machine
-
-----
-
-### [geoclustering](https://github.com/bellingcat/geoclustering)
-
-Repository Url: https://github.com/bellingcat/geoclustering
-
-Repository Owner: [bellingcat](https://github.com/bellingcat)
-
-Description: Command-line tool for clustering geolocations 📍
-
-**Stars:** 45 / **Created at:** 2022-06-29 / **Last commit:** 2026-03-11
-
-**Topics:** #clustering #command-line #geolocation #open-source-research #python
+**Topics:** #danbooru #deviantart #downloader #gallery #kemono #mangadex #pixiv #tumblr #twitter
 
 ----
 
-### [gephi](https://github.com/gephi/gephi)
+### [getcontact](https://github.com/kovinevmv/getcontact)
 
-Repository Url: https://github.com/gephi/gephi
+Repository Url: https://github.com/kovinevmv/getcontact
 
-Repository Owner: [gephi](https://github.com/gephi)
+Repository Owner: [kovinevmv](https://github.com/kovinevmv)
 
-Description: Gephi - The Open Graph Viz Platform
+Description: Find info about user by phone number using GetContact API
 
-**Stars:** 6394 / **Created at:** 2011-10-22 / **Last commit:** 2026-03-11
+**Stars:** 542 / **Created at:** 2020-01-08 / **Last commit:** 2026-03-17
 
-**Topics:** #graph #graph-analytics #interactive #java #opengl #visualization
-
-----
-
-### [ghostunnel](https://github.com/ghostunnel/ghostunnel)
-
-Repository Url: https://github.com/ghostunnel/ghostunnel
-
-Repository Owner: [ghostunnel](https://github.com/ghostunnel)
-
-Description: A simple SSL/TLS proxy with mutual authentication for securing non-TLS services.
-
-**Stars:** 2136 / **Created at:** 2015-10-07 / **Last commit:** 2026-03-11
-
-**Topics:** #crypto #go #hsm #keychain #pkcs11 #proxy #security #ssl #stunnel #tls #tunnel
+**Topics:** #aes-key #caller-id #getcontact #osint #phone #phone-number #reverse-engineering
 
 ----
 
@@ -699,79 +725,181 @@ Repository Owner: [vn7n24fzkq](https://github.com/vn7n24fzkq)
 
 Description: A tool to generate your GitHub summary card for profile README
 
-**Stars:** 3390 / **Created at:** 2020-09-01 / **Last commit:** 2026-03-13
+**Stars:** 3397 / **Created at:** 2020-09-01 / **Last commit:** 2026-03-18
 
 **Topics:** #github-action #github-profile-readme #hacktoberfest #profile-readme #profile-summary #readme-stats #star #summary-cards #trigger-action
 
 ----
 
-### [go-whatsapp-web-multidevice](https://github.com/aldinokemal/go-whatsapp-web-multidevice)
+### [github-repo-size](https://github.com/harshjv/github-repo-size)
 
-Repository Url: https://github.com/aldinokemal/go-whatsapp-web-multidevice
+Repository Url: https://github.com/harshjv/github-repo-size
 
-Repository Owner: [aldinokemal](https://github.com/aldinokemal)
+Repository Owner: [harshjv](https://github.com/harshjv)
 
-Description: GOWA - WhatsApp REST API with support for UI, Multi Account, Webhooks, and MCP, and Chatwoot. Built with Golang for efficient memory use. 
+Description: 🚀 Chrome extension to display repository size on GitHub
 
-**Stars:** 3656 / **Created at:** 2022-02-09 / **Last commit:** 2026-03-12
+**Stars:** 1277 / **Created at:** 2016-08-03 / **Last commit:** 2026-03-20
 
-**Topics:** #bot #go #golang #golang-whatsapp #golang-whatsapp-api #rest #rest-api #whatsapp #whatsapp-api #whatsapp-api-go #whatsapp-multi-device #whatsapp-web-multi-device
-
-----
-
-### [interpol-notices-maltego](https://github.com/SocialLinks-IO/interpol-notices-maltego)
-
-Repository Url: https://github.com/SocialLinks-IO/interpol-notices-maltego
-
-Repository Owner: [SocialLinks-IO](https://github.com/SocialLinks-IO)
-
-Description: A list of transforms for searching Red, Yellow, and UNSC notices by Name or Phrase.
-
-**Stars:** 25 / **Created at:** 2023-06-11 / **Last commit:** 2025-07-11
-
-**Topics:** #interpol #maltego #osint
+**Topics:** #chrome #chrome-extension #chrome-extensions #github #github-api #repository-management #repository-tools #repository-utilities #statistics
 
 ----
 
-### [isp-data-pollution](https://github.com/essandess/isp-data-pollution)
+### [gitleaks](https://github.com/gitleaks/gitleaks)
 
-Repository Url: https://github.com/essandess/isp-data-pollution
+Repository Url: https://github.com/gitleaks/gitleaks
 
-Repository Owner: [essandess](https://github.com/essandess)
+Repository Owner: [gitleaks](https://github.com/gitleaks)
 
-Description: ISP Data Pollution to Protect Private Browsing History with Obfuscation
+Description: Find secrets with Gitleaks 🔑
 
-**Stars:** 608 / **Created at:** 2017-03-25 / **Last commit:** 2026-02-07
+**Stars:** 25489 / **Created at:** 2018-01-27 / **Last commit:** 2026-03-20
 
-**Topics:** #crawling #data #data-analytics #obfuscation #privacy #privacy-enhancing-technologies #web
-
-----
-
-### [letta](https://github.com/letta-ai/letta)
-
-Repository Url: https://github.com/letta-ai/letta
-
-Repository Owner: [letta-ai](https://github.com/letta-ai)
-
-Description: Letta is the platform for building stateful agents: AI with advanced memory that can learn and self-improve over time.
-
-**Stars:** 21553 / **Created at:** 2023-10-11 / **Last commit:** 2026-03-13
-
-**Topics:** #ai #ai-agents #llm #llm-agent
+**Topics:** #ai-powered #ci-cd #cicd #cli #data-loss-prevention #devsecops #dlp #git #gitleaks #go #golang #hacktoberfest #llm #llm-inference #llm-training #nhi #open-source #secret #security #security-tools
 
 ----
 
-### [liffy](https://github.com/mzfr/liffy)
+### [google-dork-builder](https://github.com/KernelPan1k/google-dork-builder)
 
-Repository Url: https://github.com/mzfr/liffy
+Repository Url: https://github.com/KernelPan1k/google-dork-builder
 
-Repository Owner: [mzfr](https://github.com/mzfr)
+Repository Owner: [KernelPan1k](https://github.com/KernelPan1k)
 
-Description: Local file inclusion exploitation tool
+Description: Make Google Dork with firefox addon :mag:
 
-**Stars:** 931 / **Created at:** 2019-06-08 / **Last commit:** 2026-03-12
+**Stars:** 18 / **Created at:** 2019-05-02 / **Last commit:** 2026-02-25
 
-**Topics:** #hac #lfi #lfi-exploitation #local-file-inclusion #reverse-shell
+----
+
+### [grafana](https://github.com/grafana/grafana)
+
+Repository Url: https://github.com/grafana/grafana
+
+Repository Owner: [grafana](https://github.com/grafana)
+
+Description: The open and composable observability and data visualization platform. Visualize metrics, logs, and traces from multiple sources like Prometheus, Loki, Elasticsearch, InfluxDB, Postgres and many more. 
+
+**Stars:** 72745 / **Created at:** 2013-12-11 / **Last commit:** 2026-03-20
+
+**Topics:** #alerting #analytics #business-intelligence #dashboard #data-visualization #elasticsearch #go #grafana #hacktoberfest #influxdb #metrics #monitoring #mysql #postgres #prometheus
+
+----
+
+### [homelab-hub](https://github.com/RaidOwl/homelab-hub)
+
+Repository Url: https://github.com/RaidOwl/homelab-hub
+
+Repository Owner: [RaidOwl](https://github.com/RaidOwl)
+
+Description: No project description
+
+**Stars:** 434 / **Created at:** 2026-02-17 / **Last commit:** 2026-03-19
+
+----
+
+### [httpstat](https://github.com/davecheney/httpstat)
+
+Repository Url: https://github.com/davecheney/httpstat
+
+Repository Owner: [davecheney](https://github.com/davecheney)
+
+Description: It's like curl -v, with colours. 
+
+**Stars:** 7213 / **Created at:** 2016-09-23 / **Last commit:** 2026-03-19
+
+----
+
+### [httptap](https://github.com/ozeranskii/httptap)
+
+Repository Url: https://github.com/ozeranskii/httptap
+
+Repository Owner: [ozeranskii](https://github.com/ozeranskii)
+
+Description: Rich-powered CLI that breaks each HTTP request into DNS, connect, TLS, wait, and transfer phases with waterfall timelines, compact summaries, or metrics-only output.
+
+**Stars:** 482 / **Created at:** 2025-10-22 / **Last commit:** 2026-03-20
+
+**Topics:** #cli #diagnostics #http #http2 #monitoring #networking #performance #profiling #rich #tls #visualization
+
+----
+
+### [jq](https://github.com/jqlang/jq)
+
+Repository Url: https://github.com/jqlang/jq
+
+Repository Owner: [jqlang](https://github.com/jqlang)
+
+Description: Command-line JSON processor
+
+**Stars:** 33891 / **Created at:** 2012-07-18 / **Last commit:** 2026-03-20
+
+**Topics:** #jq
+
+----
+
+### [krakenhashes](https://github.com/ZerkerEOD/krakenhashes)
+
+Repository Url: https://github.com/ZerkerEOD/krakenhashes
+
+Repository Owner: [ZerkerEOD](https://github.com/ZerkerEOD)
+
+Description: No project description
+
+**Stars:** 356 / **Created at:** 2025-01-05 / **Last commit:** 2026-03-18
+
+----
+
+### [kreuzberg](https://github.com/kreuzberg-dev/kreuzberg)
+
+Repository Url: https://github.com/kreuzberg-dev/kreuzberg
+
+Repository Owner: [kreuzberg-dev](https://github.com/kreuzberg-dev)
+
+Description: A polyglot document intelligence framework with a Rust core. Extract text, metadata, and structured information from PDFs, Office documents, images, and 88+ formats. Available for Rust, Python, Ruby, Java, Go, PHP, Elixir, C#, R, C, TypeScript (Node/Bun/Wasm/Deno)- or use via CLI, REST API, or MCP server.
+
+**Stars:** 6759 / **Created at:** 2025-01-31 / **Last commit:** 2026-03-20
+
+**Topics:** #bun #csharp #document-intelligence #elixir #ffi #golang #java #metadata-extraction #node #pdf-extraction #pdfium #php #python #rag #ruby #rust #table-extraction #tesseract #text-extraction #wasm
+
+----
+
+### [kyanos](https://github.com/hengyoush/kyanos)
+
+Repository Url: https://github.com/hengyoush/kyanos
+
+Repository Owner: [hengyoush](https://github.com/hengyoush)
+
+Description: Kyanos is a networking analysis tool using eBPF. It can visualize the time packets spend in the kernel, capture requests/responses, makes troubleshooting more efficient.
+
+**Stars:** 4995 / **Created at:** 2024-04-30 / **Last commit:** 2026-03-20
+
+**Topics:** #bpf #capture #command-line #command-line-tool #ebpf #network #sniffer #tcp #tcpdump #tcpdump-like
+
+----
+
+### [lima](https://github.com/lima-vm/lima)
+
+Repository Url: https://github.com/lima-vm/lima
+
+Repository Owner: [lima-vm](https://github.com/lima-vm)
+
+Description: Linux virtual machines, with a focus on running containers
+
+**Stars:** 20486 / **Created at:** 2021-05-14 / **Last commit:** 2026-03-20
+
+**Topics:** #containerd #lima-vm #macos #qemu #vm
+
+----
+
+### [list_of_sites_for_court_rulings_search](https://github.com/cipher387/list_of_sites_for_court_rulings_search)
+
+Repository Url: https://github.com/cipher387/list_of_sites_for_court_rulings_search
+
+Repository Owner: [cipher387](https://github.com/cipher387)
+
+Description: List of websites to search for court documents in different countries
+
+**Stars:** 24 / **Created at:** 2021-06-21 / **Last commit:** 2026-01-27
 
 ----
 
@@ -787,269 +915,291 @@ Description: Maltego
 
 ----
 
-### [matano](https://github.com/matanolabs/matano)
+### [meetup-member-scraper](https://github.com/andrebradshaw/meetup-member-scraper)
 
-Repository Url: https://github.com/matanolabs/matano
+Repository Url: https://github.com/andrebradshaw/meetup-member-scraper
 
-Repository Owner: [matanolabs](https://github.com/matanolabs)
+Repository Owner: [andrebradshaw](https://github.com/andrebradshaw)
 
-Description: Open source security data lake for threat hunting, detection & response, and cybersecurity analytics at petabyte scale on AWS
+Description: No project description
 
-**Stars:** 1659 / **Created at:** 2022-07-03 / **Last commit:** 2026-03-11
-
-**Topics:** #alerting #apache-iceberg #aws #aws-security #big-data #cloud #cloud-native #cloud-security #cybersecurity #detection-engineering #dfir #log-analytics #log-management #rust #secops #security #security-tools #serverless #siem #threat-hunting
+**Stars:** 25 / **Created at:** 2019-05-12 / **Last commit:** 2023-09-06
 
 ----
 
-### [mh2](https://github.com/mailhog/mh2)
+### [misp-wireshark](https://github.com/MISP/misp-wireshark)
 
-Repository Url: https://github.com/mailhog/mh2
+Repository Url: https://github.com/MISP/misp-wireshark
 
-Repository Owner: [mailhog](https://github.com/mailhog)
+Repository Owner: [MISP](https://github.com/MISP)
 
-Description: MailHog 2.0
+Description: Lua plugin to extract data from Wireshark and convert it into MISP format
 
-**Stars:** 12 / **Created at:** 2017-01-10 / **Last commit:** 2025-12-02
+**Stars:** 49 / **Created at:** 2022-02-18 / **Last commit:** 2025-09-19
 
-----
-
-### [microrabbit](https://github.com/TonnoBelloSnello/microrabbit)
-
-Repository Url: https://github.com/TonnoBelloSnello/microrabbit
-
-Repository Owner: [TonnoBelloSnello](https://github.com/TonnoBelloSnello)
-
-Description: MicroRabbit: A lightweight, asynchronous Python framework for RabbitMQ that simplifies building microservices and distributed systems. Features include easy message routing, plugin support, and intuitive client configuration.
-
-**Stars:** 104 / **Created at:** 2024-07-26 / **Last commit:** 2025-12-11
+**Topics:** #dfir #misp #misp-format #network-forensic #threat-intelligence #wireshark #wireshark-plugin
 
 ----
 
-### [moondream](https://github.com/vikhyat/moondream)
+### [newsnow](https://github.com/ourongxing/newsnow)
 
-Repository Url: https://github.com/vikhyat/moondream
+Repository Url: https://github.com/ourongxing/newsnow
 
-Repository Owner: [vikhyat](https://github.com/vikhyat)
+Repository Owner: [ourongxing](https://github.com/ourongxing)
 
-Description: tiny vision language model
+Description: Elegant reading of real-time and hottest news
 
-**Stars:** 9419 / **Created at:** 2023-12-29 / **Last commit:** 2026-03-13
+**Stars:** 18647 / **Created at:** 2024-09-23 / **Last commit:** 2026-03-20
 
-----
-
-### [nmapAutomator](https://github.com/mr-rizwan-syed/nmapAutomator)
-
-Repository Url: https://github.com/mr-rizwan-syed/nmapAutomator
-
-Repository Owner: [mr-rizwan-syed](https://github.com/mr-rizwan-syed)
-
-Description: A script that you can run in the background!
-
-**Stars:** 2 / **Created at:** 2021-11-30 / **Last commit:** 2024-10-03
+**Topics:** #elegant #news
 
 ----
 
-### [open-scouts](https://github.com/firecrawl/open-scouts)
+### [nokogiri](https://github.com/sparklemotion/nokogiri)
 
-Repository Url: https://github.com/firecrawl/open-scouts
+Repository Url: https://github.com/sparklemotion/nokogiri
 
-Repository Owner: [firecrawl](https://github.com/firecrawl)
+Repository Owner: [sparklemotion](https://github.com/sparklemotion)
 
-Description: 🔥 AI-powered web monitoring platform. Create automated scouts that search the web and send email alerts when they find what you're looking for. 
+Description: Nokogiri (鋸) makes it easy and painless to work with XML and HTML from Ruby.
 
-**Stars:** 1246 / **Created at:** 2025-11-28 / **Last commit:** 2026-03-12
+**Stars:** 6243 / **Created at:** 2008-07-14 / **Last commit:** 2026-03-19
 
-**Topics:** #ai-agents #alerts #automation #email-notifications #firecrawl #nextjs #open-source #openai #posthog #react #resend #supabase #tailwindcss #typescript #vercel #web-monitoring #web-scraping
-
-----
-
-### [osint-dashboard](https://github.com/bormaxi8080/osint-dashboard)
-
-Repository Url: https://github.com/bormaxi8080/osint-dashboard
-
-Repository Owner: [bormaxi8080](https://github.com/bormaxi8080)
-
-Description: bormaxi8080 OSINT Dashboard with collection of OSINT, Software Development & DevOps Resources
-
-**Stars:** 1 / **Created at:** 2025-07-20 / **Last commit:** 2026-03-13
+**Topics:** #libxml2 #libxslt #nokogiri #ruby #ruby-gem #sax #xerces #xml #xslt
 
 ----
 
-### [own-vpn-for-everyone](https://github.com/neneeen/own-vpn-for-everyone)
+### [onionshare](https://github.com/onionshare/onionshare)
 
-Repository Url: https://github.com/neneeen/own-vpn-for-everyone
+Repository Url: https://github.com/onionshare/onionshare
 
-Repository Owner: [neneeen](https://github.com/neneeen)
+Repository Owner: [onionshare](https://github.com/onionshare)
 
-Description: Collection of guides to host your own VPN on free and cheap cloud providers
+Description: Securely and anonymously share files, host websites, and chat with friends using the Tor network
 
-**Stars:** 50 / **Created at:** 2019-12-30 / **Last commit:** 2023-03-28
+**Stars:** 6913 / **Created at:** 2014-05-20 / **Last commit:** 2026-03-19
 
-----
-
-### [passer](https://github.com/activecm/passer)
-
-Repository Url: https://github.com/activecm/passer
-
-Repository Owner: [activecm](https://github.com/activecm)
-
-Description: Passive service locator, a python sniffer that identifies servers, clients, names and much more
-
-**Stars:** 260 / **Created at:** 2018-11-08 / **Last commit:** 2026-03-09
-
-**Topics:** #capturing-packets #dns #docker-command #gplv3 #hacktoberfest #linux #macosx #network-monitoring #packet-analyzer #packet-sniffer #packets #passer #pcap #pcap-analyzer #python #python-2 #scapy #security #sniffer
+**Topics:** #cross-platform #file-sharing #onion-service #onionshare #open-source #python #security #tor #tor-onion-service
 
 ----
 
-### [pholcus](https://github.com/andeya/pholcus)
+### [openlayers](https://github.com/openlayers/openlayers)
 
-Repository Url: https://github.com/andeya/pholcus
+Repository Url: https://github.com/openlayers/openlayers
 
-Repository Owner: [andeya](https://github.com/andeya)
+Repository Owner: [openlayers](https://github.com/openlayers)
 
-Description: Pholcus is a distributed high-concurrency crawler software written in pure golang
+Description: OpenLayers
 
-**Stars:** 7602 / **Created at:** 2015-07-03 / **Last commit:** 2026-03-13
+**Stars:** 12355 / **Created at:** 2012-06-20 / **Last commit:** 2026-03-19
 
-**Topics:** #crowler #spider
-
-----
-
-### [puppeteer-examples](https://github.com/checkly/puppeteer-examples)
-
-Repository Url: https://github.com/checkly/puppeteer-examples
-
-Repository Owner: [checkly](https://github.com/checkly)
-
-Description: Puppeteer example scripts for running Headless Chrome from Node.
-
-**Stars:** 3051 / **Created at:** 2017-10-05 / **Last commit:** 2026-02-18
-
-**Topics:** #developer-tools #headless-chrome #jest #monitoring #node #nodejs #puppeteer #testing
+**Topics:** #javascript #maps #openlayers
 
 ----
 
-### [puppeteer-extra](https://github.com/berstend/puppeteer-extra)
+### [osint-cases-ru](https://github.com/OSINT-mindset/osint-cases-ru)
 
-Repository Url: https://github.com/berstend/puppeteer-extra
+Repository Url: https://github.com/OSINT-mindset/osint-cases-ru
 
-Repository Owner: [berstend](https://github.com/berstend)
+Repository Owner: [OSINT-mindset](https://github.com/OSINT-mindset)
 
-Description: 💯  Teach puppeteer new tricks through plugins.
+Description: Решения различных OSINT-задач / OSINT tasks writeups in Russian
 
-**Stars:** 7271 / **Created at:** 2018-05-15 / **Last commit:** 2026-03-13
+**Stars:** 18 / **Created at:** 2023-02-01 / **Last commit:** 2026-01-08
 
-**Topics:** #automation #chrome #headless-browser #headless-chrome #lerna #monorepo #puppeteer #puppeteer-extra #puppeteer-plugins #recaptcha #stealth #user-preferences #yarn-workspaces
-
-----
-
-### [push.js](https://github.com/Nickersoft/push.js)
-
-Repository Url: https://github.com/Nickersoft/push.js
-
-Repository Owner: [Nickersoft](https://github.com/Nickersoft)
-
-Description: The world's most versatile desktop notifications framework :earth_americas:
-
-**Stars:** 8681 / **Created at:** 2015-07-20 / **Last commit:** 2026-03-10
-
-**Topics:** #javascript #javascript-library #notification-api #notifications #push #push-notifications
+**Topics:** #cases #casescollection #documentation #gitbook #osint #osint-resources
 
 ----
 
-### [rufus](https://github.com/pbatard/rufus)
+### [pangolin](https://github.com/fosrl/pangolin)
 
-Repository Url: https://github.com/pbatard/rufus
+Repository Url: https://github.com/fosrl/pangolin
 
-Repository Owner: [pbatard](https://github.com/pbatard)
+Repository Owner: [fosrl](https://github.com/fosrl)
 
-Description: The Reliable USB Formatting Utility
+Description: Identity-aware VPN and proxy for remote access to anything, anywhere.
 
-**Stars:** 35086 / **Created at:** 2011-11-19 / **Last commit:** 2026-03-13
+**Stars:** 19590 / **Created at:** 2024-09-27 / **Last commit:** 2026-03-20
 
-**Topics:** #bios #boot #bootable-drives #freedos #gpt #grub #grub4dos #iso #mbr #md5 #persistence #rufus #secure-boot #sha1 #sha256 #syslinux #uefi #usb #windows #windows-to-go
-
-----
-
-### [s](https://github.com/zquestz/s)
-
-Repository Url: https://github.com/zquestz/s
-
-Repository Owner: [zquestz](https://github.com/zquestz)
-
-Description: Open a web search in your terminal.
-
-**Stars:** 2533 / **Created at:** 2016-01-24 / **Last commit:** 2026-03-12
-
-**Topics:** #golang #search #terminal
+**Topics:** #identity-management #iot #nat-traversal #oidc #pam #private-access #proxy #remote-access #reverse-proxy #self-hosted #single-sign-on #ssh #tunneling #vpn #wireguard #zero-trust #zero-trust-network-access #ztna
 
 ----
 
-### [s3viewer](https://github.com/SharonBrizinov/s3viewer)
+### [patchright](https://github.com/Kaliiiiiiiiii-Vinyzu/patchright)
 
-Repository Url: https://github.com/SharonBrizinov/s3viewer
+Repository Url: https://github.com/Kaliiiiiiiiii-Vinyzu/patchright
 
-Repository Owner: [SharonBrizinov](https://github.com/SharonBrizinov)
+Repository Owner: [Kaliiiiiiiiii-Vinyzu](https://github.com/Kaliiiiiiiiii-Vinyzu)
 
-Description: Storage Explorer - Publicly open storage viewer (Amazon S3 Bucket, Azure Blob, FTP server, HTTP Index Of/)
+Description: Undetected version of the Playwright testing and automation library.
 
-**Stars:** 451 / **Created at:** 2021-01-08 / **Last commit:** 2026-02-16
+**Stars:** 2639 / **Created at:** 2023-11-07 / **Last commit:** 2026-03-20
 
-**Topics:** #aws #azure #bucket #index #s3
-
-----
-
-### [salmon-donate](https://github.com/salmon-donate/salmon-donate)
-
-Repository Url: https://github.com/salmon-donate/salmon-donate
-
-Repository Owner: [salmon-donate](https://github.com/salmon-donate)
-
-Description: An open-source, self-hosted, and non-custodial solution for receiving cryptocurrency donations.
-
-**Stars:** 37 / **Created at:** 2024-10-29 / **Last commit:** 2026-01-13
-
-**Topics:** #crypto #cryptocurrency #donations #kotlin #monero #quarkus #self-hosted #selfhosted #xmr
+**Topics:** #antidetect #automation #bot #bots #botting #browser #chrome #chromedriver #chromium #cloudflare #cloudflare-bypass #playwright #stealth #undetectable #undetected #web-automation #web-scraping #webautomation #webdriver #webscraping
 
 ----
 
-### [semantic-grep](https://github.com/arunsupe/semantic-grep)
+### [peepdb](https://github.com/evangelosmeklis/peepdb)
 
-Repository Url: https://github.com/arunsupe/semantic-grep
+Repository Url: https://github.com/evangelosmeklis/peepdb
 
-Repository Owner: [arunsupe](https://github.com/arunsupe)
+Repository Owner: [evangelosmeklis](https://github.com/evangelosmeklis)
 
-Description: grep for words with similar meaning to the query
+Description: CLI tool and python library to inspect databases fast.
 
-**Stars:** 1214 / **Created at:** 2024-07-26 / **Last commit:** 2026-03-03
+**Stars:** 495 / **Created at:** 2024-08-20 / **Last commit:** 2026-02-06
 
-----
-
-### [serviceradar](https://github.com/carverauto/serviceradar)
-
-Repository Url: https://github.com/carverauto/serviceradar
-
-Repository Owner: [carverauto](https://github.com/carverauto)
-
-Description: Zero-trust Opensource Network Management and Observability Platform
-
-**Stars:** 840 / **Created at:** 2025-01-13 / **Last commit:** 2026-03-13
-
-**Topics:** #armis #causal-discovery #causal-inference #deck-gl #erts #homelab #monitoring-tool #netbox #network-monitoring-tool #network-scanning #observability #ocsf #ocsf-schema #otel #ubiquiti #wasi #wasm #wazero #zero-trust
+**Topics:** #backend-as-a-service #cli #daatabase #database-as-a-service #database-management #developer-tools #nosql #open-source #python #python3 #serverless #sql
 
 ----
 
-### [shellfirm](https://github.com/kaplanelad/shellfirm)
+### [photoguard](https://github.com/MadryLab/photoguard)
 
-Repository Url: https://github.com/kaplanelad/shellfirm
+Repository Url: https://github.com/MadryLab/photoguard
 
-Repository Owner: [kaplanelad](https://github.com/kaplanelad)
+Repository Owner: [MadryLab](https://github.com/MadryLab)
 
-Description: Safety guardrails for ai coding agents and human terminal commands
+Description: Raising the Cost of Malicious AI-Powered Image Editing
 
-**Stars:** 883 / **Created at:** 2021-12-24 / **Last commit:** 2026-03-12
+**Stars:** 664 / **Created at:** 2022-11-03 / **Last commit:** 2026-03-13
 
-**Topics:** #agent #ai #captcha #devops #devops-tools #mcp #prompt #rust #shell #terminal #zsh
+**Topics:** #adversarial-attacks #adversarial-examples #computer-vision #deep-learning #deepfakes #robustness #stable-diffusion
+
+----
+
+### [pidrila](https://github.com/enemy-submarine/pidrila)
+
+Repository Url: https://github.com/enemy-submarine/pidrila
+
+Repository Owner: [enemy-submarine](https://github.com/enemy-submarine)
+
+Description: Python Interactive Deepweb-oriented Rapid Intelligent Link Analyzer
+
+**Stars:** 217 / **Created at:** 2020-11-08 / **Last commit:** 2026-03-17
+
+**Topics:** #appsec #bug-bounty #dirbuster #hacking #netstalking #penetration-testing #pentest #pentesting #python #scanner #scanner-web #security
+
+----
+
+### [portia](https://github.com/scrapinghub/portia)
+
+Repository Url: https://github.com/scrapinghub/portia
+
+Repository Owner: [scrapinghub](https://github.com/scrapinghub)
+
+Description: Visual scraping for Scrapy
+
+**Stars:** 9497 / **Created at:** 2014-03-21 / **Last commit:** 2026-03-19
+
+----
+
+### [ppdeep](https://github.com/elceef/ppdeep)
+
+Repository Url: https://github.com/elceef/ppdeep
+
+Repository Owner: [elceef](https://github.com/elceef)
+
+Description: Pure-Python library for computing fuzzy hashes (ssdeep)
+
+**Stars:** 50 / **Created at:** 2020-05-03 / **Last commit:** 2026-03-17
+
+**Topics:** #fuzzy-hashes #library #python #ssdeep
+
+----
+
+### [ppmap](https://github.com/kleiton0x00/ppmap)
+
+Repository Url: https://github.com/kleiton0x00/ppmap
+
+Repository Owner: [kleiton0x00](https://github.com/kleiton0x00)
+
+Description: A scanner/exploitation tool written in GO, which leverages client-side Prototype Pollution to XSS by exploiting known gadgets.
+
+**Stars:** 518 / **Created at:** 2021-07-12 / **Last commit:** 2026-03-04
+
+**Topics:** #bug-bounty #bugbounty #bugbounty-tool #cybersecurity #infosec #prototype-pollution #xss #xss-detection #xss-exploitation #xss-vulnerability
+
+----
+
+### [qdrant](https://github.com/qdrant/qdrant)
+
+Repository Url: https://github.com/qdrant/qdrant
+
+Repository Owner: [qdrant](https://github.com/qdrant)
+
+Description: Qdrant - High-performance, massive-scale Vector Database and Vector Search Engine for the next generation of AI. Also available in the cloud https://cloud.qdrant.io/
+
+**Stars:** 29710 / **Created at:** 2020-05-30 / **Last commit:** 2026-03-20
+
+**Topics:** #ai-search #ai-search-engine #embeddings-similarity #hnsw #hybrid-search #image-search #knn-algorithm #machine-learning #mlops #nearest-neighbor-search #neural-network #neural-search #recommender-system #search #search-engine #search-engines #similarity-search #vector-database #vector-search #vector-search-engine
+
+----
+
+### [quickapiclient](https://github.com/martinn/quickapiclient)
+
+Repository Url: https://github.com/martinn/quickapiclient
+
+Repository Owner: [martinn](https://github.com/martinn)
+
+Description: Create fully typed declarative API clients quickly and easily.
+
+**Stars:** 50 / **Created at:** 2024-03-14 / **Last commit:** 2026-02-07
+
+**Topics:** #api-client #attrs #dataclasses #deserialization #http-client #httpx #library #pydantic-v2 #python #requests #rest-api #serialization
+
+----
+
+### [rapidscan](https://github.com/skavngr/rapidscan)
+
+Repository Url: https://github.com/skavngr/rapidscan
+
+Repository Owner: [skavngr](https://github.com/skavngr)
+
+Description: :new: The Multi-Tool Web Vulnerability Scanner. 
+
+**Stars:** 2044 / **Created at:** 2018-01-29 / **Last commit:** 2026-03-20
+
+**Topics:** #enumeration #kali-linux #kali-scripts #offensive-security #oscp #penetration-testing #penetration-testing-framework #reconnaissance #scanner #scanner-web #security-scanner #security-scanning #security-tools #vulnerabilities #vulnerability-assessment #vulnerability-detection #vulnerability-management #vulnerability-scanner #vulnerability-scanners #web-vulnerabilities-scanner
+
+----
+
+### [reTermAI](https://github.com/pie0902/reTermAI)
+
+Repository Url: https://github.com/pie0902/reTermAI
+
+Repository Owner: [pie0902](https://github.com/pie0902)
+
+Description: No project description
+
+**Stars:** 58 / **Created at:** 2025-04-08 / **Last commit:** 2026-03-09
+
+----
+
+### [ripgrep](https://github.com/BurntSushi/ripgrep)
+
+Repository Url: https://github.com/BurntSushi/ripgrep
+
+Repository Owner: [BurntSushi](https://github.com/BurntSushi)
+
+Description: ripgrep recursively searches directories for a regex pattern while respecting your gitignore
+
+**Stars:** 61152 / **Created at:** 2016-03-11 / **Last commit:** 2026-03-20
+
+**Topics:** #cli #command-line #command-line-tool #gitignore #grep #recursively-search #regex #ripgrep #rust #search
+
+----
+
+### [selenium](https://github.com/SeleniumHQ/selenium)
+
+Repository Url: https://github.com/SeleniumHQ/selenium
+
+Repository Owner: [SeleniumHQ](https://github.com/SeleniumHQ)
+
+Description: A browser automation framework and ecosystem.
+
+**Stars:** 34145 / **Created at:** 2013-01-14 / **Last commit:** 2026-03-20
+
+**Topics:** #dotnet #java #javascript #python #ruby #rust #selenium #webdriver
 
 ----
 
@@ -1061,243 +1211,129 @@ Repository Owner: [rohitdhas](https://github.com/rohitdhas)
 
 Description: Shittier is an unconventional code formatting tool
 
-**Stars:** 1766 / **Created at:** 2023-06-19 / **Last commit:** 2026-03-12
+**Stars:** 1767 / **Created at:** 2023-06-19 / **Last commit:** 2026-03-15
 
 **Topics:** #code-formatter #prettier #shittier
 
 ----
 
-### [sidekick](https://github.com/runsidekick/sidekick)
+### [shuttle](https://github.com/fitztrev/shuttle)
 
-Repository Url: https://github.com/runsidekick/sidekick
+Repository Url: https://github.com/fitztrev/shuttle
 
-Repository Owner: [runsidekick](https://github.com/runsidekick)
+Repository Owner: [fitztrev](https://github.com/fitztrev)
 
-Description: Sidekick is no longer in service
+Description: A simple shortcut menu for macOS
 
-**Stars:** 1610 / **Created at:** 2022-08-22 / **Last commit:** 2026-03-11
-
-**Topics:** #debugging #debugging-tools #logging #monitoring
+**Stars:** 4595 / **Created at:** 2013-07-11 / **Last commit:** 2026-03-11
 
 ----
 
-### [ssh3](https://github.com/francoismichel/ssh3)
+### [sidekick](https://github.com/MightyMoud/sidekick)
 
-Repository Url: https://github.com/francoismichel/ssh3
+Repository Url: https://github.com/MightyMoud/sidekick
 
-Repository Owner: [francoismichel](https://github.com/francoismichel)
+Repository Owner: [MightyMoud](https://github.com/MightyMoud)
 
-Description: SSH3: faster and rich secure shell using HTTP/3, checkout our article here: https://arxiv.org/abs/2312.08396 and our Internet-Draft: https://datatracker.ietf.org/doc/draft-michel-ssh3/
+Description: Bare metal to production ready in mins; your own fly server on your VPS.
 
-**Stars:** 4927 / **Created at:** 2023-10-31 / **Last commit:** 2026-03-11
+**Stars:** 7347 / **Created at:** 2024-07-02 / **Last commit:** 2026-03-20
 
-----
-
-### [subfinder](https://github.com/projectdiscovery/subfinder)
-
-Repository Url: https://github.com/projectdiscovery/subfinder
-
-Repository Owner: [projectdiscovery](https://github.com/projectdiscovery)
-
-Description: Fast passive subdomain enumeration tool.
-
-**Stars:** 13221 / **Created at:** 2018-03-31 / **Last commit:** 2026-03-13
-
-**Topics:** #bugbounty #hacking #hacktoberfest #osint #reconnaissance #subdomain-enumeration #subdomains
+**Topics:** #deployment #heroku #self-host #self-hostable #self-hosted #self-hosting #selfhosting #vps-admin #vps-server #vps-setup #vps-ubuntu
 
 ----
 
-### [swagger-jacker](https://github.com/cjihrig/swagger-jacker)
+### [slash](https://github.com/getslash/slash)
 
-Repository Url: https://github.com/cjihrig/swagger-jacker
+Repository Url: https://github.com/getslash/slash
 
-Repository Owner: [cjihrig](https://github.com/cjihrig)
+Repository Owner: [getslash](https://github.com/getslash)
 
-Description: Express API documentation generator
+Description: The Slash testing infrastructure
 
-**Stars:** 10 / **Created at:** 2017-01-07 / **Last commit:** 2023-12-26
+**Stars:** 81 / **Created at:** 2013-02-22 / **Last commit:** 2026-01-26
 
-----
-
-### [tartufo](https://github.com/godaddy/tartufo)
-
-Repository Url: https://github.com/godaddy/tartufo
-
-Repository Owner: [godaddy](https://github.com/godaddy)
-
-Description: Searches through git repositories for high entropy strings and secrets, digging deep into commit history
-
-**Stars:** 510 / **Created at:** 2019-11-07 / **Last commit:** 2026-02-22
-
-**Topics:** #entropy #entropy-checking #git #hacktoberfest #secrets #secrets-detection #secrets-scan #security #security-scanner #security-tools
+**Topics:** #hacktoberfest
 
 ----
 
-### [tiktok-scraper](https://github.com/drawrowfly/tiktok-scraper)
+### [supervision](https://github.com/roboflow/supervision)
 
-Repository Url: https://github.com/drawrowfly/tiktok-scraper
+Repository Url: https://github.com/roboflow/supervision
 
-Repository Owner: [drawrowfly](https://github.com/drawrowfly)
+Repository Owner: [roboflow](https://github.com/roboflow)
 
-Description: TikTok Scraper. Download video posts, collect user/trend/hashtag/music feed metadata, sign URL and etc.
+Description: We write your reusable computer vision tools. 💜
 
-**Stars:** 5004 / **Created at:** 2019-10-23 / **Last commit:** 2026-03-13
+**Stars:** 36737 / **Created at:** 2022-11-28 / **Last commit:** 2026-03-20
 
-----
-
-### [tosint](https://github.com/drego85/tosint)
-
-Repository Url: https://github.com/drego85/tosint
-
-Repository Owner: [drego85](https://github.com/drego85)
-
-Description: Tosint is a Telegram OSINT tool that extracts actionable intelligence from bot tokens and chat IDs for security investigations.
-
-**Stars:** 811 / **Created at:** 2021-07-26 / **Last commit:** 2026-03-11
+**Topics:** #classification #coco #computer-vision #deep-learning #hacktoberfest #image-processing #instance-segmentation #low-code #machine-learning #metrics #object-detection #oriented-bounding-box #pascal-voc #python #pytorch #tensorflow #tracking #video-processing #yolo
 
 ----
 
-### [twitter-archive-parser](https://github.com/timhutton/twitter-archive-parser)
+### [tplmap](https://github.com/epinna/tplmap)
 
-Repository Url: https://github.com/timhutton/twitter-archive-parser
+Repository Url: https://github.com/epinna/tplmap
 
-Repository Owner: [timhutton](https://github.com/timhutton)
+Repository Owner: [epinna](https://github.com/epinna)
 
-Description: Python code to parse a Twitter archive and output in various ways
+Description: Server-Side Template Injection and Code Injection Detection and Exploitation Tool
 
-**Stars:** 2441 / **Created at:** 2022-11-09 / **Last commit:** 2026-03-02
-
-----
-
-### [unredacter](https://github.com/BishopFox/unredacter)
-
-Repository Url: https://github.com/BishopFox/unredacter
-
-Repository Owner: [BishopFox](https://github.com/BishopFox)
-
-Description: Never ever ever use pixelation as a redaction technique
-
-**Stars:** 8261 / **Created at:** 2021-10-22 / **Last commit:** 2026-03-12
+**Stars:** 4129 / **Created at:** 2016-07-06 / **Last commit:** 2026-03-19
 
 ----
 
-### [vsort](https://github.com/davidesantangelo/vsort)
+### [uk-personal-osint-toolkit](https://github.com/mbeardwell/uk-personal-osint-toolkit)
 
-Repository Url: https://github.com/davidesantangelo/vsort
+Repository Url: https://github.com/mbeardwell/uk-personal-osint-toolkit
 
-Repository Owner: [davidesantangelo](https://github.com/davidesantangelo)
+Repository Owner: [mbeardwell](https://github.com/mbeardwell)
 
-Description: VSort is a lightning-fast sorting library that harnesses the unique architecture of Apple Silicon processors to deliver exceptional performance.
+Description: A curated, UK-focused collection of open-source intelligence (OSINT) resources built for human investigation.
 
-**Stars:** 19 / **Created at:** 2025-03-17 / **Last commit:** 2026-01-15
+**Stars:** 10 / **Created at:** 2025-06-19 / **Last commit:** 2026-02-14
 
-**Topics:** #apple-sillicon #c #sorting-algorithms #sorting-algorithms-implemented
-
-----
-
-### [webdriver-factory](https://github.com/barancev/webdriver-factory)
-
-Repository Url: https://github.com/barancev/webdriver-factory
-
-Repository Owner: [barancev](https://github.com/barancev)
-
-Description: An utility to manage WebDriver instances
-
-**Stars:** 87 / **Created at:** 2016-03-18 / **Last commit:** 2026-03-05
+**Topics:** #cybersecurity #open-source #osint #uk
 
 ----
 
-### [webvm](https://github.com/leaningtech/webvm)
+### [webripper-pro](https://github.com/MrpasswordTz/webripper-pro)
 
-Repository Url: https://github.com/leaningtech/webvm
+Repository Url: https://github.com/MrpasswordTz/webripper-pro
 
-Repository Owner: [leaningtech](https://github.com/leaningtech)
+Repository Owner: [MrpasswordTz](https://github.com/MrpasswordTz)
 
-Description: Virtual Machine for the Web
+Description: Webripper Pro is a comprehensive, professional-grade web vulnerability scanner that automates the detection of security flaws in websites. It is designed for penetration testers, bug bounty hunters, and security professionals seeking fast, actionable insights into the security posture of web applications.
 
-**Stars:** 16436 / **Created at:** 2022-01-31 / **Last commit:** 2026-03-13
-
-**Topics:** #cheerp #cheerpx #cpp #lwip #repl #tailscale #vm #wasm #webassembly #webvm #xterm-js
+**Stars:** 38 / **Created at:** 2025-07-04 / **Last commit:** 2026-03-14
 
 ----
 
-### [wpair-app](https://github.com/zalexdev/wpair-app)
+### [webscrapbook](https://github.com/danny0838/webscrapbook)
 
-Repository Url: https://github.com/zalexdev/wpair-app
+Repository Url: https://github.com/danny0838/webscrapbook
 
-Repository Owner: [zalexdev](https://github.com/zalexdev)
+Repository Owner: [danny0838](https://github.com/danny0838)
 
-Description: WPair is a defensive security research tool that demonstrates the CVE-2025-36911 (eg WhisperPair) vulnerability in Google's Fast Pair protocol. This vulnerability affects millions of Bluetooth audio devices worldwide, allowing unauthorized pairing and potential microphone access without user consent.
+Description: A browser extension that captures web pages to local device or backend server for future retrieval, organization, annotation, and edit. This project inherits from legacy Firefox add-on ScrapBook X.
 
-**Stars:** 719 / **Created at:** 2026-01-17 / **Last commit:** 2026-03-13
+**Stars:** 1180 / **Created at:** 2017-06-20 / **Last commit:** 2026-03-18
 
-----
-
-### [xbox_monitor](https://github.com/misiektoja/xbox_monitor)
-
-Repository Url: https://github.com/misiektoja/xbox_monitor
-
-Repository Owner: [misiektoja](https://github.com/misiektoja)
-
-Description: Real-time tracking of Xbox Live players activities
-
-**Stars:** 23 / **Created at:** 2024-04-27 / **Last commit:** 2026-03-08
-
-**Topics:** #osint #python #xbox #xbox-live #xbox-monitor #xbox-webapi
+**Topics:** #archive #bookmark #browser-extension #capture #chrome-extension #firefox-addon #maff #webextension
 
 ----
 
-### [xdm](https://github.com/subhra74/xdm)
+### [whatsmeow](https://github.com/tulir/whatsmeow)
 
-Repository Url: https://github.com/subhra74/xdm
+Repository Url: https://github.com/tulir/whatsmeow
 
-Repository Owner: [subhra74](https://github.com/subhra74)
+Repository Owner: [tulir](https://github.com/tulir)
 
-Description: Powerfull download accelerator and video downloader
+Description: Go library for the WhatsApp web multidevice API
 
-**Stars:** 7638 / **Created at:** 2018-02-25 / **Last commit:** 2026-03-13
+**Stars:** 5628 / **Created at:** 2021-10-06 / **Last commit:** 2026-03-20
 
-**Topics:** #chrome #download-accelerator #download-manager #downloader #firefox #java #linux #macosx #media-converter #streaming-video #video-converter #video-downloader #windows
-
-----
-
-### [yark](https://github.com/Owez/yark)
-
-Repository Url: https://github.com/Owez/yark
-
-Repository Owner: [Owez](https://github.com/Owez)
-
-Description: OSINT for YouTube made simple.
-
-**Stars:** 2171 / **Created at:** 2022-08-16 / **Last commit:** 2026-03-12
-
-**Topics:** #archive #osint #youtube #youtube-dl
-
-----
-
-### [ytcs](https://github.com/lettapp/ytcs)
-
-Repository Url: https://github.com/lettapp/ytcs
-
-Repository Owner: [lettapp](https://github.com/lettapp)
-
-Description: Search youtube comments by keywords.
-
-**Stars:** 41 / **Created at:** 2020-04-08 / **Last commit:** 2026-03-03
-
-----
-
-### [ytdlnis](https://github.com/deniscerri/ytdlnis)
-
-Repository Url: https://github.com/deniscerri/ytdlnis
-
-Repository Owner: [deniscerri](https://github.com/deniscerri)
-
-Description: Full-featured audio/video downloader for Android using yt-dlp
-
-**Stars:** 7952 / **Created at:** 2022-05-27 / **Last commit:** 2026-03-13
-
-**Topics:** #android #audio #downloader #kotlin #material-design #mp3 #video #youtube #youtube-dl #youtube-downloader #yt-dlp #yt-dlp-gui
+**Topics:** #go #golang #whatsapp #whatsapp-web
 
 ----
 
@@ -1309,33 +1345,7 @@ Repository Owner: [hackerschoice](https://github.com/hackerschoice)
 
 Description: Zaps arguments and environment from the process list
 
-**Stars:** 249 / **Created at:** 2023-09-08 / **Last commit:** 2026-03-08
-
-----
-
-### [zeroleaks](https://github.com/ZeroLeaks/zeroleaks)
-
-Repository Url: https://github.com/ZeroLeaks/zeroleaks
-
-Repository Owner: [ZeroLeaks](https://github.com/ZeroLeaks)
-
-Description: AI Security Scanner - Test your AI systems for prompt injection and extraction vulnerabilities
-
-**Stars:** 519 / **Created at:** 2026-01-20 / **Last commit:** 2026-03-12
-
-----
-
-### [zfoo](https://github.com/zfoo-project/zfoo)
-
-Repository Url: https://github.com/zfoo-project/zfoo
-
-Repository Owner: [zfoo-project](https://github.com/zfoo-project)
-
-Description: 💡Extremely fast enterprise server framework, can be used in RPC,  game server,  web server.
-
-**Stars:** 1982 / **Created at:** 2021-05-19 / **Last commit:** 2026-03-13
-
-**Topics:** #byte-buddy #cocos #cpp #game-framework #game-server #godot #godot-engine #hotswap #javassist #mongodb #netty #network #orm #rpc #serialization #spring #unity #unreal-engine #websocket
+**Stars:** 250 / **Created at:** 2023-09-08 / **Last commit:** 2026-03-17
 
 ----
 
