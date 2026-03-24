@@ -22,7 +22,7 @@ The list of 100 random starred repositories is here: [https://github.com/bormaxi
 
 - Buy Me A Coffee:
 
-[![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/osintech)
+[![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/osintech/e/521518)
 
 or Subscribe Me on Substack: [@OSINTech](https://substack.com/@osintech)
 
