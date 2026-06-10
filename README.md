@@ -24,9 +24,9 @@ The list of 100 random starred repositories is here: [https://github.com/bormaxi
 
 [![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/osintech/e/521518)
 
-or Subscribe Me on Substack: [@OSINTech](https://substack.com/@osintech)
+And Subscribe Me on Substack: [@OSINTech](https://substack.com/@osintech)
 
-- Connect Me on Substack: [@OSINTech](https://substack.com/@osintech) or Request Access in a [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSdO6Kh2oG5wCe1sNXNJm6H1JOLStJmBIVMi4srR5J39FH1-pw/viewform?usp=publish-editor) by providing your email address and a link to GitHub account
+- Connect Me on Substack: [@OSINTech](https://substack.com/@osintech) to access the **full archive on GitHub** ($100 per month or $1000 per year), or sign up for a **paid subscription to Substack** ($15 per month or $150 per year).
 
 - I will grant you access to the full version list repositories posted on GitHub or send it on email.
 
