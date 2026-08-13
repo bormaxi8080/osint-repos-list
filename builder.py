@@ -56,6 +56,38 @@ STARRED_REPOS_PREVIOUS_JSON_PATH = "starred_repos_previous.json"
 STARRED_CONTRIBUTORS_JSON_PATH = "starred_contributors.json"
 STARRED_TOPICS_JSON_PATH = "starred_topics.json"
 STARRED_REPOS_HTML_PATH = "starred_repos.html"
+STARRED_REPOS_STATE_PATH = "starred_repos_state.json"
+
+
+def _load_generation_state():
+    """Load generation checkpoint state from disk."""
+    if not os.path.exists(STARRED_REPOS_STATE_PATH):
+        return None
+    try:
+        with open(STARRED_REPOS_STATE_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def _save_generation_state(state):
+    """Save generation checkpoint state to disk."""
+    try:
+        with open(STARRED_REPOS_STATE_PATH, "w", encoding="utf-8") as f:
+            json.dump(state, f, indent=2, ensure_ascii=False)
+        return True
+    except OSError as e:
+        print(Fore.RED + f"Failed to save state: {e}")
+        return False
+
+
+def _clear_generation_state():
+    """Remove generation checkpoint state file."""
+    try:
+        if os.path.exists(STARRED_REPOS_STATE_PATH):
+            os.remove(STARRED_REPOS_STATE_PATH)
+    except OSError:
+        pass
 
 
 def _parse_pdf_date_from_name(filename):
@@ -510,34 +542,79 @@ def generate_markdown_documents(
 
 
 def generate_json_documents(create_new_version=False):
-    """Fetch GitHub data and generate JSON files."""
+    """Fetch GitHub data and generate JSON files with checkpoint/resume support."""
     print(Fore.GREEN + "Welcome to GitHub starred repos builder!")
     print(Fore.CYAN + f"See {GITHUB_REPO_URL} for details")
 
     headers = _get_github_headers()
 
-    starred_repos = []
-    fetched_page = 1
-    starred_owners_names = []
-    starred_owners = []
+    # Try to load existing checkpoint state
+    state = _load_generation_state()
+    if state:
+        print(Fore.CYAN + f"Resuming from checkpoint: phase={state.get('phase', 'unknown')}, repos={len(state.get('repos', []))}, contributors={len(state.get('contributors', []))}")
 
-    print(Fore.YELLOW + "Fetching GitHub starred repos...")
+    # Initialize or restore state
+    if state and state.get("phase") == "repos":
+        starred_repos = state.get("repos", [])
+        fetched_page = state.get("fetched_page", 1)
+        last_page = state.get("last_page", False)
+    else:
+        starred_repos = []
+        fetched_page = 1
+        last_page = False
 
-    # Fetch first page
-    print(Fore.BLUE + f"Pages fetched: {fetched_page}")
-    fetched_result = fetch_starred_repos(headers=headers)
-    starred_repos.extend(fetched_result["repos"])
+    if state and state.get("phase") in ("contributors", "done"):
+        starred_repos = state.get("repos", [])
+        fetched_page = state.get("fetched_page", 1)
+        last_page = state.get("last_page", True)
+        starred_owners = state.get("contributors", [])
+        completed_owners = set(state.get("completed_owners", []))
+    else:
+        starred_owners = []
+        completed_owners = set()
 
-    # Fetch other pages in loop if exists
-    if not fetched_result["last_page"]:
-        while not fetched_result["last_page"]:
+    # Phase 1: Fetch repositories with checkpointing
+    if not last_page:
+        print(Fore.YELLOW + "Fetching GitHub starred repos...")
+
+        # Fetch first page if starting fresh
+        if fetched_page == 1 and not starred_repos:
+            print(Fore.BLUE + f"Pages fetched: {fetched_page}")
+            fetched_result = fetch_starred_repos(headers=headers)
+            starred_repos.extend(fetched_result["repos"])
+            last_page = fetched_result["last_page"]
+
+            # Save checkpoint after first page
+            _save_generation_state({
+                "phase": "repos",
+                "repos": starred_repos,
+                "fetched_page": fetched_page,
+                "last_page": last_page,
+                "contributors": [],
+                "completed_owners": []
+            })
+
+        # Fetch remaining pages
+        while not last_page:
             fetched_page += 1
             print(Fore.BLUE + f"Pages fetched: {fetched_page}")
             fetched_result = fetch_starred_repos(page=f"{fetched_page}", headers=headers)
             starred_repos.extend(fetched_result["repos"])
+            last_page = fetched_result["last_page"]
+
+            # Save checkpoint after each page
+            _save_generation_state({
+                "phase": "repos",
+                "repos": starred_repos,
+                "fetched_page": fetched_page,
+                "last_page": last_page,
+                "contributors": [],
+                "completed_owners": []
+            })
 
     print(Fore.CYAN + f"Repos fetched: {len(starred_repos)}")
 
+    # Save repos JSON
     print(Fore.YELLOW + "Saving repos JSON data...")
     if create_new_version:
         snapshot_result = _save_previous_repos_snapshot()
@@ -546,27 +623,51 @@ def generate_json_documents(create_new_version=False):
     _save_json_document(STARRED_REPOS_JSON_PATH, starred_repos)
     print(Fore.GREEN + "Done")
 
+    # Build list of unique owners
     starred_repos_sorted = sorted(starred_repos, key=lambda x: x['name'])
+    starred_owners_names = []
     for repo in starred_repos_sorted:
         owner_login = str(repo["owner"]["login"])
         if owner_login not in starred_owners_names:
             starred_owners_names.append(owner_login)
-
     starred_owners_names.sort()
 
-    print(Fore.YELLOW + "Generating contributors data...")
-    print(Fore.CYAN + f"Fetching {len(starred_owners_names)} contributors data...")
-    for idx, owner_login in enumerate(starred_owners_names, 1):
-        print(
-            Fore.BLUE
-            + f"Fetching contributor {idx}/{len(starred_owners_names)}: {owner_login}"
-        )
-        owner_data = fetch_contributor(owner_login, headers=headers)
-        if owner_data is not None:
-            starred_owners.append(owner_data)
+    # Phase 2: Fetch contributors with checkpointing
+    if not completed_owners or completed_owners != set(starred_owners_names):
+        print(Fore.YELLOW + "Generating contributors data...")
+        print(Fore.CYAN + f"Fetching {len(starred_owners_names)} contributors data...")
+        remaining_owners = [o for o in starred_owners_names if o not in completed_owners]
+        print(Fore.CYAN + f"Resuming from {len(completed_owners)} completed, {len(remaining_owners)} remaining...")
+
+        for idx, owner_login in enumerate(starred_owners_names, 1):
+            if owner_login in completed_owners:
+                continue
+
+            print(
+                Fore.BLUE
+                + f"Fetching contributor {idx}/{len(starred_owners_names)}: {owner_login}"
+            )
+            owner_data = fetch_contributor(owner_login, headers=headers)
+            if owner_data is not None:
+                starred_owners.append(owner_data)
+
+            completed_owners.add(owner_login)
+
+            # Save checkpoint after each contributor
+            _save_generation_state({
+                "phase": "contributors",
+                "repos": starred_repos,
+                "fetched_page": fetched_page,
+                "last_page": last_page,
+                "contributors": starred_owners,
+                "completed_owners": list(completed_owners)
+            })
 
     _save_json_document(STARRED_CONTRIBUTORS_JSON_PATH, starred_owners)
     print(Fore.GREEN + "Done")
+
+    # Clear checkpoint on successful completion
+    _clear_generation_state()
     return True
 
 
