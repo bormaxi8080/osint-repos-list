@@ -382,7 +382,9 @@ def fetch_starred_repos(page="", headers=None, max_retries=3):
     for attempt in range(max_retries):
         try:
             # Use smart rate limiter instead of fixed sleep
+            print(Fore.CYAN + f"[DEBUG] Page {page}: waiting for rate limiter...", flush=True)
             RATE_LIMITER.wait_if_needed()
+            print(Fore.CYAN + f"[DEBUG] Page {page}: making request...", flush=True)
 
             res = SESSION.get(
                 url=f"{GITHUB_API_URL}{GITHUB_API_STARRED}",
@@ -393,6 +395,7 @@ def fetch_starred_repos(page="", headers=None, max_retries=3):
 
             # Update rate limiter from response headers
             RATE_LIMITER.update_from_response(res)
+            print(Fore.CYAN + f"[DEBUG] Page {page}: rate limit remaining={RATE_LIMITER.remaining}", flush=True)
 
             res.raise_for_status()
 
@@ -408,35 +411,38 @@ def fetch_starred_repos(page="", headers=None, max_retries=3):
         except (requests.exceptions.ConnectionError,
                 requests.exceptions.Timeout,
                 requests.exceptions.ChunkedEncodingError) as e:
-            print(Fore.RED + f"Ошибка при запросе репозиториев (страница {page}): {e}")
+            print(Fore.RED + f"Ошибка при запросе репозиториев (страница {page}): {e}", flush=True)
             if attempt < max_retries - 1:
                 wait_time = 2 ** attempt
                 print(
                     Fore.YELLOW
                     + f"Повторная попытка через {wait_time} секунд... "
-                    f"({attempt + 1}/{max_retries})"
+                    f"({attempt + 1}/{max_retries})", flush=True
                 )
                 time.sleep(wait_time)
             else:
-                print(Fore.RED + f"Не удалось получить репозитории после {max_retries} попыток")
+                print(Fore.RED + f"Не удалось получить репозитории после {max_retries} попыток", flush=True)
                 return {"last_page": True, "repos": []}
 
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 429:
-                wait_time = 60
-                print(Fore.YELLOW + f"Rate limit превышен. Ожидание {wait_time} секунд...")
+                # Use rate limiter's reset time instead of hardcoded 60s
+                wait_time = min(RATE_LIMITER.max_wait, max(1, RATE_LIMITER.reset_time - int(time.time()) + 1))
+                print(Fore.YELLOW + f"Rate limit превышен (429). Ожидание {wait_time} секунд...", flush=True)
                 time.sleep(wait_time)
+                # Update rate limiter state after waiting
+                RATE_LIMITER.remaining = RATE_LIMITER.limit
                 if attempt < max_retries - 1:
                     continue
-            print(Fore.RED + f"HTTP ошибка: {e}")
+            print(Fore.RED + f"HTTP ошибка: {e}", flush=True)
             return {"last_page": True, "repos": []}
 
         except requests.exceptions.RequestException as e:
-            print(Fore.RED + f"Ошибка при запросе репозиториев (страница {page}): {e}")
+            print(Fore.RED + f"Ошибка при запросе репозиториев (страница {page}): {e}", flush=True)
             return {"last_page": True, "repos": []}
 
         except ValueError as e:
-            print(Fore.RED + f"Ошибка разбора ответа репозиториев (страница {page}): {e}")
+            print(Fore.RED + f"Ошибка разбора ответа репозиториев (страница {page}): {e}", flush=True)
             return {"last_page": True, "repos": []}
 
     return {"last_page": True, "repos": []}
