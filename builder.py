@@ -627,12 +627,17 @@ def generate_markdown_documents(
     return True
 
 
-def generate_json_documents(create_new_version=False):
+def generate_json_documents(create_new_version=False, rewrite_contributors=False):
     """Fetch GitHub data and generate JSON files with checkpoint/resume support."""
     print(Fore.GREEN + "Welcome to GitHub starred repos builder!")
     print(Fore.CYAN + f"See {GITHUB_REPO_URL} for details")
 
     headers = _get_github_headers()
+
+    if rewrite_contributors:
+        print(Fore.YELLOW + "--rewrite-contributors: forcing re-fetch of all contributors")
+        # Clear contributor cache when rewrite is requested
+        _save_contributor_cache({})
 
     # Try to load existing checkpoint state
     state = _load_generation_state()
@@ -725,25 +730,35 @@ def generate_json_documents(create_new_version=False):
     # Phase 2: Fetch contributors with checkpointing (parallel with 4 workers)
     if not completed_owners or completed_owners != set(starred_owners_names):
         print(Fore.YELLOW + "Generating contributors data...")
-        print(Fore.CYAN + f"Fetching {len(starred_owners_names)} contributors data...")
-        remaining_owners = [o for o in starred_owners_names if o not in completed_owners]
-        print(Fore.CYAN + f"Resuming from {len(completed_owners)} completed, {len(remaining_owners)} remaining...")
+        print(Fore.CYAN + f"Total unique owners: {len(starred_owners_names)}")
 
-        # Use cached data for owners we already have
-        cached_count = 0
-        for owner_login in completed_owners:
-            if owner_login in contributor_cache and owner_login not in [o.get("login") for o in starred_owners]:
-                # Add cached contributor data
-                cached_data = contributor_cache[owner_login]
-                starred_owners.append(cached_data)
-                cached_count += 1
-        if cached_count > 0:
-            print(Fore.GREEN + f"Loaded {cached_count} contributors from cache")
+        # Determine which owners need fetching
+        if rewrite_contributors:
+            # Re-fetch all contributors, ignore cache
+            owners_to_fetch = [o for o in starred_owners_names if o not in completed_owners]
+            print(Fore.YELLOW + "Rewrite mode: fetching all contributors from API")
+        else:
+            # Use cached data where available, only fetch missing
+            cached_count = 0
+            owners_to_fetch = []
 
-        # Determine which owners still need fetching
-        fetched_logins = {o.get("login") for o in starred_owners if o.get("login")}
-        owners_to_fetch = [o for o in starred_owners_names if o not in fetched_logins and o not in completed_owners]
-        print(Fore.CYAN + f"Need to fetch {len(owners_to_fetch)} contributors from API")
+            for owner_login in starred_owners_names:
+                if owner_login in completed_owners:
+                    # Already fetched in this session (from checkpoint)
+                    continue
+                if owner_login in contributor_cache:
+                    # Load from cache
+                    cached_data = contributor_cache[owner_login]
+                    starred_owners.append(cached_data)
+                    completed_owners.add(owner_login)
+                    cached_count += 1
+                else:
+                    # Not in cache, needs API fetch
+                    owners_to_fetch.append(owner_login)
+
+            if cached_count > 0:
+                print(Fore.GREEN + f"Loaded {cached_count} contributors from cache (skipped API calls)")
+            print(Fore.CYAN + f"Need to fetch {len(owners_to_fetch)} contributors from API")
 
         # Parallel fetching with ThreadPoolExecutor (4 workers)
         max_workers = 4
@@ -1130,6 +1145,14 @@ def _parse_args(argv):
             "repositories section in PDF."
         )
     )
+    parser.add_argument(
+        "--rewrite-contributors",
+        action="store_true",
+        help=(
+            "Force re-fetch all contributors from GitHub API, ignoring cache. "
+            "By default, only contributors not in cache are fetched."
+        )
+    )
     if not argv:
         args, unknown = parser.parse_known_args([])
         args.mode = "full"
@@ -1180,7 +1203,10 @@ def main():
     new_version_mode = _resolve_new_version_mode(args)
 
     if args.mode == "json":
-        success = generate_json_documents(create_new_version=new_version_mode)
+        success = generate_json_documents(
+            create_new_version=new_version_mode,
+            rewrite_contributors=args.rewrite_contributors
+        )
         if not success:
             sys.exit(1)
         return
@@ -1213,7 +1239,8 @@ def main():
 
     if args.mode == "full":
         success = generate_json_documents(
-            create_new_version=new_version_mode
+            create_new_version=new_version_mode,
+            rewrite_contributors=args.rewrite_contributors
         )
         if not success:
             sys.exit(1)
