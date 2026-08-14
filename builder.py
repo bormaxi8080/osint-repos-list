@@ -334,14 +334,16 @@ def fetch_contributor(contributor_login, headers, max_retries=3):
                 requests.exceptions.ChunkedEncodingError) as e:
             print(
                 Fore.RED
-                + f"Ошибка при запросе контрибьютора {contributor_login}: {e}"
+                + f"Ошибка при запросе контрибьютора {contributor_login}: {e}",
+                flush=True
             )
             if attempt < max_retries - 1:
                 wait_time = 2 ** attempt
                 print(
                     Fore.YELLOW
                     + f"Повторная попытка через {wait_time} секунд... "
-                    f"({attempt + 1}/{max_retries})"
+                    f"({attempt + 1}/{max_retries})",
+                    flush=True
                 )
                 time.sleep(wait_time)
             else:
@@ -350,21 +352,24 @@ def fetch_contributor(contributor_login, headers, max_retries=3):
                     + (
                         f"Не удалось получить данные контрибьютора "
                         f"{contributor_login} после {max_retries} попыток"
-                    )
+                    ),
+                    flush=True
                 )
                 return None
 
         except requests.exceptions.RequestException as e:
             print(
                 Fore.RED
-                + f"Ошибка при запросе контрибьютора {contributor_login}: {e}"
+                + f"Ошибка при запросе контрибьютора {contributor_login}: {e}",
+                flush=True
             )
             return None
 
         except ValueError as e:
             print(
                 Fore.RED
-                + f"Ошибка разбора ответа контрибьютора {contributor_login}: {e}"
+                + f"Ошибка разбора ответа контрибьютора {contributor_login}: {e}",
+                flush=True
             )
             return None
 
@@ -796,10 +801,7 @@ def generate_json_documents(create_new_version=False, rewrite_contributors=False
 
         def fetch_and_save(owner_login, idx, total):
             """Fetch single contributor and return (owner_login, data)."""
-            print(
-                Fore.BLUE
-                + f"Fetching contributor {idx}/{total}: {owner_login}"
-            )
+            print(Fore.BLUE + f"Fetching contributor {idx}/{total}: {owner_login}", flush=True)
             owner_data = fetch_contributor(owner_login, headers=headers)
             return owner_login, owner_data
 
@@ -821,13 +823,14 @@ def generate_json_documents(create_new_version=False, rewrite_contributors=False
                         contributor_cache[owner_login_result] = owner_data
                     completed_owners.add(owner_login_result)
                 except Exception as e:
-                    print(Fore.RED + f"Error fetching contributor {owner_login}: {e}")
+                    print(Fore.RED + f"Error fetching contributor {owner_login}: {e}", flush=True)
                     completed_owners.add(owner_login)
 
                 # Batched checkpoint save (thread-safe)
                 save_checkpoint_if_needed()
 
         # Final checkpoint save for any remaining contributors
+        print(Fore.CYAN + "All contributors fetched, saving final checkpoint...", flush=True)
         if contributors_since_checkpoint > 0:
             with state_lock:
                 _save_generation_state({
