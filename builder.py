@@ -1,6 +1,7 @@
 """Build starred repos/contributors markdown and JSON from GitHub API."""
 
 import argparse
+import concurrent.futures
 import json
 import os
 import random
@@ -632,36 +633,60 @@ def generate_json_documents(create_new_version=False):
             starred_owners_names.append(owner_login)
     starred_owners_names.sort()
 
-    # Phase 2: Fetch contributors with checkpointing
+    # Phase 2: Fetch contributors with checkpointing (parallel with 4 workers)
     if not completed_owners or completed_owners != set(starred_owners_names):
         print(Fore.YELLOW + "Generating contributors data...")
         print(Fore.CYAN + f"Fetching {len(starred_owners_names)} contributors data...")
         remaining_owners = [o for o in starred_owners_names if o not in completed_owners]
         print(Fore.CYAN + f"Resuming from {len(completed_owners)} completed, {len(remaining_owners)} remaining...")
 
-        for idx, owner_login in enumerate(starred_owners_names, 1):
-            if owner_login in completed_owners:
-                continue
+        # Parallel fetching with ThreadPoolExecutor (4 workers)
+        max_workers = 4
+        print(Fore.CYAN + f"Using {max_workers} parallel workers...")
 
+        # Create a thread-safe wrapper for checkpoint saves
+        import threading
+        state_lock = threading.Lock()
+
+        def fetch_and_save(owner_login, idx, total):
+            """Fetch single contributor and return (owner_login, data)."""
             print(
                 Fore.BLUE
-                + f"Fetching contributor {idx}/{len(starred_owners_names)}: {owner_login}"
+                + f"Fetching contributor {idx}/{total}: {owner_login}"
             )
             owner_data = fetch_contributor(owner_login, headers=headers)
-            if owner_data is not None:
-                starred_owners.append(owner_data)
+            return owner_login, owner_data
 
-            completed_owners.add(owner_login)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # Submit all tasks
+            future_to_owner = {
+                executor.submit(fetch_and_save, owner, idx, len(starred_owners_names)): (owner, idx)
+                for idx, owner in enumerate(starred_owners_names, 1)
+                if owner not in completed_owners
+            }
 
-            # Save checkpoint after each contributor
-            _save_generation_state({
-                "phase": "contributors",
-                "repos": starred_repos,
-                "fetched_page": fetched_page,
-                "last_page": last_page,
-                "contributors": starred_owners,
-                "completed_owners": list(completed_owners)
-            })
+            # Process completed futures as they finish
+            for future in concurrent.futures.as_completed(future_to_owner):
+                owner_login, idx = future_to_owner[future]
+                try:
+                    owner_login_result, owner_data = future.result()
+                    if owner_data is not None:
+                        starred_owners.append(owner_data)
+                    completed_owners.add(owner_login_result)
+                except Exception as e:
+                    print(Fore.RED + f"Error fetching contributor {owner_login}: {e}")
+                    completed_owners.add(owner_login)
+
+                # Save checkpoint after each completed contributor (thread-safe)
+                with state_lock:
+                    _save_generation_state({
+                        "phase": "contributors",
+                        "repos": starred_repos,
+                        "fetched_page": fetched_page,
+                        "last_page": last_page,
+                        "contributors": starred_owners,
+                        "completed_owners": list(completed_owners)
+                    })
 
     _save_json_document(STARRED_CONTRIBUTORS_JSON_PATH, starred_owners)
     print(Fore.GREEN + "Done")
