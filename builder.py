@@ -836,10 +836,14 @@ def generate_json_documents(create_new_version=False, rewrite_contributors=False
                 executor.submit(fetch_and_save, owner, idx, len(owners_to_fetch)): (owner, idx)
                 for idx, owner in enumerate(owners_to_fetch, 1)
             }
+            log_debug(f"All {len(future_to_owner)} tasks submitted, waiting for completion...")
 
             # Process completed futures as they finish
+            completed_count = 0
             for future in concurrent.futures.as_completed(future_to_owner):
+                completed_count += 1
                 owner_login, idx = future_to_owner[future]
+                log_debug(f"Future {completed_count}/{len(future_to_owner)} completed: {owner_login}")
                 try:
                     owner_login_result, owner_data = future.result()
                     if owner_data is not None:
@@ -854,6 +858,8 @@ def generate_json_documents(create_new_version=False, rewrite_contributors=False
                 # Batched checkpoint save (thread-safe)
                 save_checkpoint_if_needed()
 
+            log_debug("All futures completed, executor shutting down...")
+
         # Final checkpoint save for any remaining contributors
         log_debug("All contributors fetched, saving final checkpoint...")
         if contributors_since_checkpoint > 0:
@@ -866,16 +872,22 @@ def generate_json_documents(create_new_version=False, rewrite_contributors=False
                     "contributors": starred_owners,
                     "completed_owners": list(completed_owners)
                 })
+        else:
+            log_debug("No remaining contributors since last checkpoint, skipping final checkpoint save")
 
         # Save contributor cache to disk
+        log_debug("Saving contributor cache...")
         _save_contributor_cache(contributor_cache)
-        print(Fore.GREEN + f"Contributor cache saved: {len(contributor_cache)} entries")
+        log_info(f"Contributor cache saved: {len(contributor_cache)} entries")
 
+    log_debug("Saving final contributors JSON...")
     _save_json_document(STARRED_CONTRIBUTORS_JSON_PATH, starred_owners)
-    print(Fore.GREEN + "Done")
+    log_info("Done")
 
     # Clear checkpoint on successful completion
+    log_debug("Clearing generation state...")
     _clear_generation_state()
+    log_debug("Generation state cleared, returning success")
     return True
 
 
