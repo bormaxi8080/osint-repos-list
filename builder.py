@@ -7,6 +7,7 @@ import os
 import random
 import shutil
 import sys
+import threading
 import time
 from datetime import datetime
 
@@ -238,37 +239,52 @@ SESSION = create_session_with_retries()
 
 
 class GitHubRateLimiter:
-    """Smart rate limiter using GitHub API rate limit headers."""
+    """Smart rate limiter using GitHub API rate limit headers. Thread-safe."""
 
-    def __init__(self, min_remaining=10):
+    def __init__(self, min_remaining=10, max_wait=60):
         self.min_remaining = min_remaining
+        self.max_wait = max_wait  # Maximum wait time in seconds
         self.reset_time = 0
         self.remaining = 5000  # Default GitHub limit
+        self.limit = 5000
+        self._lock = threading.Lock()
 
     def update_from_response(self, response):
         """Update rate limit state from GitHub API response headers."""
         headers = response.headers
-        if 'X-RateLimit-Remaining' in headers:
-            self.remaining = int(headers['X-RateLimit-Remaining'])
-        if 'X-RateLimit-Reset' in headers:
-            self.reset_time = int(headers['X-RateLimit-Reset'])
-        if 'X-RateLimit-Limit' in headers:
-            self.limit = int(headers['X-RateLimit-Limit'])
+        with self._lock:
+            if 'X-RateLimit-Remaining' in headers:
+                self.remaining = int(headers['X-RateLimit-Remaining'])
+            if 'X-RateLimit-Reset' in headers:
+                self.reset_time = int(headers['X-RateLimit-Reset'])
+            if 'X-RateLimit-Limit' in headers:
+                self.limit = int(headers['X-RateLimit-Limit'])
 
     def wait_if_needed(self):
-        """Wait if rate limit is low, using reset time from headers."""
+        """Wait if rate limit is low, using reset time from headers. Thread-safe."""
         import time
         now = time.time()
 
-        if self.remaining <= self.min_remaining:
-            wait_time = max(0, self.reset_time - now) + 1
-            if wait_time > 0:
-                print(Fore.YELLOW + f"Rate limit low ({self.remaining} remaining). Waiting {wait_time:.0f}s until reset...")
-                time.sleep(wait_time)
-                self.remaining = self.limit  # Assume reset
-        else:
-            # Small delay to be nice to the API when not near limit
-            time.sleep(0.1)
+        with self._lock:
+            if self.remaining <= self.min_remaining:
+                wait_time = max(0, self.reset_time - now) + 1
+                # Cap maximum wait time
+                wait_time = min(wait_time, self.max_wait)
+                if wait_time > 0:
+                    print(Fore.YELLOW + f"Rate limit low ({self.remaining} remaining). Waiting {wait_time:.0f}s (max {self.max_wait}s)...")
+                    # Release lock during sleep
+                    pass  # Will sleep after releasing lock
+                else:
+                    return
+            else:
+                # No artificial delay when not near limit
+                return
+
+        # Sleep outside the lock to avoid blocking other threads
+        if wait_time > 0:
+            time.sleep(wait_time)
+            with self._lock:
+                self.remaining = self.limit  # Assume reset after wait
 
 
 # Global rate limiter instance
