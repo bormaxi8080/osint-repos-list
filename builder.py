@@ -214,6 +214,44 @@ def create_session_with_retries():
 SESSION = create_session_with_retries()
 
 
+class GitHubRateLimiter:
+    """Smart rate limiter using GitHub API rate limit headers."""
+
+    def __init__(self, min_remaining=10):
+        self.min_remaining = min_remaining
+        self.reset_time = 0
+        self.remaining = 5000  # Default GitHub limit
+
+    def update_from_response(self, response):
+        """Update rate limit state from GitHub API response headers."""
+        headers = response.headers
+        if 'X-RateLimit-Remaining' in headers:
+            self.remaining = int(headers['X-RateLimit-Remaining'])
+        if 'X-RateLimit-Reset' in headers:
+            self.reset_time = int(headers['X-RateLimit-Reset'])
+        if 'X-RateLimit-Limit' in headers:
+            self.limit = int(headers['X-RateLimit-Limit'])
+
+    def wait_if_needed(self):
+        """Wait if rate limit is low, using reset time from headers."""
+        import time
+        now = time.time()
+
+        if self.remaining <= self.min_remaining:
+            wait_time = max(0, self.reset_time - now) + 1
+            if wait_time > 0:
+                print(Fore.YELLOW + f"Rate limit low ({self.remaining} remaining). Waiting {wait_time:.0f}s until reset...")
+                time.sleep(wait_time)
+                self.remaining = self.limit  # Assume reset
+        else:
+            # Small delay to be nice to the API when not near limit
+            time.sleep(0.1)
+
+
+# Global rate limiter instance
+RATE_LIMITER = GitHubRateLimiter(min_remaining=10)
+
+
 def _get_github_headers():
     """Build GitHub API headers from environment token."""
     token = os.environ.get("GITHUB_API_TOKEN")
@@ -234,13 +272,17 @@ def fetch_contributor(contributor_login, headers, max_retries=3):
 
     for attempt in range(max_retries):
         try:
-            time.sleep(0.5)
+            # Use smart rate limiter instead of fixed sleep
+            RATE_LIMITER.wait_if_needed()
 
             res = SESSION.get(
                 url=f"{GITHUB_API_URL}{GITHUB_API_CONTRIBUTORS}{contributor_login}",
                 headers=headers,
                 timeout=(10, 30)
             )
+
+            # Update rate limiter from response headers
+            RATE_LIMITER.update_from_response(res)
 
             result = res.json()
             if str(result) == not_found:
@@ -300,7 +342,8 @@ def fetch_starred_repos(page="", headers=None, max_retries=3):
 
     for attempt in range(max_retries):
         try:
-            time.sleep(0.5)
+            # Use smart rate limiter instead of fixed sleep
+            RATE_LIMITER.wait_if_needed()
 
             res = SESSION.get(
                 url=f"{GITHUB_API_URL}{GITHUB_API_STARRED}",
@@ -308,6 +351,9 @@ def fetch_starred_repos(page="", headers=None, max_retries=3):
                 headers=headers,
                 timeout=(10, 30)
             )
+
+            # Update rate limiter from response headers
+            RATE_LIMITER.update_from_response(res)
 
             res.raise_for_status()
 
