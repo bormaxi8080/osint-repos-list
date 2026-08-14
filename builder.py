@@ -248,6 +248,7 @@ class GitHubRateLimiter:
         self.remaining = 5000  # Default GitHub limit
         self.limit = 5000
         self._lock = threading.Lock()
+        self._print_lock = threading.Lock()
 
     def update_from_response(self, response):
         """Update rate limit state from GitHub API response headers."""
@@ -271,7 +272,8 @@ class GitHubRateLimiter:
                 # Cap maximum wait time
                 wait_time = min(wait_time, self.max_wait)
                 if wait_time > 0:
-                    print(Fore.YELLOW + f"Rate limit low ({self.remaining} remaining). Waiting {wait_time:.0f}s (max {self.max_wait}s)...")
+                    with self._print_lock:
+                        print(Fore.YELLOW + f"Rate limit low ({self.remaining} remaining). Waiting {wait_time:.0f}s (max {self.max_wait}s)...", flush=True)
                     # Release lock during sleep
                     pass  # Will sleep after releasing lock
                 else:
@@ -734,20 +736,39 @@ def generate_json_documents(create_new_version=False, rewrite_contributors=False
             starred_owners_names.append(owner_login)
     starred_owners_names.sort()
 
+    # Thread-safe logging for parallel workers
+    log_lock = threading.Lock()
+
+    def log_info(msg):
+        with log_lock:
+            print(msg, flush=True)
+
+    def log_error(msg):
+        with log_lock:
+            print(Fore.RED + msg, flush=True)
+
+    def log_warn(msg):
+        with log_lock:
+            print(Fore.YELLOW + msg, flush=True)
+
+    def log_debug(msg):
+        with log_lock:
+            print(Fore.CYAN + msg, flush=True)
+
     # Load contributor cache
     contributor_cache = _load_contributor_cache()
-    print(Fore.CYAN + f"Contributor cache loaded: {len(contributor_cache)} entries")
+    log_info(f"Contributor cache loaded: {len(contributor_cache)} entries")
 
     # Phase 2: Fetch contributors with checkpointing (parallel with 4 workers)
     if not completed_owners or completed_owners != set(starred_owners_names):
-        print(Fore.YELLOW + "Generating contributors data...")
-        print(Fore.CYAN + f"Total unique owners: {len(starred_owners_names)}")
+        log_info("Generating contributors data...")
+        log_info(f"Total unique owners: {len(starred_owners_names)}")
 
         # Determine which owners need fetching
         if rewrite_contributors:
             # Re-fetch all contributors, ignore cache
             owners_to_fetch = [o for o in starred_owners_names if o not in completed_owners]
-            print(Fore.YELLOW + "Rewrite mode: fetching all contributors from API")
+            log_warn("Rewrite mode: fetching all contributors from API")
         else:
             # Use cached data where available, only fetch missing
             cached_count = 0
@@ -768,19 +789,22 @@ def generate_json_documents(create_new_version=False, rewrite_contributors=False
                     owners_to_fetch.append(owner_login)
 
             if cached_count > 0:
-                print(Fore.GREEN + f"Loaded {cached_count} contributors from cache (skipped API calls)")
-            print(Fore.CYAN + f"Need to fetch {len(owners_to_fetch)} contributors from API")
+                log_info(f"Loaded {cached_count} contributors from cache (skipped API calls)")
+            log_info(f"Need to fetch {len(owners_to_fetch)} contributors from API")
+
+        # Debug: check cache hit rate
+        cache_hits = sum(1 for o in starred_owners_names if o in contributor_cache)
+        log_debug(f"Cache coverage: {cache_hits}/{len(starred_owners_names)} ({100*cache_hits/len(starred_owners_names):.1f}%)")
 
         # Parallel fetching with ThreadPoolExecutor (4 workers)
         max_workers = 4
-        print(Fore.CYAN + f"Using {max_workers} parallel workers...")
+        log_info(f"Using {max_workers} parallel workers...")
 
         # Batched checkpoint: save every N contributors to reduce IO overhead
         CHECKPOINT_BATCH_SIZE = 10
         contributors_since_checkpoint = 0
 
         # Create a thread-safe wrapper for checkpoint saves
-        import threading
         state_lock = threading.Lock()
 
         def save_checkpoint_if_needed():
@@ -801,14 +825,15 @@ def generate_json_documents(create_new_version=False, rewrite_contributors=False
 
         def fetch_and_save(owner_login, idx, total):
             """Fetch single contributor and return (owner_login, data)."""
-            print(Fore.BLUE + f"Fetching contributor {idx}/{total}: {owner_login}", flush=True)
+            log_info(f"Fetching contributor {idx}/{total}: {owner_login}")
             owner_data = fetch_contributor(owner_login, headers=headers)
             return owner_login, owner_data
 
+        log_debug(f"Submitting {len(owners_to_fetch)} contributors to executor...")
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             # Submit all tasks
             future_to_owner = {
-                executor.submit(fetch_and_save, owner, idx, len(starred_owners_names)): (owner, idx)
+                executor.submit(fetch_and_save, owner, idx, len(owners_to_fetch)): (owner, idx)
                 for idx, owner in enumerate(owners_to_fetch, 1)
             }
 
@@ -823,14 +848,14 @@ def generate_json_documents(create_new_version=False, rewrite_contributors=False
                         contributor_cache[owner_login_result] = owner_data
                     completed_owners.add(owner_login_result)
                 except Exception as e:
-                    print(Fore.RED + f"Error fetching contributor {owner_login}: {e}", flush=True)
+                    log_error(f"Error fetching contributor {owner_login}: {e}")
                     completed_owners.add(owner_login)
 
                 # Batched checkpoint save (thread-safe)
                 save_checkpoint_if_needed()
 
         # Final checkpoint save for any remaining contributors
-        print(Fore.CYAN + "All contributors fetched, saving final checkpoint...", flush=True)
+        log_debug("All contributors fetched, saving final checkpoint...")
         if contributors_since_checkpoint > 0:
             with state_lock:
                 _save_generation_state({
