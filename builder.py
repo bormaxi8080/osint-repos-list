@@ -58,6 +58,7 @@ STARRED_CONTRIBUTORS_JSON_PATH = "starred_contributors.json"
 STARRED_TOPICS_JSON_PATH = "starred_topics.json"
 STARRED_REPOS_HTML_PATH = "starred_repos.html"
 STARRED_REPOS_STATE_PATH = "starred_repos_state.json"
+CONTRIBUTOR_CACHE_PATH = "contributor_cache.json"
 
 
 def _load_generation_state():
@@ -89,6 +90,28 @@ def _clear_generation_state():
             os.remove(STARRED_REPOS_STATE_PATH)
     except OSError:
         pass
+
+
+def _load_contributor_cache():
+    """Load contributor cache from disk."""
+    if not os.path.exists(CONTRIBUTOR_CACHE_PATH):
+        return {}
+    try:
+        with open(CONTRIBUTOR_CACHE_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def _save_contributor_cache(cache):
+    """Save contributor cache to disk."""
+    try:
+        with open(CONTRIBUTOR_CACHE_PATH, "w", encoding="utf-8") as f:
+            json.dump(cache, f, indent=2, ensure_ascii=False)
+        return True
+    except OSError as e:
+        print(Fore.RED + f"Failed to save contributor cache: {e}")
+        return False
 
 
 def _parse_pdf_date_from_name(filename):
@@ -679,12 +702,32 @@ def generate_json_documents(create_new_version=False):
             starred_owners_names.append(owner_login)
     starred_owners_names.sort()
 
+    # Load contributor cache
+    contributor_cache = _load_contributor_cache()
+    print(Fore.CYAN + f"Contributor cache loaded: {len(contributor_cache)} entries")
+
     # Phase 2: Fetch contributors with checkpointing (parallel with 4 workers)
     if not completed_owners or completed_owners != set(starred_owners_names):
         print(Fore.YELLOW + "Generating contributors data...")
         print(Fore.CYAN + f"Fetching {len(starred_owners_names)} contributors data...")
         remaining_owners = [o for o in starred_owners_names if o not in completed_owners]
         print(Fore.CYAN + f"Resuming from {len(completed_owners)} completed, {len(remaining_owners)} remaining...")
+
+        # Use cached data for owners we already have
+        cached_count = 0
+        for owner_login in completed_owners:
+            if owner_login in contributor_cache and owner_login not in [o.get("login") for o in starred_owners]:
+                # Add cached contributor data
+                cached_data = contributor_cache[owner_login]
+                starred_owners.append(cached_data)
+                cached_count += 1
+        if cached_count > 0:
+            print(Fore.GREEN + f"Loaded {cached_count} contributors from cache")
+
+        # Determine which owners still need fetching
+        fetched_logins = {o.get("login") for o in starred_owners if o.get("login")}
+        owners_to_fetch = [o for o in starred_owners_names if o not in fetched_logins and o not in completed_owners]
+        print(Fore.CYAN + f"Need to fetch {len(owners_to_fetch)} contributors from API")
 
         # Parallel fetching with ThreadPoolExecutor (4 workers)
         max_workers = 4
@@ -727,8 +770,7 @@ def generate_json_documents(create_new_version=False):
             # Submit all tasks
             future_to_owner = {
                 executor.submit(fetch_and_save, owner, idx, len(starred_owners_names)): (owner, idx)
-                for idx, owner in enumerate(starred_owners_names, 1)
-                if owner not in completed_owners
+                for idx, owner in enumerate(owners_to_fetch, 1)
             }
 
             # Process completed futures as they finish
@@ -738,6 +780,8 @@ def generate_json_documents(create_new_version=False):
                     owner_login_result, owner_data = future.result()
                     if owner_data is not None:
                         starred_owners.append(owner_data)
+                        # Update cache with new data
+                        contributor_cache[owner_login_result] = owner_data
                     completed_owners.add(owner_login_result)
                 except Exception as e:
                     print(Fore.RED + f"Error fetching contributor {owner_login}: {e}")
@@ -757,6 +801,10 @@ def generate_json_documents(create_new_version=False):
                     "contributors": starred_owners,
                     "completed_owners": list(completed_owners)
                 })
+
+        # Save contributor cache to disk
+        _save_contributor_cache(contributor_cache)
+        print(Fore.GREEN + f"Contributor cache saved: {len(contributor_cache)} entries")
 
     _save_json_document(STARRED_CONTRIBUTORS_JSON_PATH, starred_owners)
     print(Fore.GREEN + "Done")
