@@ -690,9 +690,29 @@ def generate_json_documents(create_new_version=False):
         max_workers = 4
         print(Fore.CYAN + f"Using {max_workers} parallel workers...")
 
+        # Batched checkpoint: save every N contributors to reduce IO overhead
+        CHECKPOINT_BATCH_SIZE = 10
+        contributors_since_checkpoint = 0
+
         # Create a thread-safe wrapper for checkpoint saves
         import threading
         state_lock = threading.Lock()
+
+        def save_checkpoint_if_needed():
+            """Save checkpoint if batch size reached, thread-safe."""
+            nonlocal contributors_since_checkpoint
+            with state_lock:
+                contributors_since_checkpoint += 1
+                if contributors_since_checkpoint >= CHECKPOINT_BATCH_SIZE:
+                    _save_generation_state({
+                        "phase": "contributors",
+                        "repos": starred_repos,
+                        "fetched_page": fetched_page,
+                        "last_page": last_page,
+                        "contributors": starred_owners,
+                        "completed_owners": list(completed_owners)
+                    })
+                    contributors_since_checkpoint = 0
 
         def fetch_and_save(owner_login, idx, total):
             """Fetch single contributor and return (owner_login, data)."""
@@ -723,16 +743,20 @@ def generate_json_documents(create_new_version=False):
                     print(Fore.RED + f"Error fetching contributor {owner_login}: {e}")
                     completed_owners.add(owner_login)
 
-                # Save checkpoint after each completed contributor (thread-safe)
-                with state_lock:
-                    _save_generation_state({
-                        "phase": "contributors",
-                        "repos": starred_repos,
-                        "fetched_page": fetched_page,
-                        "last_page": last_page,
-                        "contributors": starred_owners,
-                        "completed_owners": list(completed_owners)
-                    })
+                # Batched checkpoint save (thread-safe)
+                save_checkpoint_if_needed()
+
+        # Final checkpoint save for any remaining contributors
+        if contributors_since_checkpoint > 0:
+            with state_lock:
+                _save_generation_state({
+                    "phase": "contributors",
+                    "repos": starred_repos,
+                    "fetched_page": fetched_page,
+                    "last_page": last_page,
+                    "contributors": starred_owners,
+                    "completed_owners": list(completed_owners)
+                })
 
     _save_json_document(STARRED_CONTRIBUTORS_JSON_PATH, starred_owners)
     print(Fore.GREEN + "Done")
