@@ -178,5 +178,15 @@
     "pdf": "OSINT_Repositories_2026.10.01.pdf",
     "repos_count": 4369,
     "date": "2026-10-01"
+  },
+  {
+    "pdf": "OSINT_Repositories_2026.10.09.pdf",
+    "repos_count": 4394,
+    "date": "2026-10-09"
+  },
+  {
+    "pdf": "OSINT_Repositories_2026.10.16.pdf",
+    "repos_count": 4415,
+    "date": "2026-10-16"
   }
 ]
