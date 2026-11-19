@@ -1,203 +1,103 @@
-# OSINT Repos List (Limited Access Version)
+# OSINT Repos Intelligence Dataset
 
-This repository encapsulates a list of repositories from the GitHub, marked with an asterisk relating to the subject of OSINT, Cybersecurity, DevOps / System Administration and specific development.
+A repository-metadata collection and Python generator for OSINT, data collection, cybersecurity, automation, DevOps, and related development tools.
 
-![alt text](./img/1.png "Starred Repositories and Contributors")
+The collection is built from GitHub starred repositories and their owners. Metadata supports discovery and comparison; inclusion or a star does not establish that a tool is safe, maintained, or suitable for a particular investigation.
 
-![alt text](./img/2.png "Starred Repositories")
+## Public sample and full collection
 
-![alt text](./img/3.png "Strred Contributors")
+| Resource | What it contains |
+| --- | --- |
+| [Public sample](starred_repos_random.md) | 100 sampled repositories, with owners, descriptions, topics, stars, and update information; generated 14 November 2026 |
+| Full snapshot, 14 November 2026 | 4,484 repositories; the release reports 15 additions since the previous update |
+| Python generator | Code for building your own collection from GitHub stars |
 
-The list of 100 random starred repositories is here: [https://github.com/bormaxi8080/osint-repos-list/blob/main/starred_repos_random.md](https://github.com/bormaxi8080/osint-repos-list/blob/main/starred_repos_random.md)
+**The 4,484 figure describes the full snapshot, not the 100-record public sample.** Counts are dated snapshot values, not a live total.
 
-----
+[Full release and available downloads](https://osintech.substack.com/p/osint-repos-intelligence-dataset-62b) · [Publication and subscription details](https://osintech.substack.com/about)
 
-**The full version of the list includes more than 3,000 repositories generated on PDF and Markdown formats.**
+The referenced full release includes a PDF for paid subscribers. Available files, formats, and current access terms are stated on Substack; generator output formats below do not imply that every paid release includes every format.
 
-**The list of repositories is updated weekly.**
+## What the generator does
 
-----
+`builder.py` collects GitHub starred-repository information and generates reusable research references:
 
-## How to access full repositories list?
+- JSON metadata;
+- Markdown repository and contributor descriptions;
+- PDF archive;
+- topic lists;
+- start.me bookmark HTML.
 
-- Buy Me A Coffee:
+Repository names and owners, descriptions, topics, popularity indicators, and update timestamps help organize a changing technical collection.
 
-[![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/osintech/e/521518)
+![Repository metadata example](./img/starred_repos.json.png)
 
-And Subscribe Me on Substack: [@OSINTech](https://substack.com/@osintech)
+## Quick start
 
-- Connect Me on Substack: [@OSINTech](https://substack.com/@osintech) to access the **full archive on GitHub** ($100 per month or $1000 per year), or sign up for a **paid subscription to Substack** ($15 per month or $150 per year).
+Clone this repository and configure a GitHub API token in the `GITHUB_API_TOKEN` environment variable. Keep the token outside tracked files. See [GitHub token documentation](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
 
-- I will grant you access to the full version list repositories posted on GitHub or send it on email.
-
-- All Paid Substack Subscribers have access to the full list of repositories, as well as a premium version of the list in the form of bookmarks/a board for the [start.me](https://start.me) service.
-
-----
-
-## How to build your own repos List?
-
-Python script for build all your starred GitHub repositories information in JSON and Markdown documents named as builder.py.
-
-To build repos list run:
-
-```python3 builder.py```
-
-This Python script helps for generate Markdown description document contains GitHub starred repositories.
-
-This is typically needed in a situation when you have many starred repositories to view, such as collection of various utilities.
-
-This script does simple things:
-
-> Gets list of your starred GitHub repositories.
->
-> Generate JSON and Markdown documents with GitHub starred repos statistics
-
-That's all.
-
-*It works on GitHub only! (not in GitLab or BitBucket)
-
-----
-
-### WARNING
-
-All tools, programs and techniques published in this repository are used for informational, educational purposes or for information security purposes. The authors are not responsible for the activities that users of these tools and techniques may carry out, and urge them not to use them to carry out harmful or destructive activities directed against other users or groups on the Internet.
-
-----
-
-### Important
-
-If you have a lot of starred GitHub repositories, operations may take a long time to complete.
-
-----
-
-## Usage
-
-- Clone this repository
-- Create environment variable GITHUB_API_TOKEN with GitHub API token
-- Run 'python3 builder.py' and wait
-
-### Modes
-
-- Full generation (default): JSON -> Topics -> Markdown -> PDF -> start.me HTML
+Run the generator from the repository directory:
 
 ```bash
 python3 builder.py
 ```
 
-If `starred_repos.json` already exists, `-m full` automatically enables the "new version" workflow:
+Full generation runs JSON → Topics → Markdown → PDF → start.me HTML. This project works with GitHub, not GitLab or Bitbucket. Large collections can take time to process.
 
-- Current `starred_repos.json` is copied to `starred_repos_previous.json` before refresh.
-- PDF includes `Newly Added Repositories` section.
-
-- JSON only:
+## Output modes
 
 ```bash
+# Full generation (default)
+python3 builder.py -m full
+
+# Refresh JSON metadata
 python3 builder.py -m json
-```
 
-- Markdown only (from existing JSON files):
-
-```bash
+# Generate Markdown from existing JSON files
 python3 builder.py -m markdown
-```
 
-- PDF only (from existing JSON files):
-
-```bash
+# Generate PDF from existing JSON files
 python3 builder.py -m pdf
-```
 
-- Topics only (from existing JSON files):
-
-```bash
+# Generate topics
 python3 builder.py -m topics
-```
 
-- start.me bookmarks only (from existing JSON files):
-
-```bash
+# Generate start.me bookmarks
 python3 builder.py -m startme
 ```
 
-### New Version Flag
+## Compare snapshots
 
-Use `--new-version` to explicitly enable the workflow in `json` and `pdf` modes
-(or to force it in any mode):
+If `starred_repos.json` already exists, full mode automatically enables the new-version workflow:
+
+1. Copy the current JSON to `starred_repos_previous.json` before refreshing.
+2. Compare the current and previous snapshots.
+3. Include a newly added repositories section in the PDF, followed by the full repository and contributor sections.
+
+You can explicitly request this workflow:
 
 ```bash
 python3 builder.py -m full --new-version
 ```
 
-The flag works with `-m full`, `-m json`, and `-m pdf`:
+The flag also works with `-m json` and `-m pdf`. Markdown generation remains unchanged. Preserve the relevant snapshot files when comparing releases.
 
-- Before writing a new `starred_repos.json`, the current file is copied to `starred_repos_previous.json`.
-- During PDF generation, the second page contains `Newly Added Repositories` (difference between `starred_repos.json` and `starred_repos_previous.json`) in the same format as the main repositories list.
-- Then the regular sections continue on a new page: full repositories list and contributors list.
+## Explore the results
 
-Markdown generation (`starred_repos.md`) is unchanged.
+Open the [public sample](starred_repos_random.md) and use your browser’s Find function to search names, descriptions, or topics. The generated collection can also be searched as Markdown or processed as JSON. Image badges were removed from generated Markdown to keep large documents manageable.
 
-![alt text](./img/shell1.png "Terminal")
-
-![alt text](./img/shell2.png "Terminal")
-
-- Bingo!!!
-
-----
-
-Results
-
-![alt text](./img/starred_repos.json.png "JSON")
-
-### NOTE: Simplification of the output: image badges have been removed, since with a large number of repositories, a document is generated that is too large and the page freezes
-
-![alt text](./img/starred_repos.md.2.png "Markdown")
-
-You can see full repos list in Markdown and JSON files.
-
-----
-
-### SEARCH EXAMPLE
-
-You can search repos by keyword. For example, search repos by "SMS" keyword. Type "Ctrl+F" ("Cmd+F") and search:
-
-![alt text](./img/starred_repos.search.1.png "Markdown")
-
-![alt text](./img/starred_repos.search.2.png "Markdown")
-
-----
+![Markdown output example](./img/starred_repos.md.2.png)
 
 ## Related projects
 
-I use [github-starred-repos-loader](https://github.com/bormaxi8080/github-starred-repos-loader) and [git-repos-updater](https://github.com/bormaxi8080/git-repos-updater) shell scripts to pull and update my starred GitHub collected repos locally.
+- [github-starred-repos-loader](https://github.com/bormaxi8080/github-starred-repos-loader): pull starred repositories locally.
+- [git-repos-updater](https://github.com/bormaxi8080/git-repos-updater): update collected local repositories.
+- [OSINTech’s Timeline](https://github.com/bormaxi8080/osint-timeline): weekly OSINT tools, resources, and investigations.
 
-----
+## Intended use
 
-## Notes
+Tools and techniques are documented for informational, educational, and information security purposes. Users are responsible for complying with applicable laws and ethical standards. Evaluate third-party repositories before using them; metadata and popularity are research signals, not quality guarantees.
 
-### How to get GitHub personal API access token for API
+## Support and contact
 
-[https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
-
-----
-
-### More about GitHub stars
-
-[https://stars.github.com/](https://stars.github.com/)
-
-### More about GitHub API
-
-[https://docs.github.com/en/rest](https://docs.github.com/en/rest)
-
-### More about GitHub Starred API
-
-[https://docs.github.com/en/rest/activity/starring](https://docs.github.com/en/rest/activity/starring)
-
-### More About GitHub API Pagination Requests
-
-[https://docs.github.com/en/rest/guides/traversing-with-pagination](https://docs.github.com/en/rest/guides/traversing-with-pagination)
-
-----
-
-### Donates
-
-[![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/osintech)
+[OSINTech on Substack](https://substack.com/@osintech) · [LinkedIn](https://www.linkedin.com/in/osintech/) · [Support OSINTech](https://www.buymeacoffee.com/osintech)
